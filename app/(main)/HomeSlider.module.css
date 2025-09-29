@@ -1,0 +1,72 @@
+/* Container utama untuk slider di hero section */
+.sliderContainer {
+    position: relative;
+    width: 100%;
+    height: 60vh; /* Tinggi slider sekitar 60% dari tinggi layar */
+    max-height: 500px; /* Batas tinggi maksimal */
+    overflow: hidden;
+    border-radius: 0.75rem; /* Sudut melengkung */
+    color: white;
+}
+
+/* Setiap gambar slide */
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out; /* Transisi lebih halus */
+    background-size: cover;
+    background-position: center;
+}
+
+/* Slide yang sedang aktif */
+.slide.active {
+    opacity: 1;
+}
+
+/* Lapisan gelap di atas gambar */
+.slideOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.2)); 
+}
+
+/* Konten teks di atas slider */
+.content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Dots di bagian bawah slider */
+.sliderDots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 11;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.dot.active {
+    background-color: white;
+    width: 2rem; /* Dot aktif memanjang */
+}

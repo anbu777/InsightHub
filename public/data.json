@@ -1,0 +1,842 @@
+[
+    {
+        "unor": "sda",
+        "table_name": "tabel_data_bendungan",
+        "kategori": "EMON",
+        "deskripsi": "Data teknis dan lokasi bendungan utama di seluruh Indonesia.",
+        "kolom": [{"name": "id_bendungan", "type": "integer"}, {"name": "nama_bendungan", "type": "varchar", "length": "255"}, {"name": "kapasitas_juta_m3", "type": "numeric"}, {"name": "provinsi", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_kualitas_air_sungai",
+        "kategori": "EMON",
+        "deskripsi": "Hasil monitoring kualitas air pada sungai-sungai strategis nasional.",
+        "kolom": [{"name": "id_sampling", "type": "integer"}, {"name": "nama_sungai", "type": "varchar", "length": "200"}, {"name": "ph_level", "type": "numeric"}, {"name": "suhu_celcius", "type": "numeric"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_curah_hujan_harian",
+        "kategori": "EMON",
+        "deskripsi": "Data rekaman curah hujan harian dari stasiun pemantauan cuaca.",
+        "kolom": [{"name": "id_stasiun", "type": "varchar", "length": "20"}, {"name": "tanggal_catat", "type": "date"}, {"name": "curah_hujan_mm", "type": "numeric"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_level_muka_air",
+        "kategori": "EMON",
+        "deskripsi": "Data tinggi muka air real-time dari pos pemantauan utama.",
+        "kolom": [{"name": "id_pos", "type": "integer"}, {"name": "tinggi_air_meter", "type": "numeric"}, {"name": "waktu_catat", "type": "timestamp"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_status_pintu_air",
+        "kategori": "EMON",
+        "deskripsi": "Status bukaan dan kondisi operasional pintu air pengendali banjir.",
+        "kolom": [{"name": "id_pintu_air", "type": "varchar", "length": "30"}, {"name": "status_bukaan", "type": "varchar", "length": "50"}, {"name": "kondisi", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_jaringan_irigasi",
+        "kategori": "EMON",
+        "deskripsi": "Informasi mengenai jaringan irigasi, termasuk luas area dan kondisi.",
+        "kolom": [{"name": "id_irigasi", "type": "integer"}, {"name": "luas_area_ha", "type": "numeric"}, {"name": "kondisi_saluran", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_inventaris_pompa",
+        "kategori": "EMON",
+        "deskripsi": "Inventaris dan kondisi pompa air untuk irigasi dan pengendalian banjir.",
+        "kolom": [{"name": "id_pompa", "type": "varchar", "length": "50"}, {"name": "kapasitas_liter_detik", "type": "integer"}, {"name": "kondisi", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_data_banjir_tahunan",
+        "kategori": "EMON",
+        "deskripsi": "Rekapitulasi kejadian dan dampak banjir tahunan per wilayah.",
+        "kolom": [{"name": "id_kejadian", "type": "integer"}, {"name": "wilayah_terdampak", "type": "varchar", "length": "200"}, {"name": "kerugian_estimasi", "type": "numeric"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_progres_pembangunan_waduk",
+        "kategori": "EMON",
+        "deskripsi": "Data progres konstruksi untuk proyek pembangunan waduk baru.",
+        "kolom": [{"name": "id_proyek", "type": "integer"}, {"name": "persentase_selesai", "type": "numeric"}, {"name": "target_selesai", "type": "date"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_sumber_air_baku",
+        "kategori": "EMON",
+        "deskripsi": "Data sumber-sumber air baku untuk penyediaan air bersih.",
+        "kolom": [{"name": "id_sumber", "type": "integer"}, {"name": "nama_sumber", "type": "varchar", "length": "150"}, {"name": "debit_liter_detik", "type": "numeric"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_personel_operasional_waduk",
+        "kategori": "EHRM",
+        "deskripsi": "Data personel yang bertugas untuk operasional dan pemeliharaan waduk.",
+        "kolom": [{"name": "id_personel", "type": "varchar", "length": "20"}, {"name": "nama_personel", "type": "varchar", "length": "150"}, {"name": "id_waduk", "type": "integer"}, {"name": "jabatan", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_absensi_petugas_lapangan_sda",
+        "kategori": "EHRM",
+        "deskripsi": "Data absensi dan jam kerja petugas lapangan di bawah Ditjen SDA.",
+        "kolom": [{"name": "id_absensi", "type": "integer"}, {"name": "id_personel", "type": "varchar", "length": "20"}, {"name": "tanggal", "type": "date"}, {"name": "jam_masuk", "type": "time"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_jadwal_pemeliharaan_rutin_sda",
+        "kategori": "EHRM",
+        "deskripsi": "Jadwal pemeliharaan rutin untuk infrastruktur sumber daya air.",
+        "kolom": [{"name": "id_jadwal", "type": "integer"}, {"name": "id_infrastruktur", "type": "integer"}, {"name": "jenis_pemeliharaan", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_kontrak_konsultan_sda",
+        "kategori": "EHRM",
+        "deskripsi": "Data kontrak dengan pihak konsultan untuk proyek-proyek SDA.",
+        "kolom": [{"name": "id_kontrak", "type": "integer"}, {"name": "nama_konsultan", "type": "varchar", "length": "200"}, {"name": "nilai_kontrak", "type": "numeric"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_pelatihan_teknik_pengairan",
+        "kategori": "EHRM",
+        "deskripsi": "Informasi jadwal dan peserta pelatihan di bidang teknik pengairan.",
+        "kolom": [{"name": "id_pelatihan", "type": "integer"}, {"name": "nama_pelatihan", "type": "varchar", "length": "200"}, {"name": "jumlah_peserta", "type": "integer"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_data_aset_kendaraan_sda",
+        "kategori": "EHRM",
+        "deskripsi": "Inventaris dan status kendaraan operasional milik Ditjen SDA.",
+        "kolom": [{"name": "no_polisi", "type": "varchar", "length": "15"}, {"name": "jenis_kendaraan", "type": "varchar", "length": "50"}, {"name": "status", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_laporan_inspeksi_bendungan",
+        "kategori": "EHRM",
+        "deskripsi": "Hasil laporan inspeksi rutin dan khusus untuk keamanan bendungan.",
+        "kolom": [{"name": "id_laporan", "type": "integer"}, {"name": "tanggal_inspeksi", "type": "date"}, {"name": "hasil_temuan", "type": "text"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_tim_penanggulangan_bencana_air",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar tim dan personel satgas penanggulangan bencana banjir/kekeringan.",
+        "kolom": [{"name": "id_tim", "type": "integer"}, {"name": "ketua_tim", "type": "varchar", "length": "150"}, {"name": "kontak", "type": "varchar", "length": "20"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_sertifikasi_ahli_hidrologi",
+        "kategori": "EHRM",
+        "deskripsi": "Data para ahli hidrologi di lingkungan PUPR yang telah tersertifikasi.",
+        "kolom": [{"name": "id_sertifikat", "type": "varchar", "length": "50"}, {"name": "nama_ahli", "type": "varchar", "length": "150"}, {"name": "level_keahlian", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "sda",
+        "table_name": "tabel_inventaris_peralatan_ukur_sda",
+        "kategori": "EHRM",
+        "deskripsi": "Inventaris alat ukur hidrologi seperti aarm, peilschaal, dan lainnya.",
+        "kolom": [{"name": "kode_alat", "type": "varchar", "length": "50"}, {"name": "nama_alat", "type": "varchar", "length": "100"}, {"name": "kondisi_alat", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_ruas_jalan_nasional",
+        "kategori": "EMON",
+        "deskripsi": "Data detail mengenai setiap ruas jalan nasional, panjang, dan kondisinya.",
+        "kolom": [{"name": "id_ruas", "type": "varchar", "length": "20"}, {"name": "nama_ruas_jalan", "type": "varchar", "length": "255"}, {"name": "panjang_km", "type": "numeric"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_data_jembatan_nasional",
+        "kategori": "EMON",
+        "deskripsi": "Inventaris jembatan di jaringan jalan nasional, termasuk panjang dan tahun.",
+        "kolom": [{"name": "id_jembatan", "type": "varchar", "length": "20"}, {"name": "nama_jembatan", "type": "varchar", "length": "255"}, {"name": "panjang_meter", "type": "numeric"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_volume_lalu_lintas_harian",
+        "kategori": "EMON",
+        "deskripsi": "Data volume Lalu Lintas Harian Rata-rata (LHR) pada titik-titik strategis.",
+        "kolom": [{"name": "id_titik_survei", "type": "varchar", "length": "30"}, {"name": "jumlah_kendaraan", "type": "integer"}, {"name": "tanggal_survei", "type": "date"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_kondisi_perkerasan_jalan",
+        "kategori": "EMON",
+        "deskripsi": "Data penilaian kondisi perkerasan (IRI) di seluruh ruas jalan nasional.",
+        "kolom": [{"name": "id_ruas", "type": "varchar", "length": "20"}, {"name": "nilai_iri", "type": "numeric"}, {"name": "tahun_penilaian", "type": "integer"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_titik_rawan_kecelakaan",
+        "kategori": "EMON",
+        "deskripsi": "Pemetaan titik-titik lokasi yang rawan terjadi kecelakaan lalu lintas.",
+        "kolom": [{"name": "id_titik", "type": "integer"}, {"name": "lokasi_km", "type": "varchar", "length": "50"}, {"name": "jumlah_kejadian", "type": "integer"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_progres_pembangunan_tol",
+        "kategori": "EMON",
+        "deskripsi": "Monitoring progres konstruksi proyek-proyek jalan tol strategis.",
+        "kolom": [{"name": "id_proyek_tol", "type": "integer"}, {"name": "persentase_konstruksi", "type": "numeric"}, {"name": "persentase_lahan", "type": "numeric"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_data_terowongan_nasional",
+        "kategori": "EMON",
+        "deskripsi": "Data teknis dan inventaris terowongan (tunnel) di Indonesia.",
+        "kolom": [{"name": "id_terowongan", "type": "integer"}, {"name": "panjang_meter", "type": "numeric"}, {"name": "lokasi", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_inventaris_rambu_lalin",
+        "kategori": "EMON",
+        "deskripsi": "Inventaris rambu-rambu lalu lintas di sepanjang jalan nasional.",
+        "kolom": [{"name": "id_rambu", "type": "integer"}, {"name": "jenis_rambu", "type": "varchar", "length": "100"}, {"name": "kondisi", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_data_drainase_jalan",
+        "kategori": "EMON",
+        "deskripsi": "Data kondisi dan jenis drainase di sisi jalan nasional.",
+        "kolom": [{"name": "id_drainase", "type": "integer"}, {"name": "id_ruas", "type": "varchar", "length": "20"}, {"name": "kondisi", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_monitoring_beban_jembatan",
+        "kategori": "EMON",
+        "deskripsi": "Data hasil monitoring beban real-time pada jembatan-jembatan utama.",
+        "kolom": [{"name": "id_sensor", "type": "varchar", "length": "50"}, {"name": "id_jembatan", "type": "varchar", "length": "20"}, {"name": "beban_ton", "type": "numeric"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_kontrak_pemeliharaan_jalan",
+        "kategori": "EHRM",
+        "deskripsi": "Data kontrak dan penyedia jasa untuk pemeliharaan rutin jalan nasional.",
+        "kolom": [{"name": "id_kontrak", "type": "integer"}, {"name": "nama_penyedia_jasa", "type": "varchar", "length": "255"}, {"name": "nilai_kontrak", "type": "numeric"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_tim_inspeksi_jembatan",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar tim dan personel yang bertanggung jawab atas inspeksi jembatan.",
+        "kolom": [{"name": "id_tim", "type": "integer"}, {"name": "nama_ketua_tim", "type": "varchar", "length": "150"}, {"name": "jadwal_inspeksi", "type": "date"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_data_penyedia_jasa_bm",
+        "kategori": "EHRM",
+        "deskripsi": "Database perusahaan penyedia jasa konstruksi di bawah Bina Marga.",
+        "kolom": [{"name": "id_perusahaan", "type": "integer"}, {"name": "nama_perusahaan", "type": "varchar", "length": "200"}, {"name": "kualifikasi", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_pelatihan_ahli_jalan",
+        "kategori": "EHRM",
+        "deskripsi": "Jadwal dan daftar peserta pelatihan keahlian bidang jalan dan jembatan.",
+        "kolom": [{"name": "id_pelatihan", "type": "integer"}, {"name": "nama_pelatihan", "type": "varchar", "length": "200"}, {"name": "jumlah_peserta", "type": "integer"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_data_aset_alat_berat_bm",
+        "kategori": "EHRM",
+        "deskripsi": "Inventaris dan lokasi penempatan alat berat untuk konstruksi jalan.",
+        "kolom": [{"name": "kode_alat", "type": "varchar", "length": "50"}, {"name": "jenis_alat", "type": "varchar", "length": "100"}, {"name": "lokasi_penempatan", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_laporan_pengujian_material",
+        "kategori": "EHRM",
+        "deskripsi": "Hasil laporan pengujian material (aspal, beton) dari laboratorium.",
+        "kolom": [{"name": "id_laporan", "type": "integer"}, {"name": "jenis_material", "type": "varchar", "length": "100"}, {"name": "hasil_uji", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_absensi_pengawas_proyek_bm",
+        "kategori": "EHRM",
+        "deskripsi": "Data kehadiran pengawas proyek jalan dan jembatan di lapangan.",
+        "kolom": [{"name": "id_absensi", "type": "integer"}, {"name": "id_pengawas", "type": "varchar", "length": "20"}, {"name": "id_proyek", "type": "integer"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_tim_pembebasan_lahan",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar tim dan progres proses pembebasan lahan untuk proyek jalan.",
+        "kolom": [{"name": "id_tim_lahan", "type": "integer"}, {"name": "id_proyek_tol", "type": "integer"}, {"name": "progres_persen", "type": "numeric"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_sertifikasi_auditor_keselamatan_jalan",
+        "kategori": "EHRM",
+        "deskripsi": "Database para auditor keselamatan jalan yang telah tersertifikasi.",
+        "kolom": [{"name": "id_auditor", "type": "varchar", "length": "20"}, {"name": "nama_auditor", "type": "varchar", "length": "150"}, {"name": "level_sertifikasi", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_marga",
+        "table_name": "tabel_jadwal_kalibrasi_alat_lab_bm",
+        "kategori": "EHRM",
+        "deskripsi": "Jadwal kalibrasi rutin untuk peralatan di laboratorium Bina Marga.",
+        "kolom": [{"name": "kode_alat_lab", "type": "varchar", "length": "50"}, {"name": "nama_alat", "type": "varchar", "length": "150"}, {"name": "jadwal_kalibrasi_berikutnya", "type": "date"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_sistem_air_minum_spam",
+        "kategori": "EMON",
+        "deskripsi": "Data Sistem Penyediaan Air Minum (SPAM) per kota/kabupaten.",
+        "kolom": [{"name": "id_spam", "type": "integer"}, {"name": "kapasitas_liter_per_detik", "type": "numeric"}, {"name": "jumlah_sambungan_rumah", "type": "integer"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_data_tpa_sampah",
+        "kategori": "EMON",
+        "deskripsi": "Data Tempat Pemrosesan Akhir (TPA) sampah di berbagai daerah.",
+        "kolom": [{"name": "id_tpa", "type": "integer"}, {"name": "nama_tpa", "type": "varchar", "length": "150"}, {"name": "kapasitas_ton_hari", "type": "numeric"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_jaringan_pipa_induk_ipal",
+        "kategori": "EMON",
+        "deskripsi": "Data jaringan pipa induk Instalasi Pengolahan Air Limbah (IPAL).",
+        "kolom": [{"name": "id_pipa", "type": "varchar", "length": "50"}, {"name": "panjang_km", "type": "numeric"}, {"name": "diameter_mm", "type": "integer"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_penanganan_kawasan_kumuh",
+        "kategori": "EMON",
+        "deskripsi": "Data program dan progres penanganan kawasan kumuh perkotaan.",
+        "kolom": [{"name": "id_program", "type": "integer"}, {"name": "luas_penanganan_ha", "type": "numeric"}, {"name": "status_progres", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_penerangan_jalan_umum_pju",
+        "kategori": "EMON",
+        "deskripsi": "Data titik dan status lampu Penerangan Jalan Umum (PJU) di kawasan strategis.",
+        "kolom": [{"name": "id_pju", "type": "integer"}, {"name": "lokasi_koordinat", "type": "varchar", "length": "100"}, {"name": "status_nyala", "type": "boolean"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_sertifikat_laik_fungsi_slf",
+        "kategori": "EMON",
+        "deskripsi": "Data Sertifikat Laik Fungsi (SLF) yang dikeluarkan untuk bangunan gedung.",
+        "kolom": [{"name": "no_slf", "type": "varchar", "length": "100"}, {"name": "nama_bangunan", "type": "varchar", "length": "200"}, {"name": "berlaku_hingga", "type": "date"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_progres_pembangunan_rusunawa",
+        "kategori": "EMON",
+        "deskripsi": "Monitoring progres pembangunan Rumah Susun Sederhana Sewa (Rusunawa).",
+        "kolom": [{"name": "id_proyek_rusun", "type": "integer"}, {"name": "nama_rusunawa", "type": "varchar", "length": "200"}, {"name": "persentase_selesai", "type": "numeric"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_data_drainase_perkotaan",
+        "kategori": "EMON",
+        "deskripsi": "Inventaris dan kondisi jaringan drainase di wilayah perkotaan.",
+        "kolom": [{"name": "id_saluran", "type": "integer"}, {"name": "panjang_total_km", "type": "numeric"}, {"name": "kondisi_saluran", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_inventaris_truk_sampah",
+        "kategori": "EMON",
+        "deskripsi": "Data inventaris dan status operasional armada truk pengangkut sampah.",
+        "kolom": [{"name": "no_polisi_truk", "type": "varchar", "length": "15"}, {"name": "kapasitas_m3", "type": "integer"}, {"name": "status_operasional", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_kualitas_air_limbah_terolah",
+        "kategori": "EMON",
+        "deskripsi": "Data hasil uji kualitas air limbah yang telah diolah oleh IPAL.",
+        "kolom": [{"name": "id_uji", "type": "integer"}, {"name": "id_ipal", "type": "integer"}, {"name": "kadar_bod", "type": "numeric"}, {"name": "kadar_cod", "type": "numeric"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_petugas_sanitasi",
+        "kategori": "EHRM",
+        "deskripsi": "Data personel yang bertugas di fasilitas pengelolaan sampah dan limbah.",
+        "kolom": [{"name": "id_petugas", "type": "varchar", "length": "20"}, {"name": "nama_petugas", "type": "varchar", "length": "150"}, {"name": "id_fasilitas", "type": "integer"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_kontrak_pengelolaan_air_minum",
+        "kategori": "EHRM",
+        "deskripsi": "Data kontrak kerjasama dengan PDAM untuk pengelolaan air minum.",
+        "kolom": [{"name": "id_kontrak", "type": "integer"}, {"name": "nama_pdam", "type": "varchar", "length": "150"}, {"name": "durasi_kontrak_tahun", "type": "integer"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_tim_teknis_penataan_bangunan",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar tim teknis (arsitek, sipil) untuk program penataan bangunan.",
+        "kolom": [{"name": "id_tim", "type": "integer"}, {"name": "ketua_tim_teknis", "type": "varchar", "length": "150"}, {"name": "jumlah_anggota", "type": "integer"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_pelatihan_operator_ipal",
+        "kategori": "EHRM",
+        "deskripsi": "Data pelatihan dan sertifikasi untuk operator IPAL.",
+        "kolom": [{"name": "id_pelatihan", "type": "integer"}, {"name": "id_operator", "type": "varchar", "length": "20"}, {"name": "sertifikasi", "type": "boolean"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_konsultan_perencana_ck",
+        "kategori": "EHRM",
+        "deskripsi": "Database konsultan perencana yang terlibat dalam proyek Cipta Karya.",
+        "kolom": [{"name": "id_konsultan", "type": "integer"}, {"name": "nama_perusahaan", "type": "varchar", "length": "200"}, {"name": "id_proyek", "type": "integer"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_absensi_petugas_taman",
+        "kategori": "EHRM",
+        "deskripsi": "Absensi harian untuk para petugas kebersihan dan pemeliharaan taman.",
+        "kolom": [{"name": "id_absensi", "type": "integer"}, {"name": "id_petugas_taman", "type": "varchar", "length": "20"}, {"name": "kehadiran", "type": "boolean"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_laporan_audit_bangunan_hijau",
+        "kategori": "EHRM",
+        "deskripsi": "Laporan hasil audit untuk sertifikasi bangunan gedung hijau.",
+        "kolom": [{"name": "id_audit", "type": "integer"}, {"name": "id_bangunan", "type": "integer"}, {"name": "hasil_audit", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_inventaris_aset_rusunawa",
+        "kategori": "EHRM",
+        "deskripsi": "Data inventaris aset dan perabotan di dalam Rusunawa.",
+        "kolom": [{"name": "kode_aset", "type": "varchar", "length": "50"}, {"name": "nama_aset", "type": "varchar", "length": "100"}, {"name": "jumlah", "type": "integer"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_jadwal_fogging_drainase",
+        "kategori": "EHRM",
+        "deskripsi": "Jadwal kegiatan fogging dan pembersihan di jaringan drainase.",
+        "kolom": [{"name": "id_jadwal", "type": "integer"}, {"name": "lokasi_fogging", "type": "varchar", "length": "200"}, {"name": "tanggal_pelaksanaan", "type": "date"}]
+    },
+    {
+        "unor": "cipta_karya",
+        "table_name": "tabel_sertifikasi_manajemen_properti",
+        "kategori": "EHRM",
+        "deskripsi": "Data sertifikasi untuk para pengelola properti dan Rusunawa.",
+        "kolom": [{"name": "id_sertifikat", "type": "varchar", "length": "50"}, {"name": "nama_pengelola", "type": "varchar", "length": "150"}, {"name": "tanggal_sertifikasi", "type": "date"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_proyek_kpbu",
+        "kategori": "EMON",
+        "deskripsi": "Daftar proyek Kerjasama Pemerintah dengan Badan Usaha (KPBU).",
+        "kolom": [{"name": "id_proyek_kpbu", "type": "varchar", "length": "15"}, {"name": "nilai_investasi_triliun_rp", "type": "numeric"}, {"name": "sektor", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_skema_pendanaan_proyek",
+        "kategori": "EMON",
+        "deskripsi": "Informasi skema pendanaan untuk setiap proyek infrastruktur.",
+        "kolom": [{"name": "id_proyek", "type": "varchar", "length": "15"}, {"name": "sumber_dana", "type": "varchar", "length": "100"}, {"name": "status_pencairan", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_studi_kelayakan_investasi",
+        "kategori": "EMON",
+        "deskripsi": "Hasil studi kelayakan (Feasibility Study) untuk calon proyek infrastruktur.",
+        "kolom": [{"name": "id_studi", "type": "integer"}, {"name": "hasil_rekomendasi", "type": "varchar", "length": "50"}, {"name": "tanggal_studi", "type": "date"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_investor_potensial",
+        "kategori": "EMON",
+        "deskripsi": "Database investor potensial untuk proyek-proyek infrastruktur.",
+        "kolom": [{"name": "id_investor", "type": "integer"}, {"name": "nama_investor", "type": "varchar", "length": "200"}, {"name": "bidang_minat", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_laporan_penyerapan_anggaran",
+        "kategori": "EMON",
+        "deskripsi": "Laporan real-time penyerapan anggaran untuk proyek-proyek yang didanai.",
+        "kolom": [{"name": "id_proyek", "type": "varchar", "length": "15"}, {"name": "penyerapan_persen", "type": "numeric"}, {"name": "periode_laporan", "type": "date"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_perjanjian_pinjaman_luar_negeri",
+        "kategori": "EMON",
+        "deskripsi": "Data perjanjian pinjaman luar negeri untuk pendanaan infrastruktur.",
+        "kolom": [{"name": "id_perjanjian", "type": "integer"}, {"name": "nama_kreditor", "type": "varchar", "length": "150"}, {"name": "nilai_pinjaman_usd", "type": "numeric"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_surat_berharga_syariah_negara",
+        "kategori": "EMON",
+        "deskripsi": "Data proyek yang didanai melalui skema SBSN (Sukuk Negara).",
+        "kolom": [{"name": "id_proyek_sbsn", "type": "integer"}, {"name": "nama_proyek", "type": "varchar", "length": "255"}, {"name": "nilai_pagu_miliar", "type": "numeric"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_risiko_fiskal_proyek",
+        "kategori": "EMON",
+        "deskripsi": "Analisis dan pemantauan risiko fiskal dari proyek-proyek infrastruktur.",
+        "kolom": [{"name": "id_proyek", "type": "varchar", "length": "15"}, {"name": "tingkat_risiko", "type": "varchar", "length": "50"}, {"name": "mitigasi", "type": "text"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_peta_peluang_investasi",
+        "kategori": "EMON",
+        "deskripsi": "Peta peluang investasi infrastruktur yang ditawarkan kepada swasta.",
+        "kolom": [{"name": "id_peluang", "type": "integer"}, {"name": "sektor_infrastruktur", "type": "varchar", "length": "100"}, {"name": "estimasi_investasi", "type": "numeric"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_evaluasi_return_on_investment",
+        "kategori": "EMON",
+        "deskripsi": "Evaluasi Return on Investment (ROI) untuk proyek-proyek yang telah selesai.",
+        "kolom": [{"name": "id_proyek", "type": "varchar", "length": "15"}, {"name": "roi_persen", "type": "numeric"}, {"name": "periode_evaluasi", "type": "integer"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_tim_anggaran_proyek",
+        "kategori": "EHRM",
+        "deskripsi": "Data tim dan penanggung jawab anggaran untuk proyek-proyek strategis.",
+        "kolom": [{"name": "id_tim", "type": "integer"}, {"name": "nama_penanggung_jawab", "type": "varchar", "length": "255"}, {"name": "id_proyek", "type": "varchar", "length": "15"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_penugasan_analis_keuangan",
+        "kategori": "EHRM",
+        "deskripsi": "Penugasan analis keuangan untuk memonitor proyek-proyek KPBU.",
+        "kolom": [{"name": "id_penugasan", "type": "integer"}, {"name": "id_analis", "type": "varchar", "length": "20"}, {"name": "id_proyek_kpbu", "type": "varchar", "length": "15"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_perjalanan_dinas_pembiayaan",
+        "kategori": "EHRM",
+        "deskripsi": "Data perjalanan dinas staf dalam rangka negosiasi dan monitoring pembiayaan.",
+        "kolom": [{"name": "id_perjadin", "type": "integer"}, {"name": "nama_staf", "type": "varchar", "length": "150"}, {"name": "tujuan", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_pelatihan_manajemen_risiko",
+        "kategori": "EHRM",
+        "deskripsi": "Data pelatihan manajemen risiko keuangan untuk para analis.",
+        "kolom": [{"name": "id_pelatihan", "type": "integer"}, {"name": "materi_pelatihan", "type": "varchar", "length": "200"}, {"name": "jumlah_jam", "type": "integer"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_konsultan_keuangan_proyek",
+        "kategori": "EHRM",
+        "deskripsi": "Database konsultan keuangan eksternal yang bekerjasama dengan ditjen.",
+        "kolom": [{"name": "id_konsultan", "type": "integer"}, {"name": "nama_perusahaan_konsultan", "type": "varchar", "length": "200"}, {"name": "kontak", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_penilaian_kinerja_analis",
+        "kategori": "EHRM",
+        "deskripsi": "Penilaian kinerja tahunan untuk para analis keuangan dan investasi.",
+        "kolom": [{"name": "id_penilaian", "type": "integer"}, {"name": "id_analis", "type": "varchar", "length": "20"}, {"name": "skor_kinerja", "type": "numeric"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_data_rekening_proyek",
+        "kategori": "EHRM",
+        "deskripsi": "Informasi rekening bank yang digunakan untuk transaksi proyek.",
+        "kolom": [{"name": "no_rekening", "type": "varchar", "length": "50"}, {"name": "nama_bank", "type": "varchar", "length": "100"}, {"name": "id_proyek", "type": "varchar", "length": "15"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_absensi_staf_pembiayaan",
+        "kategori": "EHRM",
+        "deskripsi": "Data kehadiran harian untuk seluruh staf di Ditjen Pembiayaan Infrastruktur.",
+        "kolom": [{"name": "id_absensi", "type": "integer"}, {"name": "id_staf", "type": "varchar", "length": "20"}, {"name": "tanggal", "type": "date"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_dokumen_market_sounding",
+        "kategori": "EHRM",
+        "deskripsi": "Arsip dokumen dan presentasi yang digunakan saat market sounding.",
+        "kolom": [{"name": "id_dokumen", "type": "integer"}, {"name": "judul_dokumen", "type": "varchar", "length": "255"}, {"name": "lokasi_arsip", "type": "varchar", "length": "255"}]
+    },
+    {
+        "unor": "pembiayaan_infrastruktur",
+        "table_name": "tabel_notulensi_rapat_investor",
+        "kategori": "EHRM",
+        "deskripsi": "Notulensi dan hasil rapat-rapat penting dengan para investor.",
+        "kolom": [{"name": "id_rapat", "type": "integer"}, {"name": "topik_pembahasan", "type": "text"}, {"name": "peserta", "type": "text"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_monitoring_proyek_konstruksi",
+        "kategori": "EMON",
+        "deskripsi": "Monitoring progres dan kualitas proyek konstruksi yang sedang berjalan.",
+        "kolom": [{"name": "id_monitoring", "type": "integer"}, {"name": "persentase_progres", "type": "numeric"}, {"name": "status_kualitas", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_badan_usaha_jasa_konstruksi",
+        "kategori": "EMON",
+        "deskripsi": "Data Badan Usaha Jasa Konstruksi (BUJK) yang terdaftar.",
+        "kolom": [{"name": "id_bujk", "type": "varchar", "length": "50"}, {"name": "kualifikasi", "type": "varchar", "length": "10"}, {"name": "status", "type": "varchar", "length": "20"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_kecelakaan_kerja_konstruksi",
+        "kategori": "EMON",
+        "deskripsi": "Data dan laporan mengenai insiden kecelakaan kerja di lokasi proyek.",
+        "kolom": [{"name": "id_laporan", "type": "integer"}, {"name": "tingkat_keparahan", "type": "varchar", "length": "50"}, {"name": "id_proyek", "type": "integer"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_material_ramah_lingkungan",
+        "kategori": "EMON",
+        "deskripsi": "Katalog material konstruksi yang memenuhi standar ramah lingkungan.",
+        "kolom": [{"name": "id_material", "type": "integer"}, {"name": "sertifikasi", "type": "varchar", "length": "100"}, {"name": "produsen", "type": "varchar", "length": "150"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_sertifikasi_bujk",
+        "kategori": "EMON",
+        "deskripsi": "Data Sertifikasi Badan Usaha Jasa Konstruksi (SBUJK).",
+        "kolom": [{"name": "no_sertifikat", "type": "varchar", "length": "100"}, {"name": "klasifikasi", "type": "varchar", "length": "100"}, {"name": "nama_bujk", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_rantai_pasok_material",
+        "kategori": "EMON",
+        "deskripsi": "Pemantauan rantai pasok material konstruksi utama (semen, baja).",
+        "kolom": [{"name": "id_pasokan", "type": "integer"}, {"name": "jenis_material", "type": "varchar", "length": "100"}, {"name": "status_ketersediaan", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_pengujian_peralatan_berat",
+        "kategori": "EMON",
+        "deskripsi": "Hasil pengujian dan sertifikasi kelayakan operasional alat berat.",
+        "kolom": [{"name": "id_uji", "type": "integer"}, {"name": "kode_alat", "type": "varchar", "length": "50"}, {"name": "hasil_uji", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_teknologi_konstruksi_terbaru",
+        "kategori": "EMON",
+        "deskripsi": "Database teknologi dan metode konstruksi terbaru.",
+        "kolom": [{"name": "id_teknologi", "type": "integer"}, {"name": "nama_teknologi", "type": "varchar", "length": "150"}, {"name": "deskripsi_teknologi", "type": "text"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_proyek_percontohan_bim",
+        "kategori": "EMON",
+        "deskripsi": "Daftar proyek percontohan yang menerapkan Building Information Modeling (BIM).",
+        "kolom": [{"name": "id_proyek_bim", "type": "integer"}, {"name": "nama_proyek", "type": "varchar", "length": "255"}, {"name": "level_implementasi_bim", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_data_sengketa_konstruksi",
+        "kategori": "EMON",
+        "deskripsi": "Data sengketa atau perselisihan dalam kontrak jasa konstruksi.",
+        "kolom": [{"name": "id_sengketa", "type": "integer"}, {"name": "id_proyek", "type": "integer"}, {"name": "status_penyelesaian", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_sertifikasi_tenaga_kerja",
+        "kategori": "EHRM",
+        "deskripsi": "Data sertifikasi dan kualifikasi tenaga kerja di bidang konstruksi.",
+        "kolom": [{"name": "id_sertifikat", "type": "varchar", "length": "50"}, {"name": "nama_tenaga_kerja", "type": "varchar", "length": "255"}, {"name": "keahlian", "type": "varchar", "length": "150"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_pengawas_lapangan_konstruksi",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar dan penugasan pengawas lapangan untuk proyek-proyek konstruksi.",
+        "kolom": [{"name": "id_pengawas", "type": "varchar", "length": "20"}, {"name": "nama_pengawas", "type": "varchar", "length": "150"}, {"name": "id_proyek", "type": "integer"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_asosiasi_jasa_konstruksi",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar asosiasi perusahaan dan profesi di sektor jasa konstruksi.",
+        "kolom": [{"name": "id_asosiasi", "type": "integer"}, {"name": "nama_asosiasi", "type": "varchar", "length": "200"}, {"name": "jumlah_anggota", "type": "integer"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_penghargaan_konstruksi_indonesia",
+        "kategori": "EHRM",
+        "deskripsi": "Data pemenang dan nominasi Penghargaan Konstruksi Indonesia.",
+        "kolom": [{"name": "id_penghargaan", "type": "integer"}, {"name": "tahun_penghargaan", "type": "integer"}, {"name": "pemenang", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_pelatihan_smkk",
+        "kategori": "EHRM",
+        "deskripsi": "Jadwal dan peserta pelatihan Sistem Manajemen Keselamatan Konstruksi (SMKK).",
+        "kolom": [{"name": "id_pelatihan_smkk", "type": "integer"}, {"name": "nama_pelatihan", "type": "varchar", "length": "200"}, {"name": "jumlah_peserta", "type": "integer"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_tim_arbitrase_konstruksi",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar arbiter dan mediator untuk penyelesaian sengketa konstruksi.",
+        "kolom": [{"name": "id_arbiter", "type": "integer"}, {"name": "nama_arbiter", "type": "varchar", "length": "150"}, {"name": "keahlian", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_tindak_lanjut_audit_proyek",
+        "kategori": "EHRM",
+        "deskripsi": "Tindak lanjut dari temuan-temuan audit pada proyek-proyek konstruksi.",
+        "kolom": [{"name": "id_temuan", "type": "integer"}, {"name": "id_proyek", "type": "integer"}, {"name": "status_tindak_lanjut", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_penilaian_kinerja_bujk",
+        "kategori": "EHRM",
+        "deskripsi": "Penilaian kinerja tahunan untuk Badan Usaha Jasa Konstruksi (BUJK).",
+        "kolom": [{"name": "id_penilaian", "type": "integer"}, {"name": "id_bujk", "type": "varchar", "length": "50"}, {"name": "skor_kinerja", "type": "numeric"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_kerjasama_pelatihan_vokasi",
+        "kategori": "EHRM",
+        "deskripsi": "Kerjasama dengan lembaga pendidikan vokasi untuk tenaga kerja konstruksi.",
+        "kolom": [{"name": "id_kerjasama", "type": "integer"}, {"name": "nama_lembaga_vokasi", "type": "varchar", "length": "200"}, {"name": "bentuk_kerjasama", "type": "text"}]
+    },
+    {
+        "unor": "bina_konstruksi",
+        "table_name": "tabel_absensi_staf_bina_konstruksi",
+        "kategori": "EHRM",
+        "deskripsi": "Data kehadiran harian untuk seluruh staf di Ditjen Bina Konstruksi.",
+        "kolom": [{"name": "id_absensi", "type": "integer"}, {"name": "id_staf_bk", "type": "varchar", "length": "20"}, {"name": "tanggal", "type": "date"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_pembangunan_venue_olahraga",
+        "kategori": "EMON",
+        "deskripsi": "Data pembangunan infrastruktur venue olahraga strategis nasional.",
+        "kolom": [{"name": "id_venue", "type": "integer"}, {"name": "kapasitas_penonton", "type": "integer"}, {"name": "lokasi", "type": "varchar", "length": "150"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_pembangunan_pasar_rakyat",
+        "kategori": "EMON",
+        "deskripsi": "Program pembangunan dan revitalisasi pasar rakyat di berbagai daerah.",
+        "kolom": [{"name": "id_pasar", "type": "integer"}, {"name": "status_pembangunan", "type": "varchar", "length": "50"}, {"name": "kabupaten_kota", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_inspeksi_kelayakan_gedung",
+        "kategori": "EMON",
+        "deskripsi": "Hasil inspeksi dan penilaian kelayakan gedung-gedung pemerintah.",
+        "kolom": [{"name": "id_inspeksi", "type": "integer"}, {"name": "id_gedung", "type": "integer"}, {"name": "rekomendasi", "type": "text"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_progres_pembangunan_ikn",
+        "kategori": "EMON",
+        "deskripsi": "Data progres pembangunan infrastruktur strategis di Ibukota Negara (IKN).",
+        "kolom": [{"name": "id_proyek_ikn", "type": "varchar", "length": "30"}, {"name": "persentase_selesai", "type": "numeric"}, {"name": "nama_proyek", "type": "varchar", "length": "255"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_dukungan_infrastruktur_pariwisata",
+        "kategori": "EMON",
+        "deskripsi": "Infrastruktur pendukung di Kawasan Strategis Pariwisata Nasional (KSPN).",
+        "kolom": [{"name": "id_kspn", "type": "integer"}, {"name": "jenis_infrastruktur", "type": "varchar", "length": "100"}, {"name": "status", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_pengadaan_alat_berat_strategis",
+        "kategori": "EMON",
+        "deskripsi": "Data pengadaan dan distribusi alat berat untuk proyek-proyek strategis.",
+        "kolom": [{"name": "id_alat", "type": "varchar", "length": "50"}, {"name": "jumlah_unit", "type": "integer"}, {"name": "lokasi_penempatan", "type": "varchar", "length": "150"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_rehabilitasi_gedung_pendidikan",
+        "kategori": "EMON",
+        "deskripsi": "Progres program rehabilitasi dan renovasi gedung sekolah/madrasah.",
+        "kolom": [{"name": "id_sekolah", "type": "integer"}, {"name": "progres_rehab_persen", "type": "numeric"}, {"name": "nama_sekolah", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_infrastruktur_perbatasan_negara",
+        "kategori": "EMON",
+        "deskripsi": "Data pembangunan Pos Lintas Batas Negara (PLBN) dan jalan perbatasan.",
+        "kolom": [{"name": "id_plbn", "type": "integer"}, {"name": "status_operasional", "type": "varchar", "length": "50"}, {"name": "lokasi_perbatasan", "type": "varchar", "length": "100"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_bangunan_gedung_pemerintah",
+        "kategori": "EMON",
+        "deskripsi": "Inventaris dan kondisi bangunan gedung kantor pemerintahan.",
+        "kolom": [{"name": "id_gedung", "type": "integer"}, {"name": "luas_bangunan_m2", "type": "numeric"}, {"name": "kondisi", "type": "varchar", "length": "50"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_pemantauan_kualitas_konstruksi",
+        "kategori": "EMON",
+        "deskripsi": "Data pemantauan kualitas konstruksi untuk proyek-proyek strategis.",
+        "kolom": [{"name": "id_pemantauan", "type": "integer"}, {"name": "hasil_uji_beton", "type": "varchar", "length": "50"}, {"name": "id_proyek", "type": "integer"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_tim_proyek_rehabilitasi_sekolah",
+        "kategori": "EHRM",
+        "deskripsi": "Data tim yang terlibat dalam program rehabilitasi sekolah dan madrasah.",
+        "kolom": [{"name": "id_tim_rehab", "type": "integer"}, {"name": "nama_ketua_tim", "type": "varchar", "length": "255"}, {"name": "jumlah_anggota", "type": "integer"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_tenaga_ahli_prasarana",
+        "kategori": "EHRM",
+        "deskripsi": "Daftar tenaga ahli dan spesialis yang bekerja di Ditjen Prasarana Strategis.",
+        "kolom": [{"name": "id_ahli", "type": "varchar", "length": "20"}, {"name": "bidang_keahlian", "type": "varchar", "length": "100"}, {"name": "nama_ahli", "type": "varchar", "length": "150"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_kontraktor_pelaksana_proyek",
+        "kategori": "EHRM",
+        "deskripsi": "Database kontraktor pelaksana yang mengerjakan proyek-proyek strategis.",
+        "kolom": [{"name": "id_kontraktor", "type": "integer"}, {"name": "nama_perusahaan", "type": "varchar", "length": "200"}, {"name": "id_proyek", "type": "integer"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_perjalanan_dinas_monitoring",
+        "kategori": "EHRM",
+        "deskripsi": "Data perjalanan dinas staf dalam rangka monitoring proyek strategis.",
+        "kolom": [{"name": "id_perjadin", "type": "integer"}, {"name": "id_staf", "type": "varchar", "length": "20"}, {"name": "id_proyek", "type": "integer"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_absensi_staf_prasarana",
+        "kategori": "EHRM",
+        "deskripsi": "Data kehadiran harian untuk seluruh staf di Ditjen Prasarana Strategis.",
+        "kolom": [{"name": "id_absensi", "type": "integer"}, {"name": "id_staf_ps", "type": "varchar", "length": "20"}, {"name": "tanggal", "type": "date"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_pelatihan_pengelola_aset",
+        "kategori": "EHRM",
+        "deskripsi": "Pelatihan untuk para staf yang mengelola aset bangunan dan prasarana.",
+        "kolom": [{"name": "id_pelatihan", "type": "integer"}, {"name": "nama_peserta", "type": "varchar", "length": "150"}, {"name": "materi", "type": "varchar", "length": "200"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_tim_perencana_gedung",
+        "kategori": "EHRM",
+        "deskripsi": "Tim perencana (arsitek,MEP) yang terlibat dalam desain gedung strategis.",
+        "kolom": [{"name": "id_tim_perencana", "type": "integer"}, {"name": "nama_arsitek_utama", "type": "varchar", "length": "150"}, {"name": "id_gedung", "type": "integer"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_penilaian_kinerja_ppk",
+        "kategori": "EHRM",
+        "deskripsi": "Penilaian kinerja tahunan untuk Pejabat Pembuat Komitmen (PPK) proyek.",
+        "kolom": [{"name": "id_penilaian", "type": "integer"}, {"name": "id_ppk", "type": "varchar", "length": "20"}, {"name": "skor_akhir", "type": "numeric"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_dokumen_serah_terima_aset",
+        "kategori": "EHRM",
+        "deskripsi": "Arsip dokumen Berita Acara Serah Terima (BAST) aset/prasarana.",
+        "kolom": [{"name": "no_bast", "type": "varchar", "length": "100"}, {"name": "nama_aset", "type": "varchar", "length": "200"}, {"name": "tanggal_serah_terima", "type": "date"}]
+    },
+    {
+        "unor": "prasarana_strategis",
+        "table_name": "tabel_sop_pemeliharaan_gedung",
+        "kategori": "EHRM",
+        "deskripsi": "Dokumen Standard Operating Procedure (SOP) untuk pemeliharaan gedung.",
+        "kolom": [{"name": "id_sop", "type": "integer"}, {"name": "judul_sop", "type": "varchar", "length": "255"}, {"name": "nomor_dokumen", "type": "varchar", "length": "50"}]
+    }
+]
