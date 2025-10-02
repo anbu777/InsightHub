@@ -36,11 +36,10 @@ function CatalogContent() {
         }
     }, [router]);
 
-<<<<<<< HEAD
     // Efek 2: Mengambil Data Katalog dengan Penanganan Error
-=======
+
     // Efek 2: Mengambil Data Katalog (Tidak diubah)
->>>>>>> d6272b93b3bc70db158ad3ec6f34534d9de64bfd
+
     useEffect(() => {
         if (isAuthorized) {
             setIsLoading(true);
