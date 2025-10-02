@@ -18,6 +18,7 @@ export default function CatalogPage() {
     const [pageCount, setPageCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isSigiChecked, setIsSigiChecked] = useState(true);
+    const [error, setError] = useState(null); // State untuk menangani error
     const rowsPerPage = 9;
 
     // Efek 1: Penjaga Rute
@@ -30,23 +31,34 @@ export default function CatalogPage() {
         }
     }, [router]);
 
-    // Efek 2: Mengambil Data Katalog
+    // Efek 2: Mengambil Data Katalog dengan Penanganan Error
     useEffect(() => {
         if (isAuthorized) {
             setIsLoading(true);
+            setError(null); // Reset error setiap kali fetch
             fetch('/api/catalog/tables')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Gagal mengambil data dari server. Coba muat ulang halaman.');
+                    }
+                    return response.json();
+                })
                 .then(apiData => {
+                    if (!Array.isArray(apiData)) {
+                        throw new Error('Format data dari server tidak valid.');
+                    }
                     const transformedData = apiData.map(item => ({
                         table_name: item.tablename,
                         kategori: item.schemaname,
                         deskripsi: descriptions[item.tablename] || 'Deskripsi untuk tabel ini belum tersedia.',
                     }));
                     setAllApiData(transformedData);
-                    setIsLoading(false);
                 })
                 .catch(error => {
-                    console.error("Gagal mengambil data dari API:", error);
+                    console.error("Error di halaman katalog:", error);
+                    setError(error.message);
+                })
+                .finally(() => {
                     setIsLoading(false);
                 });
         }
@@ -112,7 +124,11 @@ export default function CatalogPage() {
     };
 
     if (!isAuthorized) {
-        return <div className="flex items-center justify-center h-96"><p>Memeriksa otorisasi...</p></div>;
+        return <div className="flex items-center justify-center h-96"><p className="text-gray-500">Memeriksa otorisasi...</p></div>;
+    }
+    
+    if (error) {
+        return <div className="text-center p-10 text-red-500">Terjadi Error: {error}</div>
     }
 
     return (

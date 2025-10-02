@@ -1,6 +1,6 @@
 // File: app/api/catalog/tables/[tableName]/route.js
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { dwhPool as pool } from '@/lib/db';
 
 export async function GET(request, { params }) { // Perhatikan: ada 'params' di sini
   const { tableName } = params;

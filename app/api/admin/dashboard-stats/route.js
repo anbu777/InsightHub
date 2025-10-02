@@ -1,6 +1,6 @@
 // File: app/api/admin/dashboard-stats/route.js
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { dwhPool as pool } from '@/lib/db';
 
 // Baris ini adalah yang paling penting, yang hilang dari file Anda
 export async function GET() {

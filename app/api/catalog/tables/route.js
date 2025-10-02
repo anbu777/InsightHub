@@ -1,8 +1,8 @@
-// File: app/api/catalog/tables/route.js
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+// PERBAIKAN DI SINI: Impor 'dwhPool' secara spesifik dan ganti namanya menjadi 'pool'
+import { dwhPool as pool } from '@/lib/db';
 
-export async function GET() { // Perhatikan: tidak ada 'params' di sini
+export async function GET() {
   let client;
   try {
     client = await pool.connect();
@@ -15,7 +15,10 @@ export async function GET() { // Perhatikan: tidak ada 'params' di sini
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {
     console.error('!!! KESALAHAN PADA API KATALOG:', error);
-    return new Response(JSON.stringify({ message: 'Internal Server Error' }), { status: 500 });
+    return new Response(JSON.stringify({ message: 'Internal Server Error' }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+    });
   } finally {
     if (client) client.release();
   }

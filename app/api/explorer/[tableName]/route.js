@@ -1,6 +1,6 @@
 // File: app/api/explorer/[tableName]/route.js
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { dwhPool as pool } from '@/lib/db';
 // Library 'pg-format' sudah tidak di-import lagi
 
 export async function GET(request, { params }) {
