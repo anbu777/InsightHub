@@ -1,13 +1,18 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+// [REVISI] Mengimpor useSearchParams dan Suspense
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'; 
+import { useRouter, useSearchParams } from 'next/navigation'; 
 import { descriptions } from '@/lib/table_descriptions';
 
-export default function CatalogPage() {
+
+// [REVISI] Komponen utama dibungkus dengan <Suspense> dan isinya dipindahkan ke komponen baru
+// Ini adalah praktik terbaik saat menggunakan useSearchParams
+function CatalogContent() {
     const router = useRouter(); 
+    const searchParams = useSearchParams(); // Hook untuk membaca URL
     const [isAuthorized, setIsAuthorized] = useState(false); 
 
     // State management
@@ -21,7 +26,7 @@ export default function CatalogPage() {
     const [error, setError] = useState(null); // State untuk menangani error
     const rowsPerPage = 9;
 
-    // Efek 1: Penjaga Rute
+    // Efek 1: Penjaga Rute (Tidak diubah)
     useEffect(() => {
         const user = sessionStorage.getItem('loggedInUser');
         if (!user) {
@@ -31,7 +36,11 @@ export default function CatalogPage() {
         }
     }, [router]);
 
+<<<<<<< HEAD
     // Efek 2: Mengambil Data Katalog dengan Penanganan Error
+=======
+    // Efek 2: Mengambil Data Katalog (Tidak diubah)
+>>>>>>> d6272b93b3bc70db158ad3ec6f34534d9de64bfd
     useEffect(() => {
         if (isAuthorized) {
             setIsLoading(true);
@@ -64,7 +73,17 @@ export default function CatalogPage() {
         }
     }, [isAuthorized]); 
 
-    // Efek 3: Memproses Ulang Data (Filter & Paginasi)
+    // [BARU] Efek untuk menangkap kata kunci dari URL
+    useEffect(() => {
+        // Ambil nilai 'search' dari URL
+        const searchQuery = searchParams.get('search');
+        // Jika ada, langsung set sebagai nilai pencarian
+        if (searchQuery) {
+            setSearchTerm(searchQuery);
+        }
+    }, [searchParams]); // Dijalankan setiap kali parameter URL berubah
+
+    // Efek 3: Memproses Ulang Data (Filter & Paginasi) (Tidak diubah)
     useEffect(() => {
         if (!isAuthorized) return; 
 
@@ -79,15 +98,15 @@ export default function CatalogPage() {
         const newPageCount = Math.ceil(filteredData.length / rowsPerPage);
         setPageCount(newPageCount);
 
-        if (currentPage > newPageCount && newPageCount > 0) {
-            setCurrentPage(1);
-        }
+        // Reset ke halaman 1 jika halaman saat ini melebihi jumlah halaman baru
+        const newCurrentPage = (currentPage > newPageCount && newPageCount > 0) ? 1 : currentPage;
+        if(currentPage !== newCurrentPage) setCurrentPage(newCurrentPage);
         
-        const paginated = filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+        const paginated = filteredData.slice((newCurrentPage - 1) * rowsPerPage, newCurrentPage * rowsPerPage);
         setPaginatedData(paginated);
     }, [allApiData, currentPage, searchTerm, isAuthorized, isSigiChecked]);
 
-    // --- Handlers ---
+    // --- Handlers (Tidak diubah) ---
     const handleSearchInput = (event) => {
         setSearchTerm(event.target.value);
         setCurrentPage(1);
@@ -200,5 +219,13 @@ export default function CatalogPage() {
                 </section>
             </div>
         </div>
+    );
+}
+
+export default function CatalogPage() {
+    return (
+        <Suspense fallback={<div className="text-center p-12">Memuat halaman katalog...</div>}>
+            <CatalogContent />
+        </Suspense>
     );
 }
