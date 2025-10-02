@@ -3,18 +3,24 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // [FITUR DITAMBAHKAN] Import yang dibutuhkan SearchForm
+import { useRouter } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
 
+// Chart.js imports
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
+
+// Import deskripsi untuk digabungkan dengan data API
+import { descriptions } from '@/lib/table_descriptions';
+
 
 ChartJS.register( ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend );
 
 const chartOptions = { responsive: true, maintainAspectRatio: false };
 
-// [FITUR DITAMBAHKAN] Komponen SearchForm dari kode sumber pertama
+// --- Komponen-komponen Anak ---
+
 function SearchForm() {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
@@ -36,88 +42,162 @@ function SearchForm() {
     );
 }
 
-export default function HomePage() {
-    // State untuk Slider
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const slides = [
-        { id: 1, image: "/unor1.jpg" },
-        { id: 2, image: "/unor2.jpg" },
-        { id: 3, image: "/unor3.jpg" },
+function HeroStats({ stats, inView }) {
+    const mainStat = { 
+        label: "Data API Tersedia", 
+        value: stats.tables, 
+        icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7l8-4 8 4" /></svg> 
+    };
+    const subStats = [
+        { label: "Sumber Data", value: stats.sources },
+        { label: "Unit Organisasi", value: stats.unor },
+        { label: "Total Pengguna", value: stats.users }
     ];
 
-    useEffect(() => {
-        const slideInterval = setInterval(() => {
-            setCurrentSlide(prev => (prev + 1) % slides.length);
-        }, 5000);
-        return () => clearInterval(slideInterval);
-    }, [slides.length]); // Menggunakan slides.length sebagai dependensi
+    return (
+        <div className="mt-8 w-full max-w-lg p-4 bg-white/20 backdrop-blur-lg rounded-xl border border-white/30 shadow-lg flex flex-col items-center gap-3">
+            <div className="text-center w-full pb-3 border-b border-white/30">
+                <div className="flex justify-center items-center gap-3 text-white">
+                    {mainStat.icon}
+                    <span className="text-3xl font-bold">
+                        {inView ? <CountUp end={mainStat.value} duration={2.5} separator="." /> : '0'}+
+                    </span>
+                </div>
+                <p className="text-xs font-light text-white/90 mt-1">{mainStat.label}</p>
+            </div>
+            <div className="flex justify-around w-full pt-1">
+                {subStats.map((item, index) => (
+                    <div key={index} className="text-center text-white">
+                        <p className="text-2xl font-bold">
+                            {inView ? <CountUp end={item.value} duration={2.5} /> : '0'}
+                        </p>
+                        <p className="text-xs font-light opacity-80">{item.label}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
 
-    // State untuk Statistik & Modal
-    const [stats, setStats] = useState({ tables: 0, sources: 0, unor: 0, users: 0 });
-    const [globalApiData, setGlobalApiData] = useState([]);
-    const [modalContent, setModalContent] = useState(null); 
-    const [modalChartData, setModalChartData] = useState({ labels: [], datasets: [] });
-    const [modalChartType, setModalChartType] = useState('pie'); 
-
-    const { ref: statsRef, inView: statsInView } = useInView({ triggerOnce: true, threshold: 0.5 });
-    const { ref: unorRef, inView: unorInView } = useInView({ triggerOnce: true, threshold: 0.1 });
-    // [FITUR DITAMBAHKAN] Hook untuk animasi section alur penggunaan
-    const { ref: howItWorksRef, inView: howItWorksInView } = useInView({ triggerOnce: true, threshold: 0.1 });
-
-    useEffect(() => {
-        // Menggunakan data dari kode tujuan
-        const dummyData = { tables: 78, sources: 1, unor: 6, users: 42 };
-        setStats(dummyData);
-        fetch('/data.json')
-            .then(res => res.json())
-            .then(data => setGlobalApiData(data))
-            .catch(err => console.error("Gagal fetch data.json", err));
-    }, []);
+// [REVISI] Komponen "Katalog Unggulan" diperbaiki
+function FeaturedApis({ allApis, inView }) {
+    const [popularApis, setPopularApis] = useState([]);
     
-    // Fungsi untuk menampilkan chart di modal
-    const showChartSumberData = () => {
-        const categoryCounts = globalApiData.reduce((acc, item) => {
-            acc[item.kategori] = (acc[item.kategori] || 0) + 1;
-            return acc;
-        }, {});
-        setModalChartData({ labels: Object.keys(categoryCounts), datasets: [{ label: 'Jumlah API', data: Object.values(categoryCounts), backgroundColor: ['#3B82F6', '#EF4444', '#10B981']}] });
-        setModalChartType('pie');
-        setModalContent('modal-sumber-data');
-    };
-    const showChartUnitOrganisasi = () => {
-        const unorCounts = globalApiData.reduce((acc, item) => {
-            acc[item.unor] = (acc[item.unor] || 0) + 1;
-            return acc;
-        }, {});
-        setModalChartData({ labels: Object.keys(unorCounts), datasets: [{ label: 'Jumlah API', data: Object.values(unorCounts), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']}] });
-        setModalChartType('bar');
-        setModalContent('modal-unit-organisasi');
-    };
-    const renderModalChart = () => {
-        if (!modalContent) return null;
-        const chartKey = JSON.stringify(modalChartData);
-        if (modalChartType === 'pie') return <Pie key={chartKey} data={modalChartData} options={chartOptions} />;
-        if (modalChartType === 'bar') return <Bar key={chartKey} data={modalChartData} options={{...chartOptions, scales: { y: { beginAtZero: true } }}} />;
-        return null;
-    };
+    const latestApis = allApis.slice(-3).reverse();
+
+    useEffect(() => {
+        try {
+            const popularityData = JSON.parse(localStorage.getItem('apiPopularity')) || {};
+            const sortedApis = [...allApis].sort((a, b) => {
+                const countA = popularityData[a.tablename] || 0; // Menggunakan 'tablename'
+                const countB = popularityData[b.tablename] || 0; // Menggunakan 'tablename'
+                return countB - countA;
+            });
+            setPopularApis(sortedApis.slice(0, 3));
+        } catch (e) {
+            console.error("Gagal memuat data popularitas:", e);
+            setPopularApis(allApis.slice(0, 3));
+        }
+    }, [allApis]);
+
+    const ApiCard = ({ api, delay }) => (
+        // [REVISI] Menggunakan 'tablename' untuk link
+        <Link href={`/detail?table=${api.tablename}`} className={`bg-white rounded-xl shadow-md p-6 flex flex-col border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: delay}}>
+            {/* [REVISI] Menggunakan 'tablename' untuk judul */}
+            <h3 className="text-lg font-bold text-gray-800">{api.tablename}</h3>
+            {/* Karena 'unor' tidak ada di data, kita bisa tampilkan 'schemaname' atau hilangkan */}
+            <p className="text-xs text-gray-500 mt-1 uppercase font-semibold">{api.schemaname}</p>
+            <p className="text-sm text-gray-600 mt-2 flex-grow min-h-[40px]">
+                {api.deskripsi ? api.deskripsi.substring(0, 70) + (api.deskripsi.length > 70 ? '...' : '') : 'Deskripsi tidak tersedia.'}
+            </p>
+            <span className="mt-4 w-full bg-blue-700 text-white text-center font-semibold py-2 rounded-lg text-sm">
+                Lihat Detail
+            </span>
+        </Link>
+    );
 
     return (
-        <div className="space-y-8">
-            {/* --- 1. HERO SLIDER DENGAN SEARCH BAR --- */}
-            <section className="relative h-[60vh] md:h-[70vh] w-full text-white overflow-hidden rounded-xl shadow-lg">
+        <section className="bg-white rounded-xl shadow-lg p-8 md:p-12">
+            <div className="container mx-auto">
+                <div className="text-center mb-10">
+                    <h2 className={`text-3xl font-bold text-gray-800 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`}>Katalog Unggulan</h2>
+                    <p className={`text-gray-600 mt-2 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan API yang paling sering dilihat dan yang baru ditambahkan.</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-4 text-center lg:text-left">API Populer</h3>
+                        <div className="flex flex-col gap-4">
+                            {popularApis.map((api, index) => (
+                                // [REVISI] Memperbaiki 'key' agar selalu unik
+                                <ApiCard key={`pop-${api.tablename || index}`} api={api} delay={`${(index * 0.1) + 0.3}s`} />
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-4 text-center lg:text-left">API Terbaru</h3>
+                        <div className="flex flex-col gap-4">
+                            {latestApis.map((api, index) => (
+                                // [REVISI] Memperbaiki 'key' agar selalu unik
+                                <ApiCard key={`new-${api.tablename || index}`} api={api} delay={`${(index * 0.1) + 0.4}s`} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+
+// --- Komponen Utama Halaman ---
+export default function HomePage() {
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const slides = [ { id: 1, image: "/unor1.jpg" }, { id: 2, image: "/unor2.jpg" }, { id: 3, image: "/unor3.jpg" } ];
+    useEffect(() => {
+        const slideInterval = setInterval(() => setCurrentSlide(prev => (prev + 1) % slides.length), 5000);
+        return () => clearInterval(slideInterval);
+    }, [slides.length]);
+
+    const [stats, setStats] = useState({ tables: 0, sources: 0, unor: 0, users: 0 });
+    const [allApiData, setAllApiData] = useState([]);
+
+    const { ref: heroRef, inView: heroInView } = useInView({ triggerOnce: true, threshold: 0.3 });
+    const { ref: unorRef, inView: unorInView } = useInView({ triggerOnce: true, threshold: 0.1 });
+    const { ref: howItWorksRef, inView: howItWorksInView } = useInView({ triggerOnce: true, threshold: 0.1 });
+    const { ref: featuredRef, inView: featuredInView } = useInView({ triggerOnce: true, threshold: 0.1 });
+
+    useEffect(() => {
+        const dummyData = { tables: 78, sources: 1, unor: 6, users: 42 };
+        setStats(dummyData);
+        
+        fetch('/api/catalog/tables') 
+            .then(res => res.json())
+            .then(apiData => {
+                if (apiData && Array.isArray(apiData)) {
+                    // [REVISI] Menggunakan 'tablename' untuk mencocokkan deskripsi
+                    const enrichedData = apiData.map(api => ({
+                        ...api,
+                        deskripsi: descriptions[api.tablename] || '' 
+                    }));
+                    setAllApiData(enrichedData);
+                }
+            })
+            .catch(err => console.error("Gagal mengambil data dari API:", err));
+    }, []);
+    
+    return (
+        <div>
+            <section ref={heroRef} className="relative h-[85vh] w-full text-white overflow-hidden shadow-lg">
                 {slides.map((slide, index) => (
-                    <div
-                        key={slide.id}
-                        className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
-                        style={{ backgroundImage: `url('${slide.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                    />
+                    <div key={slide.id} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: `url('${slide.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 ))}
-                <div className="absolute inset-0 bg-black/50"></div>
+                <div className="absolute inset-0 bg-black/60"></div>
                 <div className="relative z-10 h-full flex flex-col items-center justify-center text-center p-6">
                     <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg">PUPR Insight Hub</h1>
                     <p className="mt-4 text-lg md:text-xl max-w-3xl">Pusat Katalog dan Pertukaran Data Terintegrasi</p>
-                    {/* [KODE DISISIPKAN] Memanggil komponen SearchForm di sini */}
                     <SearchForm />
+                    <HeroStats stats={stats} inView={heroInView} />
                 </div>
                 <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex space-x-3">
                     {slides.map((_, index) => (
@@ -126,136 +206,122 @@ export default function HomePage() {
                 </div>
             </section>
             
-            {/* --- [FITUR DITAMBAHKAN] SECTION ALUR PENGGUNAAN --- */}
-            <section ref={howItWorksRef} className="py-12 md:py-16">
-                <div className="container mx-auto px-6 text-center">
-                    <h2 className={`text-3xl font-bold text-gray-800 mb-4 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                        Bagaimana Memulai?
-                    </h2>
-                    <p className={`text-gray-600 max-w-2xl mx-auto mb-12 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-                        Ikuti tiga langkah mudah ini untuk menemukan dan memanfaatkan data yang Anda butuhkan.
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                        <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
-                            <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 text-blue-600 mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <div className="p-6 flex flex-col gap-8">
+                <section ref={howItWorksRef} className="bg-white rounded-xl shadow-lg p-8 md:p-12">
+                    <div className="container mx-auto">
+                        <div className="text-center">
+                            <h2 className={`text-3xl font-bold text-gray-800 mb-4 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
+                                Bagaimana Memulai?
+                            </h2>
+                            <p className={`text-gray-600 max-w-2xl mx-auto mb-12 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+                                Ikuti tiga langkah mudah ini untuk menemukan dan memanfaatkan data yang Anda butuhkan.
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                                <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 text-blue-600 mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2">1. Temukan Data</h3>
+                                    <p className="text-gray-600 text-center text-sm">Gunakan fitur pencarian atau jelajahi katalog untuk menemukan informasi yang relevan.</p>
+                                </div>
+                                <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
+                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-green-100 text-green-600 mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2">2. Ajukan Permintaan</h3>
+                                    <p className="text-gray-600 text-center text-sm">Setelah login, ajukan permintaan akses pada detail data dengan menjelaskan tujuan penggunaan.</p>
+                                </div>
+                                <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.7s' }}>
+                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-indigo-100 text-indigo-600 mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25" /></svg>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2">3. Integrasikan API</h3>
+                                    <p className="text-gray-600 text-center text-sm">Gunakan API Key dan dokumentasi di API Explorer untuk mengintegrasikan data ke aplikasi Anda.</p>
+                                </div>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">1. Temukan Data</h3>
-                            <p className="text-gray-600 text-center text-sm">Gunakan fitur pencarian atau jelajahi katalog untuk menemukan informasi yang relevan.</p>
-                        </div>
-                        <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
-                            <div className="flex items-center justify-center h-24 w-24 rounded-full bg-green-100 text-green-600 mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">2. Ajukan Permintaan</h3>
-                            <p className="text-gray-600 text-center text-sm">Setelah login, ajukan permintaan akses pada detail data dengan menjelaskan tujuan penggunaan.</p>
-                        </div>
-                        <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.7s' }}>
-                            <div className="flex items-center justify-center h-24 w-24 rounded-full bg-indigo-100 text-indigo-600 mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l-4 4-4-4M6 16l-4-4 4-4" /></svg>
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">3. Integrasikan API</h3>
-                            <p className="text-gray-600 text-center text-sm">Gunakan API Key dan dokumentasi di API Explorer untuk mengintegrasikan data ke aplikasi Anda.</p>
                         </div>
                     </div>
+                </section>
+                
+                <div ref={featuredRef}>
+                    <FeaturedApis allApis={allApiData} inView={featuredInView} />
                 </div>
-            </section>
 
-            {/* --- 2. KONTAINER STATISTIK --- */}
-            <section ref={statsRef} className="bg-white py-12 md:py-16 rounded-xl shadow-lg">
-                <div className="container mx-auto px-6">
-                    <div className="text-center border-b pb-8 mb-8">
-                        <div className="flex items-center justify-center text-red-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7l8-4 8 4" /></svg>
-                            <span className="ml-4 text-5xl md:text-6xl font-bold text-gray-800 tracking-tighter">
-                                {statsInView && <CountUp end={stats.tables} duration={2.5} separator="." />}+
-                            </span>
+                <section ref={unorRef} className="bg-white rounded-xl shadow-lg p-8 md:p-12">
+                    <div className="container mx-auto">
+                        <div className="text-center mb-12">
+                            <h2 className={`text-3xl font-bold text-gray-800 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>Jelajahi Data Berdasarkan Unit Organisasi</h2>
+                            <p className={`text-gray-600 mt-2 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan data spesifik dari setiap Unit Organisasi di Kementerian PUPR.</p>
                         </div>
-                        <p className="mt-2 text-lg text-gray-600">Data API Tersedia</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                           <Link href="/catalog?unor=sda" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.3s'}}>
+                                <Image src="https://img.icons8.com/pastel-glyph/64/1e3a8a/dam.png" width={64} height={64} alt="SDA Icon" className="h-16 w-16" />
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Sumber Daya Air</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pengelolaan sumber daya air.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=bina_marga" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
+                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75h-10.5a.75.75 0 00-.75.75v10.5a.75.75 0 00.75.75h10.5a.75.75 0 00.75-.75V7.5a.75.75 0 00-.75-.75zM12 1.5A10.5 10.5 0 001.5 12a10.5 10.5 0 0010.5 10.5 10.5 10.5 0 0010.5-10.5A10.5 10.5 0 0012 1.5zM12 6.75v.007" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75h6v10.5H9V6.75z" /></svg>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Bina Marga</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait penyelenggaraan jalan.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=cipta_karya" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.5s'}}>
+                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18h16.5M5.25 6v15H3.75m16.5-15v15h1.5M9 6.75h6M9 11.25h6M9 15.75h6" /></svg>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Cipta Karya</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pengembangan kawasan permukiman.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=pembiayaan_infrastruktur" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.6s'}}>
+                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m-3-1-3 1.091m0 3.818-3-1.091m0 0l-4.5 1.636m12-3.364-12 4.364" /></svg>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Pembiayaan Infrastruktur</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pembiayaan infrastruktur.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=bina_konstruksi" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.7s'}}>
+                                <Image src="https://img.icons8.com/ios/100/1e3a8a/architect.png" width={64} height={64} alt="Bina Konstruksi Icon" className="h-16 w-16" />
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Bina Konstruksi</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pembinaan jasa konstruksi.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=prasarana_strategis" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.8s'}}>
+                                <Image src="https://img.icons8.com/dotty/80/1e3a8a/empty-bed.png" width={64} height={64} alt="BPIW Icon" className="h-16 w-16"/>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Prasarana Strategis</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait dukungan prasarana strategis.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                             <Link href="/catalog?unor=sekretariat_jenderal" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.9s'}}>
+                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h6.75M9 11.25h6.75M9 15.75h6.75M9 20.25h6.75" /></svg>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Sekretariat Jenderal</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data administrasi dan dukungan internal.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=inspektorat_jenderal" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '1.0s'}}>
+                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5h.008v.008h-.008v-.008z" /></svg>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Inspektorat Jenderal</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data pengawasan dan audit internal.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=bpsdm" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '1.1s'}}>
+                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962A3.375 3.375 0 0110.5 9.75a3.375 3.375 0 013.375 3.375m0 0c0 1.842-1.493 3.336-3.333 3.336h-1.5a3.336 3.336 0 01-3.333-3.336M9 5.25A3.375 3.375 0 0112.375 2a3.375 3.375 0 013.375 3.25" /></svg>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Badan Pengembangan Sumber Daya Manusia</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pelatihan dan pengembangan SDM.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                            <Link href="/catalog?unor=bpiw" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '1.2s'}}>
+                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.5-12v12m0 0l-3-3m3 3l3-3m-3.75 2.25L12 18.75l-2.25-2.25" /></svg>
+                                <h3 className="text-lg font-bold text-gray-800 mt-4">Badan Pengembangan Infrastruktur Wilayah</h3>
+                                <p className="text-xs text-gray-500 mt-1 flex-grow">Data perencanaan dan pengembangan infrastruktur.</p>
+                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                            </Link>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                        <div onClick={showChartSumberData} className="cursor-pointer group">
-                            <p className="text-4xl md:text-5xl font-bold text-gray-800">{statsInView && <CountUp end={stats.sources} duration={2.5} />}</p>
-                            <p className="mt-1 text-gray-500 group-hover:text-blue-600 transition-colors">Sumber Data<span className="block w-12 h-1 bg-blue-500 mx-auto mt-2 transition-all group-hover:w-20"></span></p>
-                        </div>
-                        <div onClick={showChartUnitOrganisasi} className="cursor-pointer group">
-                            <p className="text-4xl md:text-5xl font-bold text-gray-800">{statsInView && <CountUp end={stats.unor} duration={2.5} />}</p>
-                            <p className="mt-1 text-gray-500 group-hover:text-indigo-600 transition-colors">Unit Organisasi<span className="block w-12 h-1 bg-indigo-500 mx-auto mt-2 transition-all group-hover:w-20"></span></p>
-                        </div>
-                        <div className="cursor-pointer group">
-                            <p className="text-4xl md:text-5xl font-bold text-gray-800">{statsInView && <CountUp end={stats.users} duration={2.5} />}</p>
-                            <p className="mt-1 text-gray-500 group-hover:text-green-600 transition-colors">Total Pengguna<span className="block w-12 h-1 bg-green-500 mx-auto mt-2 transition-all group-hover:w-20"></span></p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* --- 3. SEKSI UNIT ORGANISASI --- */}
-            <section ref={unorRef} className="bg-white rounded-xl shadow-lg p-8 md:p-12">
-                <div className="text-center mb-12">
-                    <h2 className={`text-3xl font-bold text-gray-800 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>Jelajahi Data Berdasarkan Unit Organisasi</h2>
-                    <p className={`text-gray-600 mt-2 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan data spesifik dari setiap Unit Organisasi di Kementerian PUPR.</p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <Link href="/catalog?unor=sda" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.3s'}}>
-                        <Image src="https://img.icons8.com/pastel-glyph/64/1e3a8a/dam.png" width={64} height={64} alt="SDA Icon" className="h-16 w-16" />
-                        <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Sumber Daya Air</h3>
-                        <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pengelolaan sumber daya air.</p>
-                        <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
-                    </Link>
-                    <Link href="/catalog?unor=bina_marga" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
-                        <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75h-10.5a.75.75 0 00-.75.75v10.5a.75.75 0 00.75.75h10.5a.75.75 0 00.75-.75V7.5a.75.75 0 00-.75-.75zM12 1.5A10.5 10.5 0 001.5 12a10.5 10.5 0 0010.5 10.5 10.5 10.5 0 0010.5-10.5A10.5 10.5 0 0012 1.5zM12 6.75v.007" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75h6v10.5H9V6.75z" /></svg>
-                        <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Bina Marga</h3>
-                        <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait penyelenggaraan jalan.</p>
-                        <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
-                    </Link>
-                    <Link href="/catalog?unor=cipta_karya" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.5s'}}>
-                        <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18h16.5M5.25 6v15H3.75m16.5-15v15h1.5M9 6.75h6M9 11.25h6M9 15.75h6" /></svg>
-                        <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Cipta Karya</h3>
-                        <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pengembangan kawasan permukiman.</p>
-                        <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
-                    </Link>
-                    <Link href="/catalog?unor=pembiayaan_infrastruktur" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.6s'}}>
-                        <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m-3-1-3 1.091m0 3.818-3-1.091m0 0l-4.5 1.636m12-3.364-12 4.364" /></svg>
-                        <h3 className="text-lg font-bold text-gray-800 mt-4">Badan Pengembangan Infrastruktur Wilayah
-Direktorat Jenderal Pembiayaan Infrastruktur</h3>
-                        <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pembiayaan infrastruktur.</p>
-                        <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
-                    </Link>
-                    <Link href="/catalog?unor=bina_konstruksi" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.7s'}}>
-                        <Image src="https://img.icons8.com/ios/100/1e3a8a/architect.png" width={64} height={64} alt="Bina Konstruksi Icon" className="h-16 w-16" />
-                        <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Bina Konstruksi</h3>
-                        <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pembinaan jasa konstruksi.</p>
-                        <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
-                    </Link>
-                    <Link href="/catalog?unor=prasarana_strategis" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.8s'}}>
-                        <Image src="https://img.icons8.com/dotty/80/1e3a8a/empty-bed.png" width={64} height={64} alt="BPIW Icon" className="h-16 w-16"/>
-                        <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Prasarana Strategis</h3>
-                        <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait dukungan prasarana strategis.</p>
-                        <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
-                    </Link>
-                </div>
-            </section>
-            
-            <ModalWrapper show={!!modalContent} onClose={() => setModalContent(null)} title="Detail Statistik">
-                 <div style={{height: '400px'}}>{renderModalChart()}</div>
-            </ModalWrapper>
+                </section>
+            </div>
         </div>
     );
 }
 
-// Komponen Modal 
 function ModalWrapper({ show, onClose, title, children }) {
-    if (!show) return null;
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8" style={{ maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
-                </div>
-                {children}
-            </div>
-        </div>
-    );
+   return null;
 }

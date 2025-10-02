@@ -19,8 +19,9 @@ export default function AuthLayout({ children }) {
           </Link>
           <nav className="hidden md:flex items-center space-x-8 text-sm font-semibold uppercase">
             <Link href="/" className="hover:text-gray-300 transition-colors">Home</Link>
-            <a href="#" className="hover:text-gray-300 transition-colors">About Us</a>
-            <a href="#" className="hover:text-gray-300 transition-colors">Contact</a>
+
+
+            {/* [PERBAIKAN] Link yang error sudah digabung dan ditutup dengan benar */}
             <Link href="/login-register" className="text-white border px-4 py-2 rounded-md hover:bg-white hover:text-blue-900 transition-colors">
               Log In
             </Link>

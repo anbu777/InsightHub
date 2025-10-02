@@ -44,7 +44,11 @@ export default function ApiExplorerPage() {
     // Efek 1: Penjaga Rute
     useEffect(() => {
         const user = sessionStorage.getItem('loggedInUser');
+
         if (!user) router.push('/login-register');
+
+        if (!user) router.push('/login-register');
+
         else setIsAuthorized(true);
     }, [router]);
 

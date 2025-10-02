@@ -1,4 +1,3 @@
-// File: app/(main)/catalog/page.js
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -11,19 +10,17 @@ export default function CatalogPage() {
     const router = useRouter(); 
     const [isAuthorized, setIsAuthorized] = useState(false); 
 
-    // --- STATE MANAGEMENT ---
+    // State management
     const [allApiData, setAllApiData] = useState([]);
     const [paginatedData, setPaginatedData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [pageCount, setPageCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    
     const [isSigiChecked, setIsSigiChecked] = useState(true);
-    
     const rowsPerPage = 9;
 
-    // --- EFEK 1: PENJAGA RUTE (TIDAK BERUBAH) ---
+    // Efek 1: Penjaga Rute
     useEffect(() => {
         const user = sessionStorage.getItem('loggedInUser');
         if (!user) {
@@ -33,7 +30,7 @@ export default function CatalogPage() {
         }
     }, [router]);
 
-    // --- EFEK 2: Mengambil Data (TIDAK BERUBAH) ---
+    // Efek 2: Mengambil Data Katalog
     useEffect(() => {
         if (isAuthorized) {
             setIsLoading(true);
@@ -55,7 +52,7 @@ export default function CatalogPage() {
         }
     }, [isAuthorized]); 
 
-    // --- EFEK 3: Memproses Ulang Data (TIDAK BERUBAH) ---
+    // Efek 3: Memproses Ulang Data (Filter & Paginasi)
     useEffect(() => {
         if (!isAuthorized) return; 
 
@@ -78,7 +75,7 @@ export default function CatalogPage() {
         setPaginatedData(paginated);
     }, [allApiData, currentPage, searchTerm, isAuthorized, isSigiChecked]);
 
-    // --- HANDLER (TIDAK BERUBAH) ---
+    // --- Handlers ---
     const handleSearchInput = (event) => {
         setSearchTerm(event.target.value);
         setCurrentPage(1);
@@ -114,12 +111,10 @@ export default function CatalogPage() {
         .join(' ');
     };
 
-    // --- RENDER CHECK (TIDAK BERUBAH) ---
     if (!isAuthorized) {
         return <div className="flex items-center justify-center h-96"><p>Memeriksa otorisasi...</p></div>;
     }
 
-    // --- RENDER TAMPILAN (JSX) ---
     return (
         <div className="container mx-auto px-6 py-12"> 
             <div className="flex flex-col lg:flex-row gap-8">
@@ -154,7 +149,6 @@ export default function CatalogPage() {
                         placeholder="Cari aplikasi atau data..."
                         value={searchTerm}
                         onChange={handleSearchInput}
-                        // PERUBAHAN DI SINI
                         className="w-full pl-4 pr-4 py-3 mb-8 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     />
                     
@@ -169,13 +163,7 @@ export default function CatalogPage() {
                                             {item.kategori}
                                         </span>
                                         <div className="flex justify-center py-4">
-                                            <Image
-                                                src="/logo-api.png"
-                                                alt="API Logo"
-                                                width={120}
-                                                height={120}
-                                                className="object-contain"
-                                            />
+                                            <Image src="/logo-api.png" alt="API Logo" width={120} height={120} className="object-contain" />
                                         </div>
                                         <h3 className="text-md font-bold text-gray-800 text-center">{formatTitle(item.table_name)}</h3>
                                         <p className="text-sm text-gray-600 text-center mt-1 mb-4 flex-grow h-20 overflow-hidden">{item.deskripsi}</p>
