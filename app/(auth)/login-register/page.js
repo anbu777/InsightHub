@@ -1,98 +1,18 @@
 "use client";
 
-import { useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-// --- Helper Functions (Tidak Berubah) ---
-function getUsers() {
-    if (typeof window !== "undefined") {
-        return JSON.parse(sessionStorage.getItem('allUsers')) || [
-            { email: 'admin@pupr.go.id', password: 'adminpassword', name: 'Admin PUPR', role: 'admin' },
-            { email: 'user1@pupr.go.id', password: 'userpassword', name: 'User Satu', role: 'user' },
-        ];
-    }
-    return [];
-}
-function saveUsers(users) {
-    sessionStorage.setItem('allUsers', JSON.stringify(users));
-}
-
-// --- Komponen Utama ---
-export default function LoginRegisterPage() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const mode = searchParams.get('mode') || 'login'; 
-    
-    // --- Logika handleLogin & handleRegister (Tidak Berubah) ---
-    const handleLogin = (formData) => {
-        const email = formData.get('email');
-        const password = formData.get('password');
-        const users = getUsers();
-        
-        const user = users.find(u => u.email === email);
-        
-        if (user && user.password === password) {
-            sessionStorage.setItem('loggedInUser', JSON.stringify({ email: user.email, name: user.name, role: user.role }));
-            
-            if (user.role === 'admin') {
-                router.push('/admin-dashboard');
-            } else {
-                router.push('/');
-            }
-            return null; 
-        }
-        return 'Email atau Password salah!';
-    };
-
-    const handleRegister = (formData) => {
-        const name = formData.get('name');
-        const email = formData.get('email');
-        const password = formData.get('password');
-        let users = getUsers();
-        if (users.find(u => u.email === email)) {
-            return 'Email sudah terdaftar!'; 
-        } else {
-            users.push({ name, email, password, role: 'user' });
-            saveUsers(users);
-            // Memberi pesan yang lebih baik, mengarahkan user untuk login
-            router.push('/login-register?mode=login&status=registered');
-            return null;
-        }
-    };
-    
-    return (
-        // [REVISI] Mengubah padding dan max-width agar lebih seimbang
-        <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-gray-800">
-            {mode === 'signup' ? (
-                <RegisterForm onRegister={handleRegister} />
-            ) : (
-                <LoginForm onLogin={handleLogin} />
-            )}
-        </div>
-    );
-}
-
-
-// ===================================================================================
-// [REVISI TOTAL] Komponen LoginForm ditulis ulang dengan gaya yang lebih rapi
-// ===================================================================================
-function LoginForm({ onLogin }) {
-    const [error, setError] = useState(null);
+// Komponen untuk Form Login
+function LoginForm({ onLogin, error, successMessage, isLoading }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(false);
-    
-    // Cek apakah ada status registrasi berhasil dari URL
-    const searchParams = useSearchParams();
-    const status = searchParams.get('status');
-    const [successMessage, setSuccessMessage] = useState(status === 'registered' ? 'Registrasi berhasil! Silakan Log in.' : null);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setError(null);
-        setSuccessMessage(null); // Hapus pesan sukses saat mencoba login
-        const formData = new FormData(event.target);
-        const loginError = onLogin(formData); 
-        if (loginError) setError(loginError);
+        onLogin({ email, password });
     };
 
     return (
@@ -111,20 +31,24 @@ function LoginForm({ onLogin }) {
                         id="email" 
                         name="email" 
                         type="email" 
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
                         required 
                     />
                 </div>
                 <div>
                     <label htmlFor="password"className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                     <div className="relative">
+                    <div className="relative">
                         <input 
                             id="password" 
                             name="password" 
                             type={passwordVisible ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
                             required 
                         />
                         <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
@@ -142,8 +66,8 @@ function LoginForm({ onLogin }) {
                     </label>
                     <a href="#" className="font-medium text-blue-600 hover:underline">Forgot Password?</a>
                 </div>
-                <button type="submit" className="w-full bg-gray-800 text-white py-3 rounded-md text-lg font-bold hover:bg-black transition-colors">
-                    Log in
+                <button type="submit" disabled={isLoading} className="w-full bg-gray-800 text-white py-3 rounded-md text-lg font-bold hover:bg-black transition-colors disabled:bg-gray-400">
+                    {isLoading ? 'Memproses...' : 'Log in'}
                 </button>
             </form>
             <p className="text-center text-sm text-gray-600 mt-6">
@@ -156,29 +80,22 @@ function LoginForm({ onLogin }) {
     );
 }
 
-// ===================================================================================
-// [REVISI TOTAL] Komponen RegisterForm ditulis ulang dengan gaya yang lebih rapi
-// ===================================================================================
-function RegisterForm({ onRegister }) {
-    const [error, setError] = useState(null);
+// Komponen untuk Form Registrasi
+function RegisterForm({ onRegister, error, isLoading }) {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setError(null);
-        const formData = new FormData(event.target);
-        const regError = onRegister(formData);
-        if (regError) setError(regError);
+        onRegister({ name, email, password });
     };
 
     return (
         <div>
-            <h1 className="text-3xl font-bold mb-8 text-center text-gray-900">
-                Create Account
-            </h1>
-
+            <h1 className="text-3xl font-bold mb-8 text-center text-gray-900">Create Account</h1>
             {error && (<p className="mb-4 text-sm text-center text-red-600 font-semibold bg-red-100 p-3 rounded-md">{error}</p>)}
-
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
@@ -186,8 +103,10 @@ function RegisterForm({ onRegister }) {
                         id="name"
                         name="name" 
                         type="text" 
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         placeholder="Nama Lengkap Anda" 
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
                         required 
                     />
                 </div>
@@ -196,9 +115,11 @@ function RegisterForm({ onRegister }) {
                     <input 
                         id="email-reg"
                         name="email" 
-                        type="email" 
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
                         required 
                     />
                 </div>
@@ -209,8 +130,10 @@ function RegisterForm({ onRegister }) {
                             id="password-reg" 
                             name="password" 
                             type={passwordVisible ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-sky-500 focus:border-sky-500" 
                             required 
                         />
                         <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
@@ -221,8 +144,8 @@ function RegisterForm({ onRegister }) {
                         </button>
                     </div>
                 </div>
-                <button type="submit" className="w-full bg-gray-800 text-white py-3 rounded-md text-lg font-bold hover:bg-black transition-colors">
-                    Register
+                <button type="submit" disabled={isLoading} className="w-full bg-gray-800 text-white py-3 rounded-md text-lg font-bold hover:bg-black transition-colors disabled:bg-gray-400">
+                    {isLoading ? 'Memproses...' : 'Register'}
                 </button>
             </form>
             <p className="text-center text-sm text-gray-600 mt-6">
@@ -231,6 +154,84 @@ function RegisterForm({ onRegister }) {
                     Login di sini
                 </Link>
             </p>
+        </div>
+    );
+}
+
+// Komponen Utama yang Mengelola Logika
+export default function LoginRegisterPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const mode = searchParams.get('mode') || 'login';
+    
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (searchParams.get('status') === 'registered') {
+            setSuccessMessage('Registrasi berhasil! Silakan Log in.');
+        }
+    }, [searchParams]);
+    
+    // PERUBAHAN: Logika handleLogin sekarang terhubung ke API
+    const handleLogin = async ({ email, password }) => {
+        setIsLoading(true);
+        setError('');
+        setSuccessMessage('');
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+            
+            sessionStorage.setItem('loggedInUser', JSON.stringify(data));
+            if (data.role === 'admin') {
+                router.push('/admin-dashboard');
+            } else {
+                router.push('/');
+            }
+        } catch (err) {
+            setError(err.message || 'Terjadi kesalahan saat login.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // PERUBAHAN: Logika handleRegister sekarang terhubung ke API
+    const handleRegister = async ({ name, email, password }) => {
+        setIsLoading(true);
+        setError('');
+        setSuccessMessage('');
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, role: 'user' }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+            
+            router.push('/login-register?mode=login&status=registered');
+        } catch (err) {
+            setError(err.message || 'Terjadi kesalahan saat registrasi.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    return (
+        <div className="flex items-center justify-center min-h-screen" style={{backgroundImage: "url('/auth-bg.png')", backgroundSize: 'cover'}}>
+            <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-gray-800">
+                {mode === 'signup' ? (
+                    <RegisterForm onRegister={handleRegister} error={error} isLoading={isLoading} />
+                ) : (
+                    <LoginForm onLogin={handleLogin} error={error} successMessage={successMessage} isLoading={isLoading} />
+                )}
+            </div>
         </div>
     );
 }
