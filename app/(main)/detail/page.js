@@ -9,7 +9,6 @@ function DetailContent() {
     const router = useRouter();
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [user, setUser] = useState(null);
-
     const [columns, setColumns] = useState([]);
     const [description, setDescription] = useState('');
     const [error, setError] = useState(null);
@@ -33,21 +32,14 @@ function DetailContent() {
     useEffect(() => {
         if (tableName) {
             try {
-                // Ambil data popularitas yang ada dari localStorage
                 const popularityData = JSON.parse(localStorage.getItem('apiPopularity')) || {};
-                
-                // Tambah hitungan untuk tabel saat ini
                 popularityData[tableName] = (popularityData[tableName] || 0) + 1;
-                
-                // Simpan kembali ke localStorage
                 localStorage.setItem('apiPopularity', JSON.stringify(popularityData));
-
             } catch (e) {
                 console.error("Gagal memperbarui data popularitas:", e);
             }
         }
-    }, [tableName]); // Dijalankan setiap kali `tableName` berubah
-
+    }, [tableName]);
 
     useEffect(() => {
         if (isAuthorized && tableName) {
@@ -66,7 +58,6 @@ function DetailContent() {
         const purpose = event.target.purpose.value;
         const format = event.target.format.value;
         const userEmail = user ? user.email : 'user.tidak.dikenal@example.com';
-
         const requestText = `
 --- Permintaan Data ---
 User Email: ${userEmail}
@@ -76,7 +67,6 @@ Keperluan:
 ${purpose}
 --------------------
         `;
-
         navigator.clipboard.writeText(requestText.trim())
             .then(() => {
                 alert('Teks Permintaan Berhasil Disalin!\n\nSilakan kirim (paste) teks ini ke admin melalui email atau aplikasi chat.');
@@ -85,7 +75,6 @@ ${purpose}
                 console.error('Gagal menyalin teks: ', err);
                 alert('Gagal menyalin teks secara otomatis. Mohon salin secara manual.');
             });
-
         setIsRequestModalOpen(false);
         event.target.reset();
     };

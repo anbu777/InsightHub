@@ -79,18 +79,19 @@ function HeroStats({ stats, inView }) {
     );
 }
 
-// [REVISI] Komponen "Katalog Unggulan" diperbaiki
+// ===================================================================================
+// [REVISI] Komponen "Katalog Unggulan" diubah tata letak judulnya
+// ===================================================================================
 function FeaturedApis({ allApis, inView }) {
     const [popularApis, setPopularApis] = useState([]);
-    
     const latestApis = allApis.slice(-3).reverse();
 
     useEffect(() => {
         try {
             const popularityData = JSON.parse(localStorage.getItem('apiPopularity')) || {};
             const sortedApis = [...allApis].sort((a, b) => {
-                const countA = popularityData[a.tablename] || 0; // Menggunakan 'tablename'
-                const countB = popularityData[b.tablename] || 0; // Menggunakan 'tablename'
+                const countA = popularityData[a.tablename] || 0;
+                const countB = popularityData[b.tablename] || 0;
                 return countB - countA;
             });
             setPopularApis(sortedApis.slice(0, 3));
@@ -100,46 +101,62 @@ function FeaturedApis({ allApis, inView }) {
         }
     }, [allApis]);
 
-    const ApiCard = ({ api, delay }) => (
-        // [REVISI] Menggunakan 'tablename' untuk link
-        <Link href={`/detail?table=${api.tablename}`} className={`bg-white rounded-xl shadow-md p-6 flex flex-col border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: delay}}>
-            {/* [REVISI] Menggunakan 'tablename' untuk judul */}
-            <h3 className="text-lg font-bold text-gray-800">{api.tablename}</h3>
-            {/* Karena 'unor' tidak ada di data, kita bisa tampilkan 'schemaname' atau hilangkan */}
-            <p className="text-xs text-gray-500 mt-1 uppercase font-semibold">{api.schemaname}</p>
+    const ApiCard = ({ api }) => (
+        <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200/80 flex flex-col">
+            <h4 className="font-bold text-gray-800">{api.tablename || 'Nama API tidak tersedia'}</h4>
             <p className="text-sm text-gray-600 mt-2 flex-grow min-h-[40px]">
-                {api.deskripsi ? api.deskripsi.substring(0, 70) + (api.deskripsi.length > 70 ? '...' : '') : 'Deskripsi tidak tersedia.'}
+                {api.deskripsi ? api.deskripsi.substring(0, 80) + '...' : 'Deskripsi tidak tersedia.'}
             </p>
-            <span className="mt-4 w-full bg-blue-700 text-white text-center font-semibold py-2 rounded-lg text-sm">
-                Lihat Detail
-            </span>
-        </Link>
+            <div className="flex justify-between items-center mt-4">
+                <span className="text-xs font-semibold text-gray-500">{api.schemaname || 'Skema'}</span>
+                <Link href={`/detail?table=${api.tablename}`} className="text-xs bg-blue-600 text-white font-semibold py-1 px-3 rounded-md hover:bg-blue-700 transition-colors">
+                    Lihat Detail
+                </Link>
+            </div>
+        </div>
     );
 
     return (
-        <section className="bg-white rounded-xl shadow-lg p-8 md:p-12">
+        // [REVISI] Kontainer utama sekarang relatif untuk positioning link "Lihat Semua"
+        <section className="relative bg-white rounded-xl shadow-lg p-8 md:p-12">
             <div className="container mx-auto">
+                {/* [REVISI] Link "Lihat Semua" diposisikan absolut di pojok kanan atas */}
+                <Link href="/catalog" className={`absolute top-8 right-8 text-sm font-semibold text-blue-600 hover:underline ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+                    Lihat Semua &rarr;
+                </Link>
+                {/* [REVISI] Judul dan subjudul sekarang berada di dalam div `text-center` agar posisinya pas di tengah */}
                 <div className="text-center mb-10">
-                    <h2 className={`text-3xl font-bold text-gray-800 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`}>Katalog Unggulan</h2>
-                    <p className={`text-gray-600 mt-2 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan API yang paling sering dilihat dan yang baru ditambahkan.</p>
+                    <h2 className={`text-3xl font-bold text-gray-800 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`}>
+                        Katalog Unggulan
+                    </h2>
+                    <p className={`text-gray-600 mt-2 ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>
+                        Temukan API yang paling sering dilihat dan yang baru ditambahkan.
+                    </p>
                 </div>
-
+                
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-                    <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-4 text-center lg:text-left">API Populer</h3>
-                        <div className="flex flex-col gap-4">
+                    {/* Kolom Kiri: Populer */}
+                    <div className={`${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.3s'}}>
+                        <div className="bg-yellow-400 p-3 rounded-t-lg flex items-center gap-2">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-900" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                           <h3 className="font-bold text-yellow-900">Dataset Populer</h3>
+                        </div>
+                        <div className="bg-white p-4 rounded-b-lg border-x border-b border-gray-200 flex flex-col gap-4">
                             {popularApis.map((api, index) => (
-                                // [REVISI] Memperbaiki 'key' agar selalu unik
-                                <ApiCard key={`pop-${api.tablename || index}`} api={api} delay={`${(index * 0.1) + 0.3}s`} />
+                                <ApiCard key={`pop-${api.tablename || index}`} api={api} />
                             ))}
                         </div>
                     </div>
-                    <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-4 text-center lg:text-left">API Terbaru</h3>
-                        <div className="flex flex-col gap-4">
+
+                    {/* Kolom Kanan: Terbaru */}
+                    <div className={`${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
+                        <div className="bg-blue-400 p-3 rounded-t-lg flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-900" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
+                            <h3 className="font-bold text-blue-900">Dataset Terbaru</h3>
+                        </div>
+                        <div className="bg-white p-4 rounded-b-lg border-x border-b border-gray-200 flex flex-col gap-4">
                             {latestApis.map((api, index) => (
-                                // [REVISI] Memperbaiki 'key' agar selalu unik
-                                <ApiCard key={`new-${api.tablename || index}`} api={api} delay={`${(index * 0.1) + 0.4}s`} />
+                                <ApiCard key={`new-${api.tablename || index}`} api={api} />
                             ))}
                         </div>
                     </div>
@@ -148,7 +165,6 @@ function FeaturedApis({ allApis, inView }) {
         </section>
     );
 }
-
 
 // --- Komponen Utama Halaman ---
 export default function HomePage() {
@@ -175,7 +191,6 @@ export default function HomePage() {
             .then(res => res.json())
             .then(apiData => {
                 if (apiData && Array.isArray(apiData)) {
-                    // [REVISI] Menggunakan 'tablename' untuk mencocokkan deskripsi
                     const enrichedData = apiData.map(api => ({
                         ...api,
                         deskripsi: descriptions[api.tablename] || '' 
@@ -322,6 +337,7 @@ export default function HomePage() {
     );
 }
 
+// Komponen ModalWrapper tidak diubah
 function ModalWrapper({ show, onClose, title, children }) {
    return null;
 }
