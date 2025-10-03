@@ -94,7 +94,6 @@ function NewFooter() {
                     <div className="flex-shrink-0">
 
                         <Image src="/LogoPUPR.png" alt="Logo Kementerian PUPR" width={400} height={60} />
-=======
                         {/* [REVISI] Ukuran logo footer disesuaikan */}
                         <Image src="/LogoPUPR.png" alt="Logo Kementerian PUPR" width={200} height={60} className="h-auto w-auto"/>
 
