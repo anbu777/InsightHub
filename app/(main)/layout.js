@@ -26,31 +26,32 @@ function SmartHeader() {
         router.push('/'); 
     };
 
-    // Fungsi untuk memberikan style pada link yang aktif
+    // [REVISI] Fungsi untuk memberikan style pada link yang aktif
     const getLinkClassName = (path) => {
-        const isActive = pathname === path;
+        // Cek jika path sama persis, atau jika path adalah /catalog dan URL mengandung /catalog
+        const isActive = pathname === path || (path === '/catalog' && pathname.startsWith('/catalog'));
         return `transition-opacity ${isActive ? 'font-bold text-yellow-400' : 'font-semibold hover:opacity-80'}`;
     };
 
     return (
         <header className="text-white shadow-lg sticky top-0 z-50 bg-gradient-to-b from-blue-900 to-blue-800">
             <div className="container mx-auto px-6">
-                <nav className="relative flex justify-between items-center h-24">
+                <nav className="relative flex justify-between items-center">
                     {/* Logo di Kiri */}
                     <div className="flex-1 flex justify-start">
                         <Link href="/">
                             <Image 
                                 src="/LogoInsight.png" 
                                 alt="Logo Insight-Hub" 
-                                width={168}  // Ukuran disesuaikan agar proporsional
-                                height={56}
-                                className="h-14 w-auto" // Tinggi header lebih standar
+                                width={240}      // [REVISI] Ukuran diperbesar
+                                height={80}       // [REVISI] Ukuran diperbesar
+                                className="h-20 w-auto" // [REVISI] Ukuran diperbesar dari h-14
                                 priority 
                             />
                         </Link>
                     </div>
 
-                    {/* Menu Navigasi di Tengah (Tanpa API Explorer) */}
+                    {/* Menu Navigasi di Tengah */}
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-8 text-sm">
                         <Link href="/" className={getLinkClassName('/')}>Home</Link>
                         <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
@@ -91,13 +92,25 @@ function NewFooter() {
             <div className="container mx-auto px-6 py-10">
                 <div className="flex flex-col md:flex-row items-center md:justify-between gap-8">
                     <div className="flex-shrink-0">
-                        <Image src="/LogoPUPR.png" alt="Logo Kementerian PUPR" width={200} height={60} />
+                        {/* [REVISI] Ukuran logo footer disesuaikan */}
+                        <Image src="/LogoPUPR.png" alt="Logo Kementerian PUPR" width={200} height={60} className="h-auto w-auto"/>
                     </div>
                     <div className="text-center md:text-left">
                         <h3 className="text-lg font-bold text-white mb-2">Pusat Data dan Teknologi Informasi</h3>
                         <p className="text-sm leading-relaxed max-w-md mx-auto md:mx-0 text-blue-100">
                             Jl. Pattimura No.20, Selong, Kebayoran Baru, Kota Jakarta Selatan, DKI Jakarta 12110, Indonesia.
                         </p>
+                        {/* [REVISI] Menambahkan kembali info kontak */}
+                        <div className="mt-4 flex flex-col items-center md:items-start md:flex-row md:gap-6 gap-2 text-sm">
+                            <div className="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                <a href="mailto:pusdatin@pu.go.id" className="text-blue-100 hover:text-white transition-colors">pusdatin@pu.go.id</a>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                <span className="text-blue-100">(021) 7220219</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
