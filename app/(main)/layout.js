@@ -91,7 +91,7 @@ function NewFooter() {
             <div className="container mx-auto px-6 py-10">
                 <div className="flex flex-col md:flex-row items-center md:justify-between gap-8">
                     <div className="flex-shrink-0">
-                        <Image src="/LogoPUPR.png" alt="Logo Kementerian PUPR" width={200} height={60} />
+                        <Image src="/LogoPUPR.png" alt="Logo Kementerian PUPR" width={400} height={60} />
                     </div>
                     <div className="text-center md:text-left">
                         <h3 className="text-lg font-bold text-white mb-2">Pusat Data dan Teknologi Informasi</h3>
