@@ -40,7 +40,7 @@ function LoginForm({ onLogin, error, successMessage, isLoading }) {
                 </div>
                 <div>
                     <label htmlFor="password"className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <div className="relative">
+                     <div className="relative">
                         <input 
                             id="password" 
                             name="password" 
@@ -174,7 +174,6 @@ export default function LoginRegisterPage() {
         }
     }, [searchParams]);
     
-    // PERUBAHAN: Logika handleLogin sekarang terhubung ke API
     const handleLogin = async ({ email, password }) => {
         setIsLoading(true);
         setError('');
@@ -201,7 +200,6 @@ export default function LoginRegisterPage() {
         }
     };
 
-    // PERUBAHAN: Logika handleRegister sekarang terhubung ke API
     const handleRegister = async ({ name, email, password }) => {
         setIsLoading(true);
         setError('');
@@ -224,14 +222,13 @@ export default function LoginRegisterPage() {
     };
     
     return (
-        <div className="flex items-center justify-center min-h-screen" style={{backgroundImage: "url('/auth-bg.png')", backgroundSize: 'cover'}}>
-            <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-gray-800">
-                {mode === 'signup' ? (
-                    <RegisterForm onRegister={handleRegister} error={error} isLoading={isLoading} />
-                ) : (
-                    <LoginForm onLogin={handleLogin} error={error} successMessage={successMessage} isLoading={isLoading} />
-                )}
-            </div>
+        // [REVISI] Menghapus div pembungkus yang menyebabkan error
+        <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-gray-800">
+            {mode === 'signup' ? (
+                <RegisterForm onRegister={handleRegister} error={error} isLoading={isLoading} />
+            ) : (
+                <LoginForm onLogin={handleLogin} error={error} successMessage={successMessage} isLoading={isLoading} />
+            )}
         </div>
     );
 }
