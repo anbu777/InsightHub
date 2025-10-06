@@ -21,8 +21,7 @@ function Sidebar() {
     return (
         <aside className="hidden md:flex flex-col w-64 bg-gray-800 text-gray-400 min-h-screen">
             <div className="flex items-center justify-center h-20 bg-gray-900">
-                <Image src="/LogoInsight.png" alt="Logo" width={40} height={40} />
-                <span className="text-white text-xl font-bold ml-2">Admin Panel</span>
+                <Image src="/LogoInsight.png" alt="Logo" width={240} height={40} />
             </div>
 
             <nav className="flex-grow px-4 py-6">
@@ -85,21 +84,21 @@ function TopBar() {
 
     return (
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
-            <div className="text-gray-600">Home / Dashboard</div>
+            <div className="text-gray-800">Home / Dashboard</div>
             
             <div className="flex items-center space-x-5">
                 {/* 1. Tombol Notifikasi */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('notifications')} className="text-gray-500 hover:text-gray-800">
                         <FaBell size={20} />
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">5</span>
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">2</span>
                     </button>
                     {openMenu === 'notifications' && (
                         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border animate-fade-in-down">
-                            <div className="p-4 font-bold border-b">You have 5 notifications</div>
+                            <div className="p-1 font-bold border-b">You have 2 notifications</div>
                             <ul className="divide-y max-h-80 overflow-y-auto">
-                                <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">New user registered</li>
-                                <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">Server overloaded</li>
+                                <li className="p-3 hover:bg-black-50 text-sm cursor-pointer">New user registered</li>
+                                <li className="p-3 hover:bg-black-50 text-sm cursor-pointer">Server overloaded</li>
                             </ul>
                         </div>
                     )}
@@ -109,19 +108,15 @@ function TopBar() {
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('messages')} className="text-gray-500 hover:text-gray-800">
                         <FaEnvelope size={20} />
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-xs text-white">2</span>
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-xs text-black">1</span>
                     </button>
                     {openMenu === 'messages' && (
                         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border animate-fade-in-down">
-                            <div className="p-4 font-bold border-b">You have 2 messages</div>
+                            <div className="p-4 font-bold border-b">You have 1 messages</div>
                             <ul className="divide-y max-h-80 overflow-y-auto">
                                <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">
                                    <div className="font-bold">Jessica Williams</div>
                                    <div>Project update meeting tomorrow...</div>
-                               </li>
-                               <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">
-                                   <div className="font-bold">Budi (SDA)</div>
-                                   <div>Permintaan data tabel bendungan...</div>
                                </li>
                             </ul>
                         </div>
@@ -137,9 +132,9 @@ function TopBar() {
                     {openMenu === 'profile' && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border animate-fade-in-down">
                             <ul className="divide-y text-sm">
-                                <Link href="#" className="block px-4 py-3 hover:bg-gray-100">Settings</Link>
-                                <Link href="#" className="block px-4 py-3 hover:bg-gray-100">Profile</Link>
-                                <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-red-500 hover:bg-gray-100 font-semibold">
+                                <Link href="#" className="block px-3 py-3 hover:bg-gray-100">Settings</Link>
+                                <Link href="#" className="block px-3 py-3 hover:bg-gray-100">Profile</Link>
+                                <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-red-500 hover:bg-black-100 font-semibold">
                                     Logout
                                 </button>
                             </ul>
