@@ -51,13 +51,13 @@ function Sidebar() {
                     </Link>
                 </div>
 
-                 
+                
             </nav>
         </aside>
     );
 }
 
-// --- PERUBAHAN UTAMA DI SINI: Komponen TopBar ---
+// Komponen TopBar
 function TopBar() {
     const router = useRouter();
     const [openMenu, setOpenMenu] = useState(null); // State untuk mengontrol dropdown
@@ -147,7 +147,9 @@ export default function AdminLayout({ children }) {
         const user = sessionStorage.getItem('loggedInUser');
         const userData = user ? JSON.parse(user) : null;
         if (!userData || userData.role !== 'admin') {
-            router.push('/login-register');
+            // --- PERUBAHAN DI SINI ---
+            // Mengarahkan ke halaman login admin yang baru
+            router.push('/admin-login');
         }
         setIsClient(true);
     }, [router]);

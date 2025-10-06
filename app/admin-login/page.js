@@ -21,7 +21,7 @@ export default function AdminLoginPage() {
         try {
             // Anda menyebutkan endpoint API admin berbeda.
             // Ganti '/api/auth/admin-login' dengan URL API endpoint Anda yang sebenarnya.
-            const res = await fetch('/api/auth/admin-login', {
+            const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),

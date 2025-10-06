@@ -30,9 +30,8 @@ function convertJsonToCsv(jsonData) {
 }
 
 export default function ApiExplorerPage() {
-    const router = useRouter(); 
-    const [isAuthorized, setIsAuthorized] = useState(false); 
-
+    // Logika otorisasi telah dihapus dari sini
+    
     // State
     const [totalApi, setTotalApi] = useState(0);
     const [apiList, setApiList] = useState([]); 
@@ -41,32 +40,21 @@ export default function ApiExplorerPage() {
     const [showDownload, setShowDownload] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Efek 1: Penjaga Rute
+    // useEffect untuk penjaga rute (pengecekan login) telah dihapus
+
+    // Efek untuk mengambil daftar tabel riil dari API katalog untuk dropdown
     useEffect(() => {
-        const user = sessionStorage.getItem('loggedInUser');
-
-        if (!user) router.push('/login-register');
-
-        if (!user) router.push('/login-register');
-
-        else setIsAuthorized(true);
-    }, [router]);
-
-    // Efek 2: Mengambil daftar tabel riil dari API katalog untuk dropdown
-    useEffect(() => {
-        if (isAuthorized) {
-            fetch('/api/catalog/tables')
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.length > 0) {
-                        data.sort((a, b) => a.tablename.localeCompare(b.tablename));
-                        setTotalApi(data.length);
-                        setApiList(data);
-                    }
-                })
-                .catch(error => console.error("Gagal memuat daftar tabel:", error));
-        }
-    }, [isAuthorized]); 
+        fetch('/api/catalog/tables')
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    data.sort((a, b) => a.tablename.localeCompare(b.tablename));
+                    setTotalApi(data.length);
+                    setApiList(data);
+                }
+            })
+            .catch(error => console.error("Gagal memuat daftar tabel:", error));
+    }, []); // Dependency array dikosongkan agar berjalan sekali
 
     // Handler untuk form pencarian
     const handleApiFormSubmit = async (event) => {
@@ -115,9 +103,7 @@ export default function ApiExplorerPage() {
         }
     };
 
-    if (!isAuthorized) {
-        return <div className="flex items-center justify-center h-96"><p>Memeriksa otorisasi...</p></div>;
-    }
+    // Kondisi loading otorisasi telah dihapus
 
     return (
         <div className="container mx-auto px-6 pt-8 pb-32">
