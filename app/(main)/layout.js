@@ -56,6 +56,7 @@ function SmartHeader() {
                         <Link href="/" className={getLinkClassName('/')}>Home</Link>
                         <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
                         <Link href="#" className={getLinkClassName('/tentang')}>Tentang</Link> 
+                        <Link href="/api-explorer" className={getLinkClassName('/Api Explorer')}>Api Explorer</Link> 
                     </div>
 
                     {/* Tombol Login/Logout di Kanan */}
