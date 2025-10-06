@@ -43,9 +43,9 @@ function SmartHeader() {
                             <Image 
                                 src="/LogoInsight.png" 
                                 alt="Logo Insight-Hub" 
-                                width={240}      // [REVISI] Ukuran diperbesar
-                                height={80}       // [REVISI] Ukuran diperbesar
-                                className="h-20 w-auto" // [REVISI] Ukuran diperbesar dari h-14
+                                width={240}
+                                height={80}
+                                className="h-20 w-auto"
                                 priority 
                             />
                         </Link>
@@ -90,36 +90,48 @@ function NewFooter() {
     return (
         <footer className="bg-gradient-to-b from-blue-900 to-blue-800 text-white border-t border-blue-700">
             <div className="container mx-auto px-6 py-10">
-                <div className="flex flex-col md:flex-row items-center md:justify-between gap-8">
-                    <div className="flex-shrink-0">
-
-                        
-                        {/* [REVISI] Ukuran logo footer disesuaikan */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
+                    
+                    {/* Kolom 1: Logo & Info Kontak */}
+                    <div className="flex flex-col items-center md:items-start text-center md:text-left">
                         <Image src="/LogoPUPR.png" alt="Logo Kementerian PUPR" width={200} height={60} className="h-auto w-auto"/>
-
-                    </div>
-                    <div className="text-center md:text-left">
-                        <h3 className="text-lg font-bold text-white mb-2">Pusat Data dan Teknologi Informasi</h3>
-                        <p className="text-sm leading-relaxed max-w-md mx-auto md:mx-0 text-blue-100">
-                            Jl. Pattimura No.20, Selong, Kebayoran Baru, Kota Jakarta Selatan, DKI Jakarta 12110, Indonesia.
-                        </p>
-                        {/* [REVISI] Menambahkan kembali info kontak */}
-                        <div className="mt-4 flex flex-col items-center md:items-start md:flex-row md:gap-6 gap-2 text-sm">
-                            <div className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                <a href="mailto:pusdatin@pu.go.id" className="text-blue-100 hover:text-white transition-colors">pusdatin@pu.go.id</a>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                                <span className="text-blue-100">(021) 7220219</span>
+                        <div className="mt-4 text-sm text-blue-100">
+                            <h3 className="text-lg font-bold text-white mb-2">Pusat Data dan Teknologi Informasi</h3>
+                            <p className="leading-relaxed max-w-sm">
+                                Jl. Pattimura No.20, Selong, Kebayoran Baru, Kota Jakarta Selatan, DKI Jakarta 12110, Indonesia.
+                            </p>
+                            <div className="mt-4 flex flex-col items-center md:items-start gap-2">
+                                <div className="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                    <a href="mailto:pusdatin@pu.go.id" className="hover:text-white transition-colors">pusdatin@pu.go.id</a>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                    <span>(021) 7220219</span>
+                                </div>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Kolom 2: Peta Lokasi */}
+                    <div className="w-full flex flex-col items-center md:items-end">
+                         <h3 className="text-lg font-bold text-white mb-4">Lokasi Kami</h3>
+                         {/* --- PERUBAHAN DI SINI: Ukuran peta diubah menjadi h-48 --- */}
+                         <div className="overflow-hidden rounded-lg shadow-lg h-48 w-full max-w-md">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.2123253962127!2d106.8002787!3d-6.2357197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1f738678eb5%3A0xf278895d9ede7ef3!2sPusat%20Data%20dan%20Teknologi%20Informasi%20(Pusdatin)%20Kementerian%20PUPR!5e0!3m2!1sid!2sid!4v1759728723410!5m2!1sid!2sid" 
+                                className="w-full h-full border-0" 
+                                allowFullScreen="" 
+                                loading="lazy" 
+                                referrerPolicy="no-referrer-when-downgrade">
+                            </iframe>
+                         </div>
                     </div>
                 </div>
             </div>
             <div className="bg-yellow-500">
                 <div className="container mx-auto px-6 py-4 text-center text-xs text-blue-900 font-medium">
-                    <p>Copyright &copy; {new Date().getFullYear()} Pusat Data dan Teknologi Informasi. Kementerian Pekerjaan Umum dan Perumahan Rakyat.</p>
+                    <p>Copyright © {new Date().getFullYear()} Pusat Data dan Teknologi Informasi. Kementerian Pekerjaan Umum dan Perumahan Rakyat.</p>
                 </div>
             </div>
         </footer>
