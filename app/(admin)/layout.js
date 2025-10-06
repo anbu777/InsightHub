@@ -21,8 +21,7 @@ function Sidebar() {
     return (
         <aside className="hidden md:flex flex-col w-64 bg-gray-800 text-gray-400 min-h-screen">
             <div className="flex items-center justify-center h-20 bg-gray-900">
-                <Image src="/LogoInsight.png" alt="Logo" width={40} height={40} />
-                <span className="text-white text-xl font-bold ml-2">Admin Panel</span>
+                <Image src="/LogoInsight.png" alt="Logo" width={240} height={40} />
             </div>
 
             <nav className="flex-grow px-4 py-6">
