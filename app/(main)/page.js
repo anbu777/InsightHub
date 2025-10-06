@@ -209,7 +209,7 @@ export default function HomePage() {
                 ))}
                 <div className="absolute inset-0 bg-black/60"></div>
                 <div className="relative z-10 h-full flex flex-col items-center justify-center text-center p-6">
-                    <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg">PUPR Insight Hub</h1>
+                    <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg"> Insight Hub</h1>
                     <p className="mt-4 text-lg md:text-xl max-w-3xl">Pusat Katalog dan Pertukaran Data Terintegrasi</p>
                     <SearchForm />
                     <HeroStats stats={stats} inView={heroInView} />

@@ -131,10 +131,7 @@ export default function ApiExplorerPage() {
                         <p className="text-sm text-gray-500">Total API Tersedia</p>
                     </div>
                 </div>
-                <Link href="/catalog" className="bg-blue-600 text-white p-4 rounded-xl shadow-lg hover:shadow-blue-500/50 hover:-translate-y-1 transition-all flex items-center justify-center text-center font-bold text-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                    Jelajahi Katalog API
-                </Link>
+               
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -160,8 +157,7 @@ export default function ApiExplorerPage() {
                         <div>
                             <label htmlFor="output-format" className="block text-sm font-medium text-gray-700 mb-1">Format Output</label>
                             <select id="output-format" name="outputFormat" defaultValue="json" className="w-full p-3 border border-gray-300 rounded-lg shadow-sm text-gray-900">
-                                <option value="json">JSON</option>
-                                <option value="csv">CSV</option>
+                                <option value="json,csv">JSON / CSV</option>
                             </select>
                         </div>
                         <button type="submit" disabled={isLoading} className="w-full bg-blue-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-800 transition-colors disabled:bg-gray-400">
