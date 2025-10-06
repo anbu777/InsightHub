@@ -2,13 +2,11 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { descriptions } from '@/lib/table_descriptions';
 
 function DetailContent() {
-    const router = useRouter();
-    const [isAuthorized, setIsAuthorized] = useState(false);
-    const [user, setUser] = useState(null);
+    // Logika dan state untuk otorisasi telah dihapus
     const [columns, setColumns] = useState([]);
     const [description, setDescription] = useState('');
     const [error, setError] = useState(null);
@@ -18,17 +16,9 @@ function DetailContent() {
     const searchParams = useSearchParams();
     const tableName = searchParams.get('table');
 
-    useEffect(() => {
-        const loggedInUser = sessionStorage.getItem('loggedInUser');
-        if (!loggedInUser) {
-            router.push('/login-register');
-        } else {
-            setIsAuthorized(true);
-            setUser(JSON.parse(loggedInUser));
-        }
-    }, [router]);
+    // useEffect untuk pengecekan login telah dihapus
 
-    // [BARU] useEffect untuk mencatat popularitas API
+    // useEffect untuk mencatat popularitas API
     useEffect(() => {
         if (tableName) {
             try {
@@ -41,8 +31,9 @@ function DetailContent() {
         }
     }, [tableName]);
 
+    // useEffect untuk mengambil data tabel
     useEffect(() => {
-        if (isAuthorized && tableName) {
+        if (tableName) {
             setLoading(true);
             fetch(`/api/catalog/tables/${tableName}`)
                 .then(res => res.ok ? res.json() : Promise.reject(res))
@@ -51,13 +42,13 @@ function DetailContent() {
                 .finally(() => setLoading(false));
             setDescription(descriptions[tableName] || 'Deskripsi untuk tabel ini belum tersedia.');
         }
-    }, [tableName, isAuthorized]);
+    }, [tableName]);
 
     const handleRequestSubmit = (event) => {
         event.preventDefault();
         const purpose = event.target.purpose.value;
         const format = event.target.format.value;
-        const userEmail = user ? user.email : 'user.tidak.dikenal@example.com';
+        const userEmail = 'user.umum@example.com'; // Email diganti menjadi generik
         const requestText = `
 --- Permintaan Data ---
 User Email: ${userEmail}
@@ -78,16 +69,12 @@ ${purpose}
         setIsRequestModalOpen(false);
         event.target.reset();
     };
-    
-    if (!isAuthorized) {
-        return <div className="flex items-center justify-center h-96"><p>Memeriksa otorisasi...</p></div>;
-    }
 
     return (
         <>
             <div className="container mx-auto px-6 py-12">
                 <Link href="/catalog" className="text-blue-600 hover:underline mb-6 inline-block">
-                    &larr; Kembali ke Katalog
+                    ← Kembali ke Katalog
                 </Link>
                 <div className="bg-white p-8 rounded-xl shadow-md border">
                     {loading ? (

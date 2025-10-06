@@ -1,19 +1,16 @@
 "use client";
 
-// [REVISI] Mengimpor useSearchParams dan Suspense
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation'; 
 import { descriptions } from '@/lib/table_descriptions';
 
-
-// [REVISI] Komponen utama dibungkus dengan <Suspense> dan isinya dipindahkan ke komponen baru
-// Ini adalah praktik terbaik saat menggunakan useSearchParams
 function CatalogContent() {
     const router = useRouter(); 
-    const searchParams = useSearchParams(); // Hook untuk membaca URL
-    const [isAuthorized, setIsAuthorized] = useState(false); 
+    const searchParams = useSearchParams(); 
+
+    // Logika dan state untuk otorisasi telah dihapus
 
     // State management
     const [allApiData, setAllApiData] = useState([]);
@@ -23,69 +20,52 @@ function CatalogContent() {
     const [pageCount, setPageCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isSigiChecked, setIsSigiChecked] = useState(true);
-    const [error, setError] = useState(null); // State untuk menangani error
+    const [error, setError] = useState(null); 
     const rowsPerPage = 9;
 
-    // Efek 1: Penjaga Rute (Tidak diubah)
+    // useEffect untuk penjaga rute (pengecekan login) telah dihapus
+
+    // Efek untuk Mengambil Data Katalog
     useEffect(() => {
-        const user = sessionStorage.getItem('loggedInUser');
-        if (!user) {
-            router.push('/login-register');
-        } else {
-            setIsAuthorized(true);
-        }
-    }, [router]);
+        setIsLoading(true);
+        setError(null); 
+        fetch('/api/catalog/tables')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data dari server. Coba muat ulang halaman.');
+                }
+                return response.json();
+            })
+            .then(apiData => {
+                if (!Array.isArray(apiData)) {
+                    throw new Error('Format data dari server tidak valid.');
+                }
+                const transformedData = apiData.map(item => ({
+                    table_name: item.tablename,
+                    kategori: item.schemaname,
+                    deskripsi: descriptions[item.tablename] || 'Deskripsi untuk tabel ini belum tersedia.',
+                }));
+                setAllApiData(transformedData);
+            })
+            .catch(error => {
+                console.error("Error di halaman katalog:", error);
+                setError(error.message);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, []); 
 
-    // Efek 2: Mengambil Data Katalog dengan Penanganan Error
-
-    // Efek 2: Mengambil Data Katalog (Tidak diubah)
-
+    // Efek untuk menangkap kata kunci dari URL
     useEffect(() => {
-        if (isAuthorized) {
-            setIsLoading(true);
-            setError(null); // Reset error setiap kali fetch
-            fetch('/api/catalog/tables')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Gagal mengambil data dari server. Coba muat ulang halaman.');
-                    }
-                    return response.json();
-                })
-                .then(apiData => {
-                    if (!Array.isArray(apiData)) {
-                        throw new Error('Format data dari server tidak valid.');
-                    }
-                    const transformedData = apiData.map(item => ({
-                        table_name: item.tablename,
-                        kategori: item.schemaname,
-                        deskripsi: descriptions[item.tablename] || 'Deskripsi untuk tabel ini belum tersedia.',
-                    }));
-                    setAllApiData(transformedData);
-                })
-                .catch(error => {
-                    console.error("Error di halaman katalog:", error);
-                    setError(error.message);
-                })
-                .finally(() => {
-                    setIsLoading(false);
-                });
-        }
-    }, [isAuthorized]); 
-
-    // [BARU] Efek untuk menangkap kata kunci dari URL
-    useEffect(() => {
-        // Ambil nilai 'search' dari URL
         const searchQuery = searchParams.get('search');
-        // Jika ada, langsung set sebagai nilai pencarian
         if (searchQuery) {
             setSearchTerm(searchQuery);
         }
-    }, [searchParams]); // Dijalankan setiap kali parameter URL berubah
+    }, [searchParams]);
 
-    // Efek 3: Memproses Ulang Data (Filter & Paginasi) (Tidak diubah)
+    // Efek untuk Memproses Ulang Data (Filter & Paginasi)
     useEffect(() => {
-        if (!isAuthorized) return; 
-
         let filteredData = isSigiChecked ? allApiData : [];
 
         if (searchTerm) {
@@ -97,15 +77,13 @@ function CatalogContent() {
         const newPageCount = Math.ceil(filteredData.length / rowsPerPage);
         setPageCount(newPageCount);
 
-        // Reset ke halaman 1 jika halaman saat ini melebihi jumlah halaman baru
         const newCurrentPage = (currentPage > newPageCount && newPageCount > 0) ? 1 : currentPage;
         if(currentPage !== newCurrentPage) setCurrentPage(newCurrentPage);
         
         const paginated = filteredData.slice((newCurrentPage - 1) * rowsPerPage, newCurrentPage * rowsPerPage);
         setPaginatedData(paginated);
-    }, [allApiData, currentPage, searchTerm, isAuthorized, isSigiChecked]);
+    }, [allApiData, currentPage, searchTerm, isSigiChecked]);
 
-    // --- Handlers (Tidak diubah) ---
     const handleSearchInput = (event) => {
         setSearchTerm(event.target.value);
         setCurrentPage(1);
@@ -140,10 +118,6 @@ function CatalogContent() {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     };
-
-    if (!isAuthorized) {
-        return <div className="flex items-center justify-center h-96"><p className="text-gray-500">Memeriksa otorisasi...</p></div>;
-    }
     
     if (error) {
         return <div className="text-center p-10 text-red-500">Terjadi Error: {error}</div>

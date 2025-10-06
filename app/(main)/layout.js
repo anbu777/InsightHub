@@ -7,29 +7,13 @@ import { usePathname, useRouter } from 'next/navigation';
 
 // Komponen Header Cerdas untuk User
 function SmartHeader() {
-    const [user, setUser] = useState(null);
-    const router = useRouter(); 
+    // State dan logika untuk user login telah dihapus
     const pathname = usePathname(); 
 
-    useEffect(() => {
-        const loggedInUser = sessionStorage.getItem('loggedInUser');
-        if (loggedInUser) {
-            setUser(JSON.parse(loggedInUser));
-        } else {
-            setUser(null);
-        }
-    }, [pathname]);
-
-    const handleLogout = () => {
-        sessionStorage.removeItem('loggedInUser');
-        setUser(null);
-        router.push('/'); 
-    };
-
-    // [REVISI] Fungsi untuk memberikan style pada link yang aktif
     const getLinkClassName = (path) => {
-        // Cek jika path sama persis, atau jika path adalah /catalog dan URL mengandung /catalog
-        const isActive = pathname === path || (path === '/catalog' && pathname.startsWith('/catalog'));
+        const isActive = pathname === path || 
+                         (path === '/catalog' && pathname.startsWith('/catalog')) ||
+                         (path === '/api-explorer' && pathname.startsWith('/api-explorer'));
         return `transition-opacity ${isActive ? 'font-bold text-yellow-400' : 'font-semibold hover:opacity-80'}`;
     };
 
@@ -56,29 +40,11 @@ function SmartHeader() {
                         <Link href="/" className={getLinkClassName('/')}>Home</Link>
                         <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
                         <Link href="#" className={getLinkClassName('/tentang')}>Tentang</Link> 
-                        <Link href="/api-explorer" className={getLinkClassName('/Api Explorer')}>Api Explorer</Link> 
+                        <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
                     </div>
 
-                    {/* Tombol Login/Logout di Kanan */}
+                    {/* Bagian kanan header sengaja dikosongkan untuk menjaga layout */}
                     <div className="flex-1 flex justify-end">
-                        {user ? (
-                            <div className="flex items-center space-x-4">
-                                <span className="text-sm hidden sm:block">Halo, {user.name.split(' ')[0]}</span>
-                                <button 
-                                    onClick={handleLogout} 
-                                    className="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm"
-                                >
-                                    Logout
-                                </button>
-                            </div>
-                        ) : (
-                            <Link 
-                                href="/login-register" 
-                                className="bg-yellow-500 text-blue-900 font-bold py-2 px-4 rounded-lg hover:bg-yellow-400 transition-colors text-sm"
-                            >
-                                Login
-                            </Link>
-                        )}
                     </div>
                 </nav>
             </div>
@@ -117,7 +83,6 @@ function NewFooter() {
                     {/* Kolom 2: Peta Lokasi */}
                     <div className="w-full flex flex-col items-center md:items-end">
                          <h3 className="text-lg font-bold text-white mb-4">Lokasi Kami</h3>
-                         {/* --- PERUBAHAN DI SINI: Ukuran peta diubah menjadi h-48 --- */}
                          <div className="overflow-hidden rounded-lg shadow-lg h-48 w-full max-w-md">
                             <iframe 
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.2123253962127!2d106.8002787!3d-6.2357197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1f738678eb5%3A0xf278895d9ede7ef3!2sPusat%20Data%20dan%20Teknologi%20Informasi%20(Pusdatin)%20Kementerian%20PUPR!5e0!3m2!1sid!2sid!4v1759728723410!5m2!1sid!2sid" 
