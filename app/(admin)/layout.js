@@ -29,10 +29,7 @@ function Sidebar() {
                     <FaTachometerAlt className="mr-3" />
                     Dashboard
                 </Link>
-                <Link href="/api-explorer" className={`flex items-center mt-2 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/api-explorer') ? 'bg-gray-700 text-white border-l-4 border-white' : 'hover:bg-gray-700 hover:text-white'}`}>
-                    <FaRocket className="mr-3" />
-                    API Explorer
-                </Link>
+                
 
                 <div className="mt-8">
                     <span className="px-4 text-xs font-semibold uppercase text-gray-500">Components</span>
