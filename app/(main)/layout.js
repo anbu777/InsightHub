@@ -99,7 +99,6 @@ function SurveyModal({ isOpen, onClose }) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-2">Bagaimana teknis penyajian data Open Data PU? <span className="text-red-500">*</span></label>
-                            {/* Tambahkan komponen rating kedua jika perlu */}
                             <div className="flex justify-around items-center opacity-50 cursor-not-allowed">
                                 {['😡', '☹️', '😐', '🙂', '😄'].map((emoji, index) => <span key={index} className="text-4xl p-2">{emoji}</span>)}
                             </div>
@@ -123,8 +122,49 @@ function SurveyModal({ isOpen, onClose }) {
     );
 }
 
-// Komponen Header (Tidak Berubah)
-function SmartHeader() {
+// --- KOMPONEN BARU: Modal Tentang ---
+function AboutModal({ isOpen, onClose }) {
+    if (!isOpen) return null;
+
+    return (
+        <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={onClose}
+        >
+            <div
+                className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="flex justify-between items-center border-b pb-4 mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Tentang Insight Hub</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div className="space-y-4 text-gray-600">
+                    <p>
+                        <strong>PUPR Insight Hub</strong> adalah sebuah platform terpusat yang dirancang untuk menjadi gerbang utama dalam mengakses dan memanfaatkan data di lingkungan Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR).
+                    </p>
+                    <p>
+                        Platform ini berfungsi sebagai katalog data terintegrasi yang memungkinkan pengguna, baik dari internal kementerian maupun publik, untuk dengan mudah menemukan, menjelajahi, dan mengajukan permintaan akses terhadap berbagai set data yang tersedia.
+                    </p>
+                    <p>
+                        Dengan adanya Insight Hub, kami bertujuan untuk meningkatkan transparansi, mendorong inovasi berbasis data, dan memfasilitasi pertukaran informasi yang efisien untuk mendukung pengambilan keputusan yang lebih baik dalam pembangunan infrastruktur nasional.
+                    </p>
+                </div>
+                 <div className="text-right mt-8">
+                    <button onClick={onClose} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+// Komponen Header
+function SmartHeader({ onAboutClick }) {
     const pathname = usePathname(); 
 
     const getLinkClassName = (path) => {
@@ -153,7 +193,8 @@ function SmartHeader() {
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-8 text-sm">
                         <Link href="/" className={getLinkClassName('/')}>Home</Link>
                         <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
-                        <Link href="#" className={getLinkClassName('/tentang')}>Tentang</Link> 
+                        {/* [PERUBAHAN] Mengubah Link menjadi button */}
+                        <button onClick={onAboutClick} className={getLinkClassName('/tentang')}>Tentang</button> 
                         <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
                     </div>
                     <div className="flex-1 flex justify-end">
@@ -216,20 +257,25 @@ function NewFooter() {
 export default function MainAppLayout({ children }) {
     const pathname = usePathname();
     
-    // --- TAMBAHAN: State untuk mengontrol modal ---
+    // State untuk mengontrol semua modal
     const [isSurveyModalOpen, setSurveyModalOpen] = useState(false);
+    const [isAboutModalOpen, setAboutModalOpen] = useState(false); // [TAMBAHAN] State untuk modal "Tentang"
 
     return (
         <div className="flex flex-col min-h-screen">
-            <SmartHeader key={pathname} />
+            {/* [PERUBAHAN] Mengirim fungsi untuk membuka modal "Tentang" ke header */}
+            <SmartHeader key={pathname} onAboutClick={() => setAboutModalOpen(true)} />
             <main className="flex-grow bg-slate-100"> 
                 {children}
             </main>
             <NewFooter />
             
-            {/* --- TAMBAHAN: Tombol Rate Us dan Komponen Modal --- */}
+            {/* Tombol Rate Us dan Komponen Modal */}
             <RateUsButton onClick={() => setSurveyModalOpen(true)} />
             <SurveyModal isOpen={isSurveyModalOpen} onClose={() => setSurveyModalOpen(false)} />
+            
+            {/* [TAMBAHAN] Komponen modal "Tentang" */}
+            <AboutModal isOpen={isAboutModalOpen} onClose={() => setAboutModalOpen(false)} />
         </div>
     );
 }
