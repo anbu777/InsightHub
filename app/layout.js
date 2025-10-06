@@ -7,7 +7,7 @@ import './globals.css';
 // TIDAK PERLU inisialisasi ulang, karena font yang diimpor sudah merupakan objek jadi.
 
 export const metadata = {
-  title: 'PUPR Insight Hub',
+  title: 'PU Insight Hub',
   description: 'Pusat Katalog dan Pertukaran Data Terintegrasi PUPR',
 };
 
