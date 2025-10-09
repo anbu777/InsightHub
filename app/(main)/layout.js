@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
-// --- KOMPONEN BARU: Tombol Rate Us ---
+// --- Komponen Rate Us & Modal (Tidak Diubah) ---
 function RateUsButton({ onClick }) {
     return (
         <button
@@ -19,20 +19,14 @@ function RateUsButton({ onClick }) {
         </button>
     );
 }
-
-// --- KOMPONEN BARU: Modal Survei ---
 function SurveyModal({ isOpen, onClose }) {
     if (!isOpen) return null;
-
     const [rating, setRating] = useState('');
-
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Logika pengiriman data akan ditambahkan di sini nanti
         alert('Terima kasih atas masukan Anda!');
-        onClose(); // Tutup modal setelah submit
+        onClose();
     };
-
     return (
         <div 
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -40,7 +34,7 @@ function SurveyModal({ isOpen, onClose }) {
         >
             <div 
                 className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all"
-                onClick={(e) => e.stopPropagation()} // Mencegah modal tertutup saat diklik di dalam
+                onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center border-b pb-4 mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">Survey Kepuasan Open Data PU</h2>
@@ -48,17 +42,12 @@ function SurveyModal({ isOpen, onClose }) {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
-
                 <p className="text-sm text-gray-600 mb-6">Terima kasih telah menggunakan Open Data PU. Kami menghargai masukan Anda untuk meningkatkan kualitas layanan dan sistem pengelolaan data kami.</p>
-
                 <form onSubmit={handleSubmit} className="space-y-6 text-gray-700">
-                    {/* Nama */}
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium mb-1">Nama <span className="text-red-500">*</span></label>
                         <input type="text" id="name" name="name" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                     </div>
-
-                    {/* Jenis Kelamin & Usia */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium mb-2">Jenis Kelamin <span className="text-red-500">*</span></label>
@@ -71,15 +60,13 @@ function SurveyModal({ isOpen, onClose }) {
                             <label className="block text-sm font-medium mb-2">Rentang Usia <span className="text-red-500">*</span></label>
                             <select name="age" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                                 <option value="">Pilih usia...</option>
-                                <option value="<20">&lt; 20 Tahun</option>
+                                <option value="<20">{'< 20 Tahun'}</option>
                                 <option value="21-30">21 - 30 Tahun</option>
                                 <option value="31-40">31 - 40 Tahun</option>
-                                <option value=">40">&gt; 40 Tahun</option>
+                                <option value=">40">{'> 40 Tahun'}</option>
                             </select>
                         </div>
                     </div>
-
-                    {/* Rating Kepuasan */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                         <div>
                             <label className="block text-sm font-medium mb-2">Bagaimana pendapat Anda tentang Open Data PU? <span className="text-red-500">*</span></label>
@@ -90,9 +77,7 @@ function SurveyModal({ isOpen, onClose }) {
                                         type="button"
                                         onClick={() => setRating(index)}
                                         className={`text-4xl p-2 rounded-full transition-transform transform ${rating === index ? 'scale-125 bg-blue-100' : 'hover:scale-110'}`}
-                                    >
-                                        {emoji}
-                                    </button>
+                                    >{emoji}</button>
                                 ))}
                                 <input type="hidden" name="satisfaction" value={rating} required />
                             </div>
@@ -104,37 +89,23 @@ function SurveyModal({ isOpen, onClose }) {
                             </div>
                         </div>
                     </div>
-
-                    {/* Saran */}
                     <div>
                         <label htmlFor="suggestion" className="block text-sm font-medium mb-1">Menurut Anda, fitur apa yang perlu ditingkatkan pada Open Data PU?</label>
                         <textarea id="suggestion" name="suggestion" rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
-
                     <div className="text-right">
-                        <button type="submit" className="bg-green-600 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition-colors">
-                            Kirim
-                        </button>
+                        <button type="submit" className="bg-green-600 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition-colors">Kirim</button>
                     </div>
                 </form>
             </div>
         </div>
     );
 }
-
-// --- KOMPONEN BARU: Modal Tentang ---
 function AboutModal({ isOpen, onClose }) {
     if (!isOpen) return null;
-
     return (
-        <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={onClose}
-        >
-            <div
-                className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all"
-                onClick={(e) => e.stopPropagation()}
-            >
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+            <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between items-center border-b pb-4 mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">Tentang Insight Hub</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
@@ -142,20 +113,12 @@ function AboutModal({ isOpen, onClose }) {
                     </button>
                 </div>
                 <div className="space-y-4 text-gray-600">
-                    <p>
-                        <strong>PUPR Insight Hub</strong> adalah sebuah platform terpusat yang dirancang untuk menjadi gerbang utama dalam mengakses dan memanfaatkan data di lingkungan Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR).
-                    </p>
-                    <p>
-                        Platform ini berfungsi sebagai katalog data terintegrasi yang memungkinkan pengguna, baik dari internal kementerian maupun publik, untuk dengan mudah menemukan, menjelajahi, dan mengajukan permintaan akses terhadap berbagai set data yang tersedia.
-                    </p>
-                    <p>
-                        Dengan adanya Insight Hub, kami bertujuan untuk meningkatkan transparansi, mendorong inovasi berbasis data, dan memfasilitasi pertukaran informasi yang efisien untuk mendukung pengambilan keputusan yang lebih baik dalam pembangunan infrastruktur nasional.
-                    </p>
+                    <p><strong>PUPR Insight Hub</strong> adalah sebuah platform terpusat yang dirancang untuk menjadi gerbang utama dalam mengakses dan memanfaatkan data di lingkungan Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR).</p>
+                    <p>Platform ini berfungsi sebagai katalog data terintegrasi yang memungkinkan pengguna, baik dari internal kementerian maupun publik, untuk dengan mudah menemukan, menjelajahi, dan mengajukan permintaan akses terhadap berbagai set data yang tersedia.</p>
+                    <p>Dengan adanya Insight Hub, kami bertujuan untuk meningkatkan transparansi, mendorong inovasi berbasis data, dan memfasilitasi pertukaran informasi yang efisien untuk mendukung pengambilan keputusan yang lebih baik dalam pembangunan infrastruktur nasional.</p>
                 </div>
-                 <div className="text-right mt-8">
-                    <button onClick={onClose} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition-colors">
-                        Tutup
-                    </button>
+                <div className="text-right mt-8">
+                    <button onClick={onClose} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition-colors">Tutup</button>
                 </div>
             </div>
         </div>
@@ -167,11 +130,21 @@ function AboutModal({ isOpen, onClose }) {
 function SmartHeader({ onAboutClick }) {
     const pathname = usePathname(); 
 
+    // --- PERUBAHAN UTAMA DI SINI ---
     const getLinkClassName = (path) => {
         const isActive = pathname === path || 
                          (path === '/catalog' && pathname.startsWith('/catalog')) ||
                          (path === '/api-explorer' && pathname.startsWith('/api-explorer'));
-        return `transition-opacity ${isActive ? 'font-bold text-yellow-400' : 'font-semibold hover:opacity-80'}`;
+        
+        // Gaya untuk link tidak aktif
+        let classes = "px-4 py-2 rounded-full transition-colors duration-200 font-semibold text-white hover:bg-white/10";
+
+        if (isActive) {
+            // Gaya untuk link aktif: lingkaran kuning berisi dengan teks biru tua agar kontras
+            classes = "px-4 py-2 rounded-full transition-colors duration-200 font-bold bg-yellow-400 text-blue-900";
+        }
+        
+        return classes;
     };
 
     return (
@@ -190,10 +163,9 @@ function SmartHeader({ onAboutClick }) {
                             />
                         </Link>
                     </div>
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-8 text-sm">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-4 text-sm">
                         <Link href="/" className={getLinkClassName('/')}>Home</Link>
                         <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
-                        {/* [PERUBAHAN] Mengubah Link menjadi button */}
                         <button onClick={onAboutClick} className={getLinkClassName('/tentang')}>Tentang</button> 
                         <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
                     </div>
@@ -257,24 +229,19 @@ function NewFooter() {
 export default function MainAppLayout({ children }) {
     const pathname = usePathname();
     
-    // State untuk mengontrol semua modal
     const [isSurveyModalOpen, setSurveyModalOpen] = useState(false);
-    const [isAboutModalOpen, setAboutModalOpen] = useState(false); // [TAMBAHAN] State untuk modal "Tentang"
+    const [isAboutModalOpen, setAboutModalOpen] = useState(false);
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* [PERUBAHAN] Mengirim fungsi untuk membuka modal "Tentang" ke header */}
             <SmartHeader key={pathname} onAboutClick={() => setAboutModalOpen(true)} />
-            <main className="flex-grow bg-slate-100"> 
+            <main className="flex-grow bg-slate-200">
                 {children}
             </main>
             <NewFooter />
             
-            {/* Tombol Rate Us dan Komponen Modal */}
             <RateUsButton onClick={() => setSurveyModalOpen(true)} />
             <SurveyModal isOpen={isSurveyModalOpen} onClose={() => setSurveyModalOpen(false)} />
-            
-            {/* [TAMBAHAN] Komponen modal "Tentang" */}
             <AboutModal isOpen={isAboutModalOpen} onClose={() => setAboutModalOpen(false)} />
         </div>
     );
