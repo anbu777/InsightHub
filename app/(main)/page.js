@@ -205,7 +205,7 @@ export default function HomePage() {
     
     return (
         <div>
-            <section ref={heroRef} className="relative h-[85vh] w-full text-white overflow-hidden shadow-lg">
+            <section ref={heroRef} className="relative h-[90vh] w-full text-white overflow-hidden shadow-lg">
                 {slides.map((slide, index) => (
                     <div key={slide.id} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: `url('${slide.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 ))}
