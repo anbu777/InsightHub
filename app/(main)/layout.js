@@ -166,8 +166,9 @@ function SmartHeader({ onAboutClick }) {
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-4 text-sm">
                         <Link href="/" className={getLinkClassName('/')}>Home</Link>
                         <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
-                        <button onClick={onAboutClick} className={getLinkClassName('/tentang')}>Tentang</button> 
                         <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
+                        <button onClick={onAboutClick} className={getLinkClassName('/tentang')}>Tentang</button> 
+        
                     </div>
                     <div className="flex-1 flex justify-end">
                     </div>
