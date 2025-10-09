@@ -1,4 +1,3 @@
-// File: app/(main)/api-explorer/page.js
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -82,10 +81,10 @@ export default function ApiExplorerPage() {
             const jsonData = await response.json();
 
             if (jsonData.length === 0) {
-                 setOutputText(`Tidak ada data yang ditemukan untuk tabel "${selectedTableName}".`);
-                 setShowDownload(false);
-                 setIsLoading(false);
-                 return;
+               setOutputText(`Tidak ada data yang ditemukan untuk tabel "${selectedTableName}".`);
+               setShowDownload(false);
+               setIsLoading(false);
+               return;
             }
 
             const jsonString = JSON.stringify(jsonData, null, 2);
@@ -107,20 +106,9 @@ export default function ApiExplorerPage() {
 
     return (
         <div className="container mx-auto px-6 pt-8 pb-32">
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-md border flex items-center">
-                    <div className="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7l8-4 8 4m-8 16v-4" /></svg>
-                    </div>
-                    <div>
-                        <p className="text-2xl font-bold text-gray-800">{totalApi > 0 ? totalApi : '...'}</p>
-                        <p className="text-sm text-gray-500">Total API Tersedia</p>
-                    </div>
-                </div>
-               
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* [REVISI] Container "Total API Tersedia" dan grid pembungkusnya telah dihapus */}
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
                 <div className="bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-md border">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Parameter Pencarian</h2>
                     <form id="api-form" onSubmit={handleApiFormSubmit} className="space-y-6">
