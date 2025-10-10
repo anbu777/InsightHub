@@ -195,8 +195,7 @@ export default function HomePage() {
     
     return (
         <div>
-            {/* [REVISI] Mengubah h-[90vh] menjadi min-h-[45rem] */}
-            <section ref={heroRef} id="hero" className="relative min-h-[45rem] w-full flex text-white overflow-hidden shadow-lg">
+            <section ref={heroRef} id="hero" className="relative min-h-[50rem] w-full flex text-white overflow-hidden shadow-lg">
                 {slides.map((slide, index) => (
                     <div key={slide.id} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: `url('${slide.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 ))}
@@ -267,7 +266,8 @@ export default function HomePage() {
                             <h2 className={`text-3xl font-bold text-gray-800 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`}>Jelajahi Data Berdasarkan Unit Organisasi</h2>
                             <p className={`text-gray-600 mt-2 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan data spesifik dari setiap Unit Organisasi di Kementerian PUPR.</p>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {/* [REVISI] Mengubah grid menjadi 5 kolom di layar besar */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                            <Link href="/catalog?unor=sda" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
                                 <Image src="https://img.icons8.com/pastel-glyph/64/1e3a8a/dam.png" width={64} height={64} alt="SDA Icon" className="h-16 w-16" />
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Sumber Daya Air</h3>
