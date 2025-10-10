@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 // Import semua ikon yang kita butuhkan
 import { 
@@ -12,7 +13,7 @@ import {
 } from 'react-icons/fa';
 
 
-// Komponen Sidebar (Tidak Berubah)
+// Komponen Sidebar (Tidak Diubah)
 function Sidebar() {
     const pathname = usePathname();
     const isActive = (path) => pathname.startsWith(path);
@@ -30,7 +31,6 @@ function Sidebar() {
                     Dashboard
                 </Link>
                 
-
                 <div className="mt-8">
                     <span className="px-4 text-xs font-semibold uppercase text-gray-500">Components</span>
                     <Link href="/notifications" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
@@ -50,21 +50,22 @@ function Sidebar() {
                        Charts
                     </Link>
                 </div>
-
-                
             </nav>
         </aside>
     );
 }
 
-// Komponen TopBar
+// Komponen TopBar (Direvisi pada fungsi Logout)
 function TopBar() {
     const router = useRouter();
-    const [openMenu, setOpenMenu] = useState(null); // State untuk mengontrol dropdown
+    const supabase = createClientComponentClient(); // Tambahkan Supabase client
+    const [openMenu, setOpenMenu] = useState(null);
 
-    const handleLogout = () => {
-        sessionStorage.removeItem('loggedInUser');
-        router.push('/'); 
+    // --- REVISI DI SINI ---
+    // Menggunakan metode logout dari Supabase yang benar
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        router.push('/'); // Arahkan ke halaman utama setelah logout
     };
 
     const handleMenuToggle = (menuName) => {
@@ -125,7 +126,6 @@ function TopBar() {
                     {openMenu === 'profile' && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down">
                             <ul className="divide-y text-sm">
-                                
                                 <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-red-500 hover:bg-gray-100 font-semibold">
                                     Logout
                                 </button>
@@ -138,24 +138,38 @@ function TopBar() {
     );
 }
 
-// Layout Utama Admin
+// Layout Utama Admin (Logika Penjaga Sesi Direvisi Total)
 export default function AdminLayout({ children }) {
     const router = useRouter();
-    const [isClient, setIsClient] = useState(false);
+    const supabase = createClientComponentClient();
+    const [isLoading, setIsLoading] = useState(true);
 
+    // --- REVISI TOTAL DI SINI ---
     useEffect(() => {
-        const user = sessionStorage.getItem('loggedInUser');
-        const userData = user ? JSON.parse(user) : null;
-        if (!userData || userData.role !== 'admin') {
-            // --- PERUBAHAN DI SINI ---
-            // Mengarahkan ke halaman login admin yang baru
-            router.push('/admin-login');
-        }
-        setIsClient(true);
-    }, [router]);
+        // Membuat 'pendengar' status otentikasi yang andal
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (!session) {
+                // Jika tidak ada sesi (misalnya, setelah logout), usir ke halaman login
+                router.replace('/admin-login');
+            } else {
+                // Jika ada sesi, berarti aman. Loading selesai.
+                setIsLoading(false);
+            }
+        });
 
-    if (!isClient) {
-        return null; // Mencegah hydration error
+        // Hentikan 'pendengar' saat komponen tidak lagi digunakan
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [router, supabase]);
+
+    if (isLoading) {
+        // Tampilkan layar loading selagi memeriksa sesi
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p>Memverifikasi sesi admin...</p>
+            </div>
+        );
     }
 
     return (
