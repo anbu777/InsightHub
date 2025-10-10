@@ -1,9 +1,10 @@
 "use client"; 
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { NavigationContext } from './contexts/NavigationContext';
 
 // --- Komponen-komponen Modal (Tidak Diubah) ---
 function SurveyModal({ isOpen, onClose }) {
@@ -167,17 +168,22 @@ function RequestDataModal({ isOpen, onClose }) {
         </div>
     );
 }
-
-// [REVISI] Komponen Sidebar Menu untuk Aksi Sekunder
 function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurveyClick }) {
+    const pathname = usePathname();
+    const getLinkClassName = (path) => {
+        const isActive = pathname.startsWith(path);
+        if (isActive) {
+            return "w-full text-left px-4 py-3 rounded-md font-bold bg-blue-100 text-blue-700 transition-colors";
+        }
+        return "w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors";
+    };
+
     return (
         <>
-            {/* Backdrop */}
             <div 
                 className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
                 onClick={onClose}
             ></div>
-            {/* Sidebar */}
             <div 
                 className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform z-50 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
@@ -188,6 +194,8 @@ function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurv
                     </button>
                 </div>
                 <nav className="p-4 flex flex-col space-y-2">
+                    <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog Data</Link> 
+                    <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
                     <button onClick={onRequestDataClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Pengajuan Data</button>
                     <button onClick={onAboutClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Tentang</button>
                     <button onClick={onSurveyClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Beri Penilaian</button>
@@ -200,19 +208,14 @@ function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurv
 // Komponen Header
 function SmartHeader({ onMenuClick }) {
     const pathname = usePathname(); 
+    const { activeSection } = useContext(NavigationContext);
 
-    const getLinkClassName = (path) => {
-        const isActive = pathname === path || 
-                         (path === '/catalog' && pathname.startsWith('/catalog')) ||
-                         (path === '/api-explorer' && pathname.startsWith('/api-explorer'));
-        
-        let classes = "px-4 py-2 rounded-full transition-colors duration-200 font-semibold text-white hover:bg-white/10";
-
-        if (isActive) {
-            classes = "px-4 py-2 rounded-full transition-colors duration-200 font-bold bg-yellow-400 text-blue-900";
+    const getLinkClassName = (sectionId) => {
+        const baseClasses = "px-4 py-2 rounded-full transition-colors duration-200 font-semibold text-white hover:bg-white/10";
+        if (activeSection === sectionId) {
+            return "px-4 py-2 rounded-full transition-colors duration-200 font-bold bg-yellow-400 text-blue-900";
         }
-        
-        return classes;
+        return baseClasses;
     };
 
     return (
@@ -231,15 +234,20 @@ function SmartHeader({ onMenuClick }) {
                             />
                         </Link>
                     </div>
-                    {/* [REVISI] Navigasi Utama (Primer) */}
+                    
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-4 text-sm">
-                        <Link href="/" className={getLinkClassName('/')}>Home</Link>
-                        <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
-                        <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
+                        {pathname === '/' && (
+                            <>
+                                <Link href="/#hero" className={getLinkClassName('hero')}>Beranda</Link>
+                                <Link href="/#how-it-works" className={getLinkClassName('how-it-works')}>Cara Kerja</Link>
+                                <Link href="/#featured-catalog" className={getLinkClassName('featured-catalog')}>Unggulan</Link>
+                                <Link href="/#unor-section" className={getLinkClassName('unor-section')}>Unit Organisasi</Link>
+                            </>
+                        )}
                     </div>
-                    {/* [REVISI] Tombol Menu Aksi Sekunder */}
+
                     <div className="flex-1 flex justify-end">
-                        <button onClick={onMenuClick} className="p-2 rounded-full text-white hover:bg-white/10 md:block" aria-label="Buka menu">
+                        <button onClick={onMenuClick} className="p-2 rounded-full text-white hover:bg-white/10" aria-label="Buka menu">
                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                         </button>
                     </div>
@@ -305,10 +313,10 @@ export default function MainAppLayout({ children }) {
     const [isSurveyModalOpen, setSurveyModalOpen] = useState(false);
     const [isAboutModalOpen, setAboutModalOpen] = useState(false);
     const [isRequestDataModalOpen, setRequestDataModalOpen] = useState(false);
-    // [REVISI] State baru untuk sidebar menu
     const [isMenuOpen, setMenuOpen] = useState(false);
     
-    // [REVISI] Fungsi-fungsi untuk menangani klik dari sidebar
+    const [activeSection, setActiveSection] = useState('hero');
+
     const handleRequestDataClick = () => {
         setMenuOpen(false);
         setRequestDataModalOpen(true);
@@ -323,31 +331,30 @@ export default function MainAppLayout({ children }) {
     };
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <SmartHeader 
-                key={pathname} 
-                onMenuClick={() => setMenuOpen(true)}
-            />
-            <main className="flex-grow bg-slate-200">
-                {children}
-            </main>
-            <NewFooter />
-            
-            {/* [REVISI] Komponen RateUsButton dihapus */}
-            
-            {/* Semua modal dirender di sini */}
-            <SurveyModal isOpen={isSurveyModalOpen} onClose={() => setSurveyModalOpen(false)} />
-            <AboutModal isOpen={isAboutModalOpen} onClose={() => setAboutModalOpen(false)} />
-            <RequestDataModal isOpen={isRequestDataModalOpen} onClose={() => setRequestDataModalOpen(false)} />
-            
-            {/* [REVISI] Sidebar dirender di sini */}
-            <SidebarMenu 
-                isOpen={isMenuOpen} 
-                onClose={() => setMenuOpen(false)}
-                onRequestDataClick={handleRequestDataClick}
-                onAboutClick={handleAboutClick}
-                onSurveyClick={handleSurveyClick}
-            />
-        </div>
+        <NavigationContext.Provider value={{ activeSection, setActiveSection }}>
+            <div className="flex flex-col min-h-screen">
+                <SmartHeader 
+                    key={pathname} 
+                    onMenuClick={() => setMenuOpen(true)}
+                />
+                <main className="flex-grow bg-slate-200">
+                    {children}
+                </main>
+                <NewFooter />
+                
+                {/* Semua modal dirender di sini */}
+                <SurveyModal isOpen={isSurveyModalOpen} onClose={() => setSurveyModalOpen(false)} />
+                <AboutModal isOpen={isAboutModalOpen} onClose={() => setAboutModalOpen(false)} />
+                <RequestDataModal isOpen={isRequestDataModalOpen} onClose={() => setRequestDataModalOpen(false)} />
+                
+                <SidebarMenu 
+                    isOpen={isMenuOpen} 
+                    onClose={() => setMenuOpen(false)}
+                    onRequestDataClick={handleRequestDataClick}
+                    onAboutClick={handleAboutClick}
+                    onSurveyClick={handleSurveyClick}
+                />
+            </div>
+        </NavigationContext.Provider>
     );
 }

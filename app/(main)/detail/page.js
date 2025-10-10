@@ -5,8 +5,60 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { descriptions } from '@/lib/table_descriptions';
 
+// Komponen baru untuk menampilkan preview data JSON
+function DataPreviewer({ tableName }) {
+    const [previewData, setPreviewData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (tableName) {
+            setIsLoading(true);
+            setError(null);
+            // [REVISI] Mengubah limit data dari 5 menjadi 3 baris
+            fetch(`/api/explorer/${tableName}?requestType=data&limit=3`)
+                .then(res => res.ok ? res.json() : Promise.reject(res))
+                .then(data => {
+                    setPreviewData(data);
+                })
+                .catch(async (res) => {
+                    try {
+                        const err = await res.json();
+                        setError(err.message || 'Gagal memuat preview data.');
+                    } catch {
+                        setError('Gagal memuat preview data.');
+                    }
+                })
+                .finally(() => setIsLoading(false));
+        }
+    }, [tableName]);
+
+    if (isLoading) {
+        return <p className="text-sm text-gray-500">Memuat preview data...</p>;
+    }
+
+    if (error) {
+        return <p className="text-sm text-red-500">{error}</p>;
+    }
+
+    if (!previewData || previewData.length === 0) {
+        return <p className="text-sm text-gray-500">Tidak ada data untuk ditampilkan sebagai preview.</p>;
+    }
+
+    return (
+        <div className="bg-gray-800 text-white rounded-lg h-full p-1 flex-grow min-h-[300px]">
+            <pre className="h-full w-full overflow-auto text-sm p-4 whitespace-pre-wrap break-words">
+                {JSON.stringify(previewData, null, 2)}
+            </pre>
+        </div>
+    );
+}
+
+
 function DetailContent() {
-    // Logika dan state untuk otorisasi telah dihapus
+    // State baru untuk mengelola tab aktif
+    const [activeTab, setActiveTab] = useState('struktur');
+
     const [columns, setColumns] = useState([]);
     const [description, setDescription] = useState('');
     const [error, setError] = useState(null);
@@ -16,9 +68,6 @@ function DetailContent() {
     const searchParams = useSearchParams();
     const tableName = searchParams.get('table');
 
-    // useEffect untuk pengecekan login telah dihapus
-
-    // useEffect untuk mencatat popularitas API
     useEffect(() => {
         if (tableName) {
             try {
@@ -31,7 +80,6 @@ function DetailContent() {
         }
     }, [tableName]);
 
-    // useEffect untuk mengambil data tabel
     useEffect(() => {
         if (tableName) {
             setLoading(true);
@@ -48,7 +96,7 @@ function DetailContent() {
         event.preventDefault();
         const purpose = event.target.purpose.value;
         const format = event.target.format.value;
-        const userEmail = 'user.umum@example.com'; // Email diganti menjadi generik
+        const userEmail = 'user.umum@example.com';
         const requestText = `
 --- Permintaan Data ---
 User Email: ${userEmail}
@@ -78,7 +126,7 @@ ${purpose}
                 </Link>
                 <div className="bg-white p-8 rounded-xl shadow-md border">
                     {loading ? (
-                        <p className="text-gray-600">Memuat struktur tabel...</p>
+                        <p className="text-gray-600">Memuat detail tabel...</p>
                     ) : error ? (
                         <div>
                             <h2 className="text-xl font-bold text-red-600">Terjadi Kesalahan</h2>
@@ -86,9 +134,10 @@ ${purpose}
                         </div>
                     ) : (
                         <div>
-                            <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
+                            {/* Bagian Header Informasi */}
+                            <div className="flex flex-col sm:flex-row justify-between items-start mb-8 gap-4">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-gray-800">Struktur Tabel</h2>
+                                    <h2 className="text-2xl font-bold text-gray-800">Detail Data</h2>
                                     <p className="font-mono text-lg mt-1 text-gray-500 bg-gray-100 px-2 py-1 rounded inline-block">{tableName}</p>
                                     <p className="text-gray-600 mt-3 text-sm max-w-2xl">{description}</p>
                                 </div>
@@ -99,23 +148,53 @@ ${purpose}
                                 </button>
                             </div>
                             
-                            <div className="overflow-x-auto mt-6">
-                                <table className="w-full text-left border-collapse">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase border-b">Nama Kolom</th>
-                                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase border-b">Tipe Data</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200">
-                                        {columns.map((col) => (
-                                            <tr key={col.column_name} className="hover:bg-gray-50">
-                                                <td className="px-6 py-4 font-semibold text-gray-800 font-mono">{col.column_name}</td>
-                                                <td className="px-6 py-4 text-blue-800 font-mono">{col.formatted_data_type}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            {/* Navigasi Tab */}
+                            <div className="border-b border-gray-200 mb-6">
+                                <nav className="-mb-px flex space-x-6" aria-label="Tabs">
+                                    <button
+                                        onClick={() => setActiveTab('struktur')}
+                                        className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'struktur' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+                                    >
+                                        Struktur Data (Metadata)
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('preview')}
+                                        className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'preview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+                                    >
+                                        Preview Data
+                                    </button>
+                                </nav>
+                            </div>
+
+                            {/* Konten Tab */}
+                            <div>
+                                {activeTab === 'struktur' && (
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase border-b">Nama Kolom</th>
+                                                    <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase border-b">Tipe Data</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200">
+                                                {columns.map((col) => (
+                                                    <tr key={col.column_name} className="hover:bg-gray-50">
+                                                        <td className="px-6 py-4 font-semibold text-gray-800 font-mono">{col.column_name}</td>
+                                                        <td className="px-6 py-4 text-blue-800 font-mono">{col.formatted_data_type}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                                {activeTab === 'preview' && (
+                                    <div>
+                                        {/* [REVISI] Teks diubah dari 5 menjadi 3 baris */}
+                                        <p className="text-xs text-gray-500 mb-2">Menampilkan 3 baris pertama sebagai contoh.</p>
+                                        <DataPreviewer tableName={tableName} />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}

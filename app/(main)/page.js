@@ -1,25 +1,15 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
-
-// Chart.js imports
-import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Pie, Bar } from 'react-chartjs-2';
-
-// Import deskripsi untuk digabungkan dengan data API
 import { descriptions } from '@/lib/table_descriptions';
+import { NavigationContext } from './contexts/NavigationContext'; // [REVISI] Mengimpor konteks
 
-
-ChartJS.register( ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend );
-
-const chartOptions = { responsive: true, maintainAspectRatio: false };
-
-// --- Komponen-komponen Anak ---
+// --- Komponen-komponen Anak (Tidak Diubah) ---
 
 function SearchForm() {
     const router = useRouter();
@@ -31,7 +21,6 @@ function SearchForm() {
         }
     };
     return (
-        // [REVISI] Menambahkan mx-auto untuk memposisikan form ke tengah
         <form onSubmit={handleSearch} className="mt-8 w-full max-w-2xl mx-auto bg-white/20 backdrop-blur-lg border border-white/30 rounded-full shadow-lg transition-all duration-300 focus-within:shadow-xl">
             <div className="relative">
                 <input type="search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Cari dataset, API, atau lainnya..." className="w-full h-16 bg-transparent text-white placeholder-white/70 text-lg pl-8 pr-20 rounded-full focus:outline-none" />
@@ -56,7 +45,6 @@ function HeroStats({ stats, inView }) {
     ];
 
     return (
-        // [REVISI] Menambahkan mx-auto untuk memposisikan container ke tengah
         <div className="mt-8 w-full max-w-2xl mx-auto p-4 bg-white/20 backdrop-blur-lg rounded-xl border border-white/30 shadow-lg flex flex-col items-center gap-3">
             <div className="text-center w-full pb-3 border-b border-white/30">
                 <div className="flex justify-center items-center gap-3 text-white">
@@ -171,11 +159,20 @@ export default function HomePage() {
     const [stats, setStats] = useState({ tables: 0, sources: 0, unor: 0, users: 0 });
     const [allApiData, setAllApiData] = useState([]);
 
-    const { ref: heroRef, inView: heroInView } = useInView({ triggerOnce: true, threshold: 0.3 });
-    const { ref: howItWorksRef, inView: howItWorksInView } = useInView({ triggerOnce: true, threshold: 0.1 });
-    const { ref: featuredRef, inView: featuredInView } = useInView({ triggerOnce: true, threshold: 0.1 });
-    const { ref: unorRef, inView: unorInView } = useInView({ triggerOnce: true, threshold: 0.1 });
+    // [REVISI] Menggunakan useContext untuk mendapatkan fungsi setActiveSection
+    const { setActiveSection } = useContext(NavigationContext) || {};
 
+    // [REVISI] Menggabungkan 'ref' dan 'inView' untuk animasi DAN scroll-spy
+    const { ref: heroRef, inView: heroInView } = useInView({ threshold: 0.3 });
+    const { ref: howItWorksRef, inView: howItWorksInView } = useInView({ threshold: 0.3 });
+    const { ref: featuredRef, inView: featuredInView } = useInView({ threshold: 0.3 });
+    const { ref: unorRef, inView: unorInView } = useInView({ threshold: 0.3 });
+
+    // [REVISI] useEffects untuk memperbarui section aktif berdasarkan 'inView'
+    useEffect(() => { if (heroInView && setActiveSection) setActiveSection('hero'); }, [heroInView, setActiveSection]);
+    useEffect(() => { if (howItWorksInView && setActiveSection) setActiveSection('how-it-works'); }, [howItWorksInView, setActiveSection]);
+    useEffect(() => { if (featuredInView && setActiveSection) setActiveSection('featured-catalog'); }, [featuredInView, setActiveSection]);
+    useEffect(() => { if (unorInView && setActiveSection) setActiveSection('unor-section'); }, [unorInView, setActiveSection]);
 
     useEffect(() => {
         const dummyData = { tables: 78, sources: 1, unor: 6, users: 42 };
@@ -185,10 +182,7 @@ export default function HomePage() {
             .then(res => res.json())
             .then(apiData => {
                 if (apiData && Array.isArray(apiData)) {
-                    const enrichedData = apiData.map(api => ({
-                        ...api,
-                        deskripsi: descriptions[api.tablename] || '' 
-                    }));
+                    const enrichedData = apiData.map(api => ({ ...api, deskripsi: descriptions[api.tablename] || '' }));
                     setAllApiData(enrichedData);
                 }
             })
@@ -197,7 +191,8 @@ export default function HomePage() {
     
     return (
         <div>
-            <section ref={heroRef} className="relative h-[90vh] w-full text-white overflow-hidden shadow-lg">
+            {/* [REVISI] Menambahkan id="hero" */}
+            <section ref={heroRef} id="hero" className="relative h-[90vh] w-full text-white overflow-hidden shadow-lg">
                 {slides.map((slide, index) => (
                     <div key={slide.id} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: `url('${slide.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 ))}
@@ -220,7 +215,8 @@ export default function HomePage() {
             </section>
             
             <div className="p-6 flex flex-col gap-8">
-                <section ref={howItWorksRef} className="bg-white rounded-xl shadow-lg p-8 md:p-12">
+                {/* [REVISI] Menambahkan id="how-it-works" dan scroll-mt-28 */}
+                <section ref={howItWorksRef} id="how-it-works" className="scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
                     <div className="container mx-auto">
                         <div className="text-center">
                             <h2 className={`text-3xl font-bold text-gray-800 mb-4 ${howItWorksInView ? 'animate-fade-in' : 'opacity-0'}`}>
@@ -256,11 +252,13 @@ export default function HomePage() {
                     </div>
                 </section>
                 
-                <div ref={featuredRef}>
+                {/* [REVISI] Menambahkan id="featured-catalog" dan scroll-mt-28 */}
+                <div ref={featuredRef} id="featured-catalog" className="scroll-mt-28">
                     <FeaturedApis allApis={allApiData} inView={featuredInView} />
                 </div>
 
-                <section ref={unorRef} className="bg-white rounded-xl shadow-lg p-8 md:p-12">
+                {/* [REVISI] Menambahkan id="unor-section" dan scroll-mt-28 */}
+                <section ref={unorRef} id="unor-section" className="scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
                     <div className="container mx-auto">
                         <div className="text-center mb-12">
                             <h2 className={`text-3xl font-bold text-gray-800 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`}>Jelajahi Data Berdasarkan Unit Organisasi</h2>
@@ -333,9 +331,4 @@ export default function HomePage() {
             </div>
         </div>
     );
-}
-
-// Komponen ModalWrapper tidak diubah
-function ModalWrapper({ show, onClose, title, children }) {
-   return null;
 }

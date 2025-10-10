@@ -1,12 +1,14 @@
 // File: app/api/explorer/[tableName]/route.js
 import { NextResponse } from 'next/server';
 import { dwhPool as pool } from '@/lib/db';
-// Library 'pg-format' sudah tidak di-import lagi
 
 export async function GET(request, { params }) {
     const { tableName } = params;
     const { searchParams } = new URL(request.url);
     const requestType = searchParams.get('requestType');
+    
+    // [REVISI] Baca parameter 'limit' dari URL
+    const limitParam = searchParams.get('limit');
 
     if (!tableName || !requestType) {
         return NextResponse.json({ message: 'Parameter tidak lengkap' }, { status: 400 });
@@ -33,7 +35,6 @@ export async function GET(request, { params }) {
             return NextResponse.json(result.rows, { status: 200 });
 
         } else if (requestType === 'data') {
-            // 1. Cari tahu schema dari tabel yang diminta
             const schemaQuery = `
                 SELECT schemaname FROM pg_tables 
                 WHERE tablename = $1 
@@ -47,12 +48,14 @@ export async function GET(request, { params }) {
             }
             const schemaName = schemaResult.rows[0].schemaname;
 
-            // 2. Buat query aman menggunakan fitur bawaan client.escapeIdentifier
             const safeSchema = client.escapeIdentifier(schemaName);
             const safeTable = client.escapeIdentifier(tableName);
             
-            // Query diubah untuk menggunakan LIMIT 500
-            const dataQuery = `SELECT * FROM ${safeSchema}.${safeTable} LIMIT 500`;
+            // [REVISI] Tentukan limit secara dinamis
+            // Jika ada limitParam, gunakan itu. Jika tidak, default ke 500.
+            const limit = parseInt(limitParam, 10) || 500;
+            
+            const dataQuery = `SELECT * FROM ${safeSchema}.${safeTable} LIMIT ${limit}`;
             
             const result = await client.query(dataQuery);
             return NextResponse.json(result.rows, { status: 200 });
