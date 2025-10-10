@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
 import { descriptions } from '@/lib/table_descriptions';
-import { NavigationContext } from './contexts/NavigationContext'; // [REVISI] Mengimpor konteks
+import { NavigationContext } from './contexts/NavigationContext';
 
 // --- Komponen-komponen Anak (Tidak Diubah) ---
 
@@ -159,20 +159,24 @@ export default function HomePage() {
     const [stats, setStats] = useState({ tables: 0, sources: 0, unor: 0, users: 0 });
     const [allApiData, setAllApiData] = useState([]);
 
-    // [REVISI] Menggunakan useContext untuk mendapatkan fungsi setActiveSection
     const { setActiveSection } = useContext(NavigationContext) || {};
 
-    // [REVISI] Menggabungkan 'ref' dan 'inView' untuk animasi DAN scroll-spy
-    const { ref: heroRef, inView: heroInView } = useInView({ threshold: 0.3 });
-    const { ref: howItWorksRef, inView: howItWorksInView } = useInView({ threshold: 0.3 });
-    const { ref: featuredRef, inView: featuredInView } = useInView({ threshold: 0.3 });
-    const { ref: unorRef, inView: unorInView } = useInView({ threshold: 0.3 });
-
-    // [REVISI] useEffects untuk memperbarui section aktif berdasarkan 'inView'
+    const { ref: heroRef, inView: heroInView } = useInView({ threshold: 0.4 });
+    const { ref: howItWorksRef, inView: howItWorksInView } = useInView({ threshold: 0.3, triggerOnce: true });
+    const { ref: featuredRef, inView: featuredInView } = useInView({ threshold: 0.3, triggerOnce: true });
+    const { ref: unorRef, inView: unorInView } = useInView({ threshold: 0.3, triggerOnce: true });
+    
     useEffect(() => { if (heroInView && setActiveSection) setActiveSection('hero'); }, [heroInView, setActiveSection]);
-    useEffect(() => { if (howItWorksInView && setActiveSection) setActiveSection('how-it-works'); }, [howItWorksInView, setActiveSection]);
-    useEffect(() => { if (featuredInView && setActiveSection) setActiveSection('featured-catalog'); }, [featuredInView, setActiveSection]);
-    useEffect(() => { if (unorInView && setActiveSection) setActiveSection('unor-section'); }, [unorInView, setActiveSection]);
+    
+    const { ref: howItWorksSpyRef, inView: howItWorksSpyInView } = useInView({ threshold: 0.4 });
+    useEffect(() => { if (howItWorksSpyInView && setActiveSection) setActiveSection('how-it-works'); }, [howItWorksSpyInView, setActiveSection]);
+    
+    const { ref: featuredSpyRef, inView: featuredSpyInView } = useInView({ threshold: 0.4 });
+    useEffect(() => { if (featuredSpyInView && setActiveSection) setActiveSection('featured-catalog'); }, [featuredSpyInView, setActiveSection]);
+
+    const { ref: unorSpyRef, inView: unorSpyInView } = useInView({ threshold: 0.4 });
+    useEffect(() => { if (unorSpyInView && setActiveSection) setActiveSection('unor-section'); }, [unorSpyInView, setActiveSection]);
+
 
     useEffect(() => {
         const dummyData = { tables: 78, sources: 1, unor: 6, users: 42 };
@@ -191,13 +195,13 @@ export default function HomePage() {
     
     return (
         <div>
-            {/* [REVISI] Menambahkan id="hero" */}
-            <section ref={heroRef} id="hero" className="relative h-[90vh] w-full text-white overflow-hidden shadow-lg">
+            {/* [REVISI] Mengubah h-[90vh] menjadi min-h-[45rem] */}
+            <section ref={heroRef} id="hero" className="relative min-h-[45rem] w-full flex text-white overflow-hidden shadow-lg">
                 {slides.map((slide, index) => (
                     <div key={slide.id} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: `url('${slide.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 ))}
                 <div className="absolute inset-0 bg-black/60"></div>
-                <div className="relative z-10 h-full flex flex-col items-center justify-center text-center p-6">
+                <div className="relative z-10 w-full flex flex-col items-center justify-center text-center p-6">
                     <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg animate-fade-in-down" style={{ animationDelay: '0.2s' }}> Insight Hub</h1>
                     <p className="mt-4 text-lg md:text-xl max-w-3xl animate-fade-in-down" style={{ animationDelay: '0.4s' }}>Pusat Katalog dan Pertukaran Data Terintegrasi</p>
                     <div className="w-full animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
@@ -215,9 +219,8 @@ export default function HomePage() {
             </section>
             
             <div className="p-6 flex flex-col gap-8">
-                {/* [REVISI] Menambahkan id="how-it-works" dan scroll-mt-28 */}
                 <section ref={howItWorksRef} id="how-it-works" className="scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
-                    <div className="container mx-auto">
+                     <div ref={howItWorksSpyRef} className="container mx-auto">
                         <div className="text-center">
                             <h2 className={`text-3xl font-bold text-gray-800 mb-4 ${howItWorksInView ? 'animate-fade-in' : 'opacity-0'}`}>
                                 Bagaimana Memulai?
@@ -252,14 +255,14 @@ export default function HomePage() {
                     </div>
                 </section>
                 
-                {/* [REVISI] Menambahkan id="featured-catalog" dan scroll-mt-28 */}
                 <div ref={featuredRef} id="featured-catalog" className="scroll-mt-28">
-                    <FeaturedApis allApis={allApiData} inView={featuredInView} />
+                    <div ref={featuredSpyRef}>
+                        <FeaturedApis allApis={allApiData} inView={featuredInView} />
+                    </div>
                 </div>
 
-                {/* [REVISI] Menambahkan id="unor-section" dan scroll-mt-28 */}
                 <section ref={unorRef} id="unor-section" className="scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
-                    <div className="container mx-auto">
+                    <div ref={unorSpyRef} className="container mx-auto">
                         <div className="text-center mb-12">
                             <h2 className={`text-3xl font-bold text-gray-800 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`}>Jelajahi Data Berdasarkan Unit Organisasi</h2>
                             <p className={`text-gray-600 mt-2 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan data spesifik dari setiap Unit Organisasi di Kementerian PUPR.</p>
