@@ -5,26 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
-// --- Komponen Rate Us & Modal (Tidak Diubah) ---
-function RateUsButton({ onClick }) {
-    return (
-        <button
-            onClick={onClick}
-            // Menghapus background biru & padding agar hanya gambar yang tampil
-            className="fixed bottom-5 right-5 z-50 transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full"
-            aria-label="Rate Us"
-        >
-            {/* Menggunakan komponen Image dari Next.js */}
-            <Image
-                src="/rateus.png" // Mengambil gambar dari folder public
-                alt="Rate Us"
-                width={150} // Anda bisa sesuaikan ukurannya di sini
-                height={150} // Anda bisa sesuaikan ukurannya di sini
-                className="cursor-pointer"
-            />
-        </button>
-    );
-}
+// --- Komponen-komponen Modal (Tidak Diubah) ---
 function SurveyModal({ isOpen, onClose }) {
     if (!isOpen) return null;
     const [rating, setRating] = useState('');
@@ -43,12 +24,12 @@ function SurveyModal({ isOpen, onClose }) {
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center border-b pb-4 mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">Survey Kepuasan Open Data PU</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">Survey Kepuasan Insight Hub</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
-                <p className="text-sm text-gray-600 mb-6">Terima kasih telah menggunakan Open Data PU. Kami menghargai masukan Anda untuk meningkatkan kualitas layanan dan sistem pengelolaan data kami.</p>
+                <p className="text-sm text-gray-600 mb-6">Terima kasih telah menggunakan Insight Hub. Kami menghargai masukan Anda untuk meningkatkan kualitas layanan dan sistem pengelolaan data kami.</p>
                 <form onSubmit={handleSubmit} className="space-y-6 text-gray-700">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium mb-1">Nama <span className="text-red-500">*</span></label>
@@ -75,7 +56,7 @@ function SurveyModal({ isOpen, onClose }) {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                         <div>
-                            <label className="block text-sm font-medium mb-2">Bagaimana pendapat Anda tentang Open Data PU? <span className="text-red-500">*</span></label>
+                            <label className="block text-sm font-medium mb-2">Bagaimana pendapat Anda tentang Insight Hub? <span className="text-red-500">*</span></label>
                             <div className="flex justify-around items-center">
                                 {['😡', '☹️', '😐', '🙂', '😄'].map((emoji, index) => (
                                     <button 
@@ -89,14 +70,14 @@ function SurveyModal({ isOpen, onClose }) {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Bagaimana teknis penyajian data Open Data PU? <span className="text-red-500">*</span></label>
+                            <label className="block text-sm font-medium mb-2">Bagaimana teknis penyajian data Insight Hub? <span className="text-red-500">*</span></label>
                             <div className="flex justify-around items-center opacity-50 cursor-not-allowed">
                                 {['😡', '☹️', '😐', '🙂', '😄'].map((emoji, index) => <span key={index} className="text-4xl p-2">{emoji}</span>)}
                             </div>
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="suggestion" className="block text-sm font-medium mb-1">Menurut Anda, fitur apa yang perlu ditingkatkan pada Open Data PU?</label>
+                        <label htmlFor="suggestion" className="block text-sm font-medium mb-1">Menurut Anda, fitur apa yang perlu ditingkatkan pada Insight Hub?</label>
                         <textarea id="suggestion" name="suggestion" rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
                     <div className="text-right">
@@ -130,23 +111,104 @@ function AboutModal({ isOpen, onClose }) {
         </div>
     );
 }
+function RequestDataModal({ isOpen, onClose }) {
+    if (!isOpen) return null;
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        alert('Terima kasih! Pengajuan Anda akan kami proses.');
+        onClose();
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+            <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all" onClick={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center border-b pb-4 mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Formulir Pengajuan Data</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <p className="text-sm text-gray-600 mb-6">Tidak menemukan data yang Anda cari? Silakan isi formulir di bawah ini untuk mengajukan data baru.</p>
+                <form onSubmit={handleSubmit} className="space-y-4 text-gray-700">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="req_name" className="block text-sm font-medium mb-1">Nama Lengkap<span className="text-red-500">*</span></label>
+                            <input type="text" id="req_name" name="name" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                        </div>
+                        <div>
+                            <label htmlFor="req_phone" className="block text-sm font-medium mb-1">Nomor Telepon<span className="text-red-500">*</span></label>
+                            <input type="tel" id="req_phone" name="phone" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                        </div>
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="req_email" className="block text-sm font-medium mb-1">Email<span className="text-red-500">*</span></label>
+                            <input type="email" id="req_email" name="email" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                        </div>
+                        <div>
+                            <label htmlFor="req_entity" className="block text-sm font-medium mb-1">Instansi / Perorangan<span className="text-red-500">*</span></label>
+                            <select id="req_entity" name="entity" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Pilih salah satu...</option>
+                                <option value="instansi">Instansi</option>
+                                <option value="perorangan">Perorangan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="req_data_type" className="block text-sm font-medium mb-1">Jenis Data yang Dibutuhkan<span className="text-red-500">*</span></label>
+                        <textarea id="req_data_type" name="dataType" rows="4" placeholder="Jelaskan secara rinci data yang Anda butuhkan..." className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    </div>
+                    <div className="text-right pt-4">
+                        <button type="submit" className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition-colors">Kirim Pengajuan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+// [REVISI] Komponen Sidebar Menu untuk Aksi Sekunder
+function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurveyClick }) {
+    return (
+        <>
+            {/* Backdrop */}
+            <div 
+                className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
+                onClick={onClose}
+            ></div>
+            {/* Sidebar */}
+            <div 
+                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform z-50 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+            >
+                <div className="flex justify-between items-center p-4 border-b">
+                    <h3 className="font-bold text-lg text-gray-800">Menu</h3>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <nav className="p-4 flex flex-col space-y-2">
+                    <button onClick={onRequestDataClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Pengajuan Data</button>
+                    <button onClick={onAboutClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Tentang</button>
+                    <button onClick={onSurveyClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Beri Penilaian</button>
+                </nav>
+            </div>
+        </>
+    );
+}
 
 // Komponen Header
-function SmartHeader({ onAboutClick }) {
+function SmartHeader({ onMenuClick }) {
     const pathname = usePathname(); 
 
-    // --- PERUBAHAN UTAMA DI SINI ---
     const getLinkClassName = (path) => {
         const isActive = pathname === path || 
                          (path === '/catalog' && pathname.startsWith('/catalog')) ||
                          (path === '/api-explorer' && pathname.startsWith('/api-explorer'));
         
-        // Gaya untuk link tidak aktif
         let classes = "px-4 py-2 rounded-full transition-colors duration-200 font-semibold text-white hover:bg-white/10";
 
         if (isActive) {
-            // Gaya untuk link aktif: lingkaran kuning berisi dengan teks biru tua agar kontras
             classes = "px-4 py-2 rounded-full transition-colors duration-200 font-bold bg-yellow-400 text-blue-900";
         }
         
@@ -154,7 +216,7 @@ function SmartHeader({ onAboutClick }) {
     };
 
     return (
-        <header className="text-white shadow-lg sticky top-0 z-50 bg-gradient-to-b from-blue-900 to-blue-800">
+        <header className="text-white shadow-lg sticky top-0 z-40 bg-gradient-to-b from-blue-900 to-blue-800">
             <div className="container mx-auto px-6">
                 <nav className="relative flex justify-between items-center">
                     <div className="flex-1 flex justify-start">
@@ -169,14 +231,17 @@ function SmartHeader({ onAboutClick }) {
                             />
                         </Link>
                     </div>
+                    {/* [REVISI] Navigasi Utama (Primer) */}
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-4 text-sm">
                         <Link href="/" className={getLinkClassName('/')}>Home</Link>
                         <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog</Link>
                         <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
-                        <button onClick={onAboutClick} className={getLinkClassName('/tentang')}>Tentang</button> 
-        
                     </div>
+                    {/* [REVISI] Tombol Menu Aksi Sekunder */}
                     <div className="flex-1 flex justify-end">
+                        <button onClick={onMenuClick} className="p-2 rounded-full text-white hover:bg-white/10 md:block" aria-label="Buka menu">
+                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
                     </div>
                 </nav>
             </div>
@@ -236,20 +301,53 @@ function NewFooter() {
 export default function MainAppLayout({ children }) {
     const pathname = usePathname();
     
+    // State untuk semua modal
     const [isSurveyModalOpen, setSurveyModalOpen] = useState(false);
     const [isAboutModalOpen, setAboutModalOpen] = useState(false);
+    const [isRequestDataModalOpen, setRequestDataModalOpen] = useState(false);
+    // [REVISI] State baru untuk sidebar menu
+    const [isMenuOpen, setMenuOpen] = useState(false);
+    
+    // [REVISI] Fungsi-fungsi untuk menangani klik dari sidebar
+    const handleRequestDataClick = () => {
+        setMenuOpen(false);
+        setRequestDataModalOpen(true);
+    };
+    const handleAboutClick = () => {
+        setMenuOpen(false);
+        setAboutModalOpen(true);
+    };
+    const handleSurveyClick = () => {
+        setMenuOpen(false);
+        setSurveyModalOpen(true);
+    };
 
     return (
         <div className="flex flex-col min-h-screen">
-            <SmartHeader key={pathname} onAboutClick={() => setAboutModalOpen(true)} />
+            <SmartHeader 
+                key={pathname} 
+                onMenuClick={() => setMenuOpen(true)}
+            />
             <main className="flex-grow bg-slate-200">
                 {children}
             </main>
             <NewFooter />
             
-            <RateUsButton onClick={() => setSurveyModalOpen(true)} />
+            {/* [REVISI] Komponen RateUsButton dihapus */}
+            
+            {/* Semua modal dirender di sini */}
             <SurveyModal isOpen={isSurveyModalOpen} onClose={() => setSurveyModalOpen(false)} />
             <AboutModal isOpen={isAboutModalOpen} onClose={() => setAboutModalOpen(false)} />
+            <RequestDataModal isOpen={isRequestDataModalOpen} onClose={() => setRequestDataModalOpen(false)} />
+            
+            {/* [REVISI] Sidebar dirender di sini */}
+            <SidebarMenu 
+                isOpen={isMenuOpen} 
+                onClose={() => setMenuOpen(false)}
+                onRequestDataClick={handleRequestDataClick}
+                onAboutClick={handleAboutClick}
+                onSurveyClick={handleSurveyClick}
+            />
         </div>
     );
 }
