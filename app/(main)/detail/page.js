@@ -15,7 +15,6 @@ function DataPreviewer({ tableName }) {
         if (tableName) {
             setIsLoading(true);
             setError(null);
-            // [REVISI] Mengubah limit data dari 5 menjadi 3 baris
             fetch(`/api/explorer/${tableName}?requestType=data&limit=3`)
                 .then(res => res.ok ? res.json() : Promise.reject(res))
                 .then(data => {
@@ -190,7 +189,6 @@ ${purpose}
                                 )}
                                 {activeTab === 'preview' && (
                                     <div>
-                                        {/* [REVISI] Teks diubah dari 5 menjadi 3 baris */}
                                         <p className="text-xs text-gray-500 mb-2">Menampilkan 3 baris pertama sebagai contoh.</p>
                                         <DataPreviewer tableName={tableName} />
                                     </div>
@@ -201,7 +199,8 @@ ${purpose}
                 </div>
             </div>
             
-            <div onClick={() => setIsRequestModalOpen(false)} className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 transition-opacity ${isRequestModalOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            {/* [REVISI] Mengganti style backdrop agar sama dengan modal lain (menambahkan backdrop-blur-sm) */}
+            <div onClick={() => setIsRequestModalOpen(false)} className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity ${isRequestModalOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-6">Formulir Permintaan Data</h2>
                     <form onSubmit={handleRequestSubmit}>
