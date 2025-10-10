@@ -43,12 +43,12 @@ function SurveyModal({ isOpen, onClose }) {
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center border-b pb-4 mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">Survey Kepuasan Open Data PU</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">Survey Kepuasan Insight Hub</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
-                <p className="text-sm text-gray-600 mb-6">Terima kasih telah menggunakan Open Data PU. Kami menghargai masukan Anda untuk meningkatkan kualitas layanan dan sistem pengelolaan data kami.</p>
+                <p className="text-sm text-gray-600 mb-6">Terima kasih telah menggunakan Insight Hub. Kami menghargai masukan Anda untuk meningkatkan kualitas layanan dan sistem pengelolaan data kami.</p>
                 <form onSubmit={handleSubmit} className="space-y-6 text-gray-700">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium mb-1">Nama <span className="text-red-500">*</span></label>
@@ -75,7 +75,7 @@ function SurveyModal({ isOpen, onClose }) {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                         <div>
-                            <label className="block text-sm font-medium mb-2">Bagaimana pendapat Anda tentang Open Data PU? <span className="text-red-500">*</span></label>
+                            <label className="block text-sm font-medium mb-2">Bagaimana pendapat Anda tentang Insight Hub? <span className="text-red-500">*</span></label>
                             <div className="flex justify-around items-center">
                                 {['😡', '☹️', '😐', '🙂', '😄'].map((emoji, index) => (
                                     <button 
@@ -89,14 +89,14 @@ function SurveyModal({ isOpen, onClose }) {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Bagaimana teknis penyajian data Open Data PU? <span className="text-red-500">*</span></label>
+                            <label className="block text-sm font-medium mb-2">Bagaimana teknis penyajian data Insight Hub? <span className="text-red-500">*</span></label>
                             <div className="flex justify-around items-center opacity-50 cursor-not-allowed">
                                 {['😡', '☹️', '😐', '🙂', '😄'].map((emoji, index) => <span key={index} className="text-4xl p-2">{emoji}</span>)}
                             </div>
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="suggestion" className="block text-sm font-medium mb-1">Menurut Anda, fitur apa yang perlu ditingkatkan pada Open Data PU?</label>
+                        <label htmlFor="suggestion" className="block text-sm font-medium mb-1">Menurut Anda, fitur apa yang perlu ditingkatkan pada Insight Hub?</label>
                         <textarea id="suggestion" name="suggestion" rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
                     <div className="text-right">
