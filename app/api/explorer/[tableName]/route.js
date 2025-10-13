@@ -5,6 +5,15 @@ export async function GET(request, { params }) {
     const { tableName } = params;
     const { searchParams } = new URL(request.url);
     const requestType = searchParams.get('requestType');
+
+    // [REVISI] Baca parameter 'limit' dari URL
+    const limitParam = searchParams.get('limit');
+
+    if (!tableName || !requestType) {
+        return NextResponse.json({ message: 'Parameter tidak lengkap' }, { status: 400 });
+    }
+
+
     let client;
     try {
         client = await pool.connect();
@@ -34,6 +43,7 @@ export async function GET(request, { params }) {
             `;
             const result = await client.query(query, [tableName, schemaName]);
             return NextResponse.json(result.rows, { status: 200 });
+
         } 
         
         else if (requestType === 'data') {
@@ -41,6 +51,31 @@ export async function GET(request, { params }) {
             const safeSchema = client.escapeIdentifier(schemaName);
             const safeTable = client.escapeIdentifier(tableName);
             const dataQuery = `SELECT * FROM ${safeSchema}.${safeTable} LIMIT 30`;
+
+
+        } else if (requestType === 'data') {
+            const schemaQuery = `
+                SELECT schemaname FROM pg_tables 
+                WHERE tablename = $1 
+                AND (schemaname = 'v2_datalake' OR schemaname = 'v_datamart') 
+                LIMIT 1;
+            `;
+            const schemaResult = await client.query(schemaQuery, [tableName]);
+
+            if (schemaResult.rowCount === 0) {
+                return NextResponse.json({ message: `Tabel '${tableName}' tidak ditemukan.` }, { status: 404 });
+            }
+            const schemaName = schemaResult.rows[0].schemaname;
+
+            const safeSchema = client.escapeIdentifier(schemaName);
+            const safeTable = client.escapeIdentifier(tableName);
+            
+            // [REVISI] Tentukan limit secara dinamis
+            // Jika ada limitParam, gunakan itu. Jika tidak, default ke 500.
+            const limit = parseInt(limitParam, 10) || 500;
+            
+            const dataQuery = `SELECT * FROM ${safeSchema}.${safeTable} LIMIT ${limit}`;
+
             
             const result = await client.query(dataQuery);
             return NextResponse.json(result.rows, { status: 200 });

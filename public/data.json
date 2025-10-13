@@ -129,7 +129,7 @@
         "unor": "sda",
         "table_name": "tabel_sertifikasi_ahli_hidrologi",
         "kategori": "EHRM",
-        "deskripsi": "Data para ahli hidrologi di lingkungan PUPR yang telah tersertifikasi.",
+        "deskripsi": "Data para ahli hidrologi di lingkungan PU yang telah tersertifikasi.",
         "kolom": [{"name": "id_sertifikat", "type": "varchar", "length": "50"}, {"name": "nama_ahli", "type": "varchar", "length": "150"}, {"name": "level_keahlian", "type": "varchar", "length": "50"}]
     },
     {
