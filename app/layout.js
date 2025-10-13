@@ -8,7 +8,7 @@ import './globals.css';
 
 export const metadata = {
   title: 'PU Insight Hub',
-  description: 'Pusat Katalog dan Pertukaran Data Terintegrasi PUPR',
+  description: 'Pusat Katalog dan Pertukaran Data Terintegrasi',
 };
 
 export default function RootLayout({ children }) {

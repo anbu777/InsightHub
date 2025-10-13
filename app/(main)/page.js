@@ -260,11 +260,14 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                <section ref={unorRef} id="unor-section" className="scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
+                <section ref={unorRef} id="unor-section" className="relative scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
                     <div ref={unorSpyRef} className="container mx-auto">
+                        <Link href="/catalog" className={`absolute top-8 right-8 text-sm font-semibold text-blue-600 hover:underline ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+                            Lihat Semua &rarr;
+                        </Link>
                         <div className="text-center mb-12">
                             <h2 className={`text-3xl font-bold text-gray-800 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`}>Jelajahi Data Berdasarkan Unit Organisasi</h2>
-                            <p className={`text-gray-600 mt-2 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan data spesifik dari setiap Unit Organisasi di Kementerian PUPR.</p>
+                            <p className={`text-gray-600 mt-2 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan data spesifik dari setiap Unit Organisasi di Kementerian PU.</p>
                         </div>
                         {/* [REVISI] Mengubah grid menjadi 5 kolom di layar besar */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
