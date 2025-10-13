@@ -1,47 +1,30 @@
-// File: app/api/admin/dashboard-stats/route.js
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { dwhPool as pool } from '@/lib/db';
 
-// Baris ini adalah yang paling penting, yang hilang dari file Anda
-export async function GET() {
-    let client;
-    try {
-        client = await pool.connect();
+export async function GET(request) {
+  const supabase = createRouteHandlerClient({ cookies });
 
-        const columnCountQuery = `
-            SELECT COUNT(*) as column_count FROM information_schema.columns WHERE table_name LIKE 'sigi%';
-        `;
-        
-        const schemaCountsQuery = `
-            SELECT schemaname, COUNT(*) as count
-            FROM pg_tables
-            WHERE tablename LIKE 'sigi%'
-            GROUP BY schemaname;
-        `;
+  // Keamanan: Pastikan user sudah login
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
-        const [columnCountResult, schemaCountsResult] = await Promise.all([
-            client.query(columnCountQuery),
-            client.query(schemaCountsQuery)
-        ]);
-        
-        const responseData = {
-            stats: {
-                api_count: 78,
-                column_count: columnCountResult.rows[0].column_count,
-                schema_count: 1,
-            },
-            schemaCounts: schemaCountsResult.rows,
-        };
+  try {
+    // Memanggil satu fungsi RPC 'get_dashboard_analytics' untuk mengambil semua data statistik
+    const { data, error } = await supabase.rpc('get_dashboard_analytics');
 
-        return NextResponse.json(responseData, { status: 200 });
-
-    } catch (error) {
-        console.error('!!! KESALAHAN PADA API dashboard-stats:', error);
-        return new Response(JSON.stringify({ message: 'Internal Server Error', error: error.message }), { 
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
-    } finally {
-        if (client) client.release();
+    if (error) {
+      // Jika pemanggilan fungsi gagal, lemparkan error
+      throw error;
     }
+    
+    // Kembalikan data JSON lengkap yang sudah diolah oleh fungsi di database
+    return NextResponse.json(data);
+
+  } catch (err) {
+    console.error("Error saat mengambil statistik dashboard:", err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }

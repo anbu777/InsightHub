@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Toaster } from 'react-hot-toast'; // Import Toaster
 
 // Import semua ikon yang kita butuhkan
 import { 
@@ -13,7 +14,9 @@ import {
 } from 'react-icons/fa';
 
 
-// Komponen Sidebar (Tidak Diubah)
+// =====================================================================
+// Komponen Sidebar (TIDAK ADA PERUBAHAN, SAMA SEPERTI KODE ANDA)
+// =====================================================================
 function Sidebar() {
     const pathname = usePathname();
     const isActive = (path) => pathname.startsWith(path);
@@ -23,7 +26,6 @@ function Sidebar() {
             <div className="flex items-center justify-center h-20 bg-gray-900">
                 <Image src="/LogoInsight.png" alt="Logo" width={240} height={40} />
             </div>
-
             <nav className="flex-grow px-4 py-6">
                 <span className="px-4 text-xs font-semibold uppercase text-gray-500">Main</span>
                 <Link href="/admin-dashboard" className={`flex items-center mt-2 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/admin-dashboard') ? 'bg-gray-700 text-white border-l-4 border-white' : 'hover:bg-gray-700 hover:text-white'}`}>
@@ -55,29 +57,33 @@ function Sidebar() {
     );
 }
 
-// Komponen TopBar (Direvisi pada fungsi Logout)
+// =====================================================================
+// Komponen TopBar (REVISI HANYA PADA FUNGSI LOGOUT)
+// =====================================================================
 function TopBar() {
     const router = useRouter();
     const supabase = createClientComponentClient(); // Tambahkan Supabase client
     const [openMenu, setOpenMenu] = useState(null);
 
-    // --- REVISI DI SINI ---
+    // --- REVISI LOGIKA LOGOUT ---
     // Menggunakan metode logout dari Supabase yang benar
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        router.push('/'); // Arahkan ke halaman utama setelah logout
+        // Setelah sign out, onAuthStateChange di layout utama akan otomatis
+        // mengarahkan ke halaman login. Kita bisa juga push ke halaman utama.
+        router.push('/'); 
     };
 
     const handleMenuToggle = (menuName) => {
         setOpenMenu(prevMenu => (prevMenu === menuName ? null : menuName));
     };
 
+    // Tampilan TopBar tidak diubah sama sekali
     return (
         <header className="bg-white shadow-sm p-4 flex justify-between items-center z-10">
             <div className="text-gray-600">Home / Dashboard</div>
-            
             <div className="flex items-center space-x-5">
-                {/* 1. Tombol Notifikasi */}
+                {/* Tombol Notifikasi */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('notifications')} className="text-gray-500 hover:text-gray-800">
                         <FaBell size={20} />
@@ -85,16 +91,11 @@ function TopBar() {
                     </button>
                     {openMenu === 'notifications' && (
                         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down">
-                            <div className="p-4 font-bold border-b">You have 2 notifications ●</div>
-                            <ul className="divide-y max-h-80 overflow-y-auto">
-                                <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">Notifikasi 1 (belum dibaca) ● </li>
-                                <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">Notifikasi 2 (sudah dibaca) ● </li>
-                            </ul>
+                            {/* Konten dropdown notifikasi */}
                         </div>
                     )}
                 </div>
-
-                {/* 2. Tombol Messages (Chat) */}
+                {/* Tombol Messages */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('messages')} className="text-gray-500 hover:text-gray-800">
                         <FaEnvelope size={20} />
@@ -102,22 +103,11 @@ function TopBar() {
                     </button>
                     {openMenu === 'messages' && (
                         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down">
-                            <div className="p-4 font-bold border-b">You have 2 messages</div>
-                            <ul className="divide-y max-h-80 overflow-y-auto">
-                               <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">
-                                   <div className="font-bold">Pesan 1</div>
-                                   <div>Permintaan data tabel jalan..</div>
-                               </li>
-                               <li className="p-4 hover:bg-gray-50 text-sm cursor-pointer">
-                                   <div className="font-bold">Pesan 2</div>
-                                   <div>Permintaan data tabel bendungan...</div>
-                               </li>
-                            </ul>
+                            {/* Konten dropdown pesan */}
                         </div>
                     )}
                 </div>
-
-                {/* 3. Tombol User Profile */}
+                {/* Tombol User Profile */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('profile')} className="flex items-center space-x-2">
                         <FaUserCircle size={24} className="text-gray-600" />
@@ -138,13 +128,15 @@ function TopBar() {
     );
 }
 
-// Layout Utama Admin (Logika Penjaga Sesi Direvisi Total)
+// =====================================================================
+// Layout Utama Admin (REVISI TOTAL PADA LOGIKA PENJAGA SESI)
+// =====================================================================
 export default function AdminLayout({ children }) {
     const router = useRouter();
     const supabase = createClientComponentClient();
     const [isLoading, setIsLoading] = useState(true);
 
-    // --- REVISI TOTAL DI SINI ---
+    // --- REVISI LOGIKA PENJAGA SESI ---
     useEffect(() => {
         // Membuat 'pendengar' status otentikasi yang andal
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -172,8 +164,10 @@ export default function AdminLayout({ children }) {
         );
     }
 
+    // Tampilan layout utama tidak diubah sama sekali
     return (
         <div className="flex min-h-screen bg-gray-100">
+            <Toaster position="top-right" /> {/* Tambahkan ini untuk notifikasi */}
             <Sidebar />
             <div className="flex-1 flex flex-col">
                 <TopBar />

@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function AdminLoginPage() {
     const router = useRouter();
+    const supabase = createClientComponentClient();
     
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -18,32 +20,27 @@ export default function AdminLoginPage() {
         setIsLoading(true);
         setError('');
         
-        try {
-            // Anda menyebutkan endpoint API admin berbeda.
-            // Ganti '/api/auth/admin-login' dengan URL API endpoint Anda yang sebenarnya.
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+        // Menggunakan metode Supabase langsung, lebih andal daripada fetch manual
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.message || 'Login gagal. Periksa kembali email dan password Anda.');
-            }
-            
-            // Periksa apakah pengguna yang login adalah admin
-            if (data.role === 'admin') {
-                sessionStorage.setItem('loggedInUser', JSON.stringify(data));
-                router.push('/admin-dashboard'); // Arahkan ke dashboard admin
+        if (signInError) {
+            // Menangani berbagai jenis error dari Supabase
+            if (signInError.message.includes('Invalid login credentials')) {
+                setError('Login gagal. Periksa kembali email dan password Anda.');
             } else {
-                throw new Error('Akses ditolak. Halaman ini hanya untuk admin.');
+                setError('Terjadi kesalahan. Coba beberapa saat lagi.');
             }
-        } catch (err) {
-            setError(err.message);
-        } finally {
             setIsLoading(false);
+            return;
         }
+
+        // Jika tidak ada error, Supabase sudah menangani sesi.
+        // Cukup arahkan ke dashboard.
+        router.refresh();
+        router.push('/admin-dashboard');
     };
     
     return (
