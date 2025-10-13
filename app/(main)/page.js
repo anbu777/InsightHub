@@ -96,7 +96,7 @@ function FeaturedApis({ allApis, inView }) {
             </p>
             <div className="flex justify-between items-center mt-4">
                 <span className="text-xs font-semibold text-gray-500">{api.schemaname || 'Skema'}</span>
-                <Link href={`/detail?table=${api.tablename}`} className="text-xs bg-blue-600 text-white font-semibold py-1 px-3 rounded-md hover:bg-blue-700 transition-colors">
+                <Link href={`/detail?table=${api.tablename}`} className="text-xs bg-[#FFD100] text-[#0D2A57] font-bold py-1 px-3 rounded-md hover:bg-yellow-400 transition-colors">
                     Lihat Detail
                 </Link>
             </div>
@@ -106,7 +106,7 @@ function FeaturedApis({ allApis, inView }) {
     return (
         <section className="relative bg-white rounded-xl shadow-lg p-8 md:p-12">
             <div className="container mx-auto">
-                <Link href="/catalog" className={`absolute top-8 right-8 text-sm font-semibold text-blue-600 hover:underline ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+                <Link href="/catalog" className={`absolute top-8 right-8 text-sm font-semibold text-[#0D2A57] hover:underline ${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
                     Lihat Semua &rarr;
                 </Link>
                 <div className="text-center mb-10">
@@ -120,7 +120,7 @@ function FeaturedApis({ allApis, inView }) {
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
                     <div className={`${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.3s'}}>
-                        <div className="bg-blue-600 text-yellow-300 p-3 rounded-t-lg flex items-center gap-2">
+                        <div className="bg-[#0D2A57] text-yellow-300 p-3 rounded-t-lg flex items-center gap-2">
                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                            <h3 className="font-bold">Dataset Populer</h3>
                         </div>
@@ -131,7 +131,7 @@ function FeaturedApis({ allApis, inView }) {
                         </div>
                     </div>
                     <div className={`${inView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
-                        <div className="bg-blue-600 text-yellow-300 p-3 rounded-t-lg flex items-center gap-2">
+                        <div className="bg-[#0D2A57] text-yellow-300 p-3 rounded-t-lg flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
                             <h3 className="font-bold">Dataset Terbaru</h3>
                         </div>
@@ -229,21 +229,21 @@ export default function HomePage() {
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                                 <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-zoom-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
-                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-600 text-yellow-300 mb-4">
+                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-[#0D2A57] text-yellow-300 mb-4">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-800 mb-2">1. Temukan Data</h3>
                                     <p className="text-gray-600 text-center text-sm">Gunakan fitur pencarian atau jelajahi katalog untuk menemukan informasi yang relevan.</p>
                                 </div>
                                 <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-zoom-in' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
-                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-600 text-yellow-300 mb-4">
+                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-[#0D2A57] text-yellow-300 mb-4">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-800 mb-2">2. Ajukan Permintaan</h3>
                                     <p className="text-gray-600 text-center text-sm">Setelah login, ajukan permintaan akses pada detail data dengan menjelaskan tujuan penggunaan.</p>
                                 </div>
                                 <div className={`flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${howItWorksInView ? 'animate-zoom-in' : 'opacity-0'}`} style={{ animationDelay: '0.7s' }}>
-                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-600 text-yellow-300 mb-4">
+                                    <div className="flex items-center justify-center h-24 w-24 rounded-full bg-[#0D2A57] text-yellow-300 mb-4">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25" /></svg>
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-800 mb-2">3. Integrasikan API</h3>
@@ -262,74 +262,145 @@ export default function HomePage() {
 
                 <section ref={unorRef} id="unor-section" className="relative scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
                     <div ref={unorSpyRef} className="container mx-auto">
-                        <Link href="/catalog" className={`absolute top-8 right-8 text-sm font-semibold text-blue-600 hover:underline ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+                        <Link href="/catalog" className={`absolute top-8 right-8 text-sm font-semibold text-[#0D2A57] hover:underline ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
                             Lihat Semua &rarr;
                         </Link>
                         <div className="text-center mb-12">
                             <h2 className={`text-3xl font-bold text-gray-800 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`}>Jelajahi Data Berdasarkan Unit Organisasi</h2>
                             <p className={`text-gray-600 mt-2 ${unorInView ? 'animate-fade-in' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>Temukan data spesifik dari setiap Unit Organisasi di Kementerian PU.</p>
                         </div>
-                        {/* [REVISI] Mengubah grid menjadi 5 kolom di layar besar */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                            <Link href="/catalog?unor=sda" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <Image src="https://img.icons8.com/pastel-glyph/64/1e3a8a/dam.png" width={64} height={64} alt="SDA Icon" className="h-16 w-16" />
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 16H58V24C58 24 51 28 44 28C37 28 34 24 27 24C20 24 17 28 10 28C3 28 6 24 6 24V16Z" fill="#0D2A57"/>
+                                    <path d="M52 52C52 52 48 44 41 44C34 44 32 52 25 52C18 52 14 44 8 44C2 44 2 32 2 32H62C62 32 62 44 52 52Z" fill="#0D2A57"/>
+                                    <path d="M41 44C34 44 32 32 25 32C18 32 14 44 8 44" stroke="#FFD100" strokeWidth="4" strokeLinecap="round"/>
+                                    <path d="M30 40L33 36L36 40" stroke="#FFD100" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M33 36V28" stroke="#FFD100" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Sumber Daya Air</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pengelolaan sumber daya air.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=bina_marga" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75h-10.5a.75.75 0 00-.75.75v10.5a.75.75 0 00.75.75h10.5a.75.75 0 00.75-.75V7.5a.75.75 0 00-.75-.75zM12 1.5A10.5 10.5 0 001.5 12a10.5 10.5 0 0010.5 10.5 10.5 10.5 0 0010.5-10.5A10.5 10.5 0 0012 1.5zM12 6.75v.007" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75h6v10.5H9V6.75z" /></svg>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 56L16 12H20L32 56L28 56L26 48H18L16 56H4Z" fill="#0D2A57"/>
+                                    <path d="M44 12H48L60 56H48L46 48H38L36 56H24L36 12H44Z" fill="#0D2A57"/>
+                                    <path d="M2 36H62" fill="#0D2A57"/>
+                                    <path d="M2 36H62" stroke="#FFD100" strokeWidth="4"/>
+                                    <path d="M46 32L50 36L46 40" stroke="#FFD100" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M18 12C18 12 32 24 46 12" stroke="#FFD100" strokeWidth="4" strokeLinecap="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Bina Marga</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait penyelenggaraan jalan.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=cipta_karya" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18h16.5M5.25 6v15H3.75m16.5-15v15h1.5M9 6.75h6M9 11.25h6M9 15.75h6" /></svg>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 58V40L14 32L26 40V58H2Z" fill="#0D2A57"/>
+                                    <path d="M2 40L14 32L26 40" stroke="#FFD100" strokeWidth="4" strokeLinejoin="round"/>
+                                    <path d="M22 20H34V58H22V20Z" fill="#0D2A57"/>
+                                    <rect x="25" y="48" width="6" height="4" fill="#FFD100"/>
+                                    <rect x="25" y="40" width="6" height="4" fill="#FFD100"/>
+                                    <rect x="25" y="32" width="6" height="4" fill="#FFD100"/>
+                                    <rect x="25" y="24" width="6" height="4" fill="#FFD100"/>
+                                    <path d="M38 32H48V58H38V32Z" fill="#0D2A57"/>
+                                    <rect x="40" y="50" width="6" height="4" fill="#FFD100"/>
+                                    <rect x="40" y="42" width="6" height="4" fill="#FFD100"/>
+                                    <rect x="40" y="34" width="6" height="4" fill="#FFD100"/>
+                                    <path d="M52 28C52 18 62 18 62 28C62 38 52 38 52 28Z" fill="#0D2A57"/>
+                                    <path d="M57 32V58" stroke="#0D2A57" strokeWidth="4"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Cipta Karya</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pengembangan kawasan permukiman.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=pembiayaan_infrastruktur" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m-3-1-3 1.091m0 3.818-3-1.091m0 0l-4.5 1.636m12-3.364-12 4.364" /></svg>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="8" y="40" width="10" height="16" fill="#0D2A57"/>
+                                    <rect x="22" y="32" width="10" height="24" fill="#0D2A57"/>
+                                    <rect x="36" y="22" width="10" height="34" fill="#0D2A57"/>
+                                    <path d="M50 12H60V56H50V12Z" fill="#0D2A57"/>
+                                    <path d="M50 24H60V12H50V24Z" fill="#FFD100"/>
+                                    <path d="M55 4L55 18" stroke="#FFD100" strokeWidth="3" strokeLinecap="round"/>
+                                    <path d="M51 8L55 4L59 8" stroke="#FFD100" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Pembiayaan Infrastruktur</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pembiayaan infrastruktur.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=bina_konstruksi" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <Image src="https://img.icons8.com/ios/100/1e3a8a/architect.png" width={64} height={64} alt="Bina Konstruksi Icon" className="h-16 w-16" />
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M28 8H62L56 16H28V8Z" fill="#0D2A57"/>
+                                    <path d="M56 16L52 24H46L50 16H56Z" fill="#FFD100"/>
+                                    <path d="M24 8H32V60H24V8Z" fill="#0D2A57"/>
+                                    <path d="M4 60L28 32H20L4 60Z" fill="#0D2A57"/>
+                                    <path d="M44 60L28 32H36L44 60Z" fill="#0D2A57"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Bina Konstruksi</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pembinaan jasa konstruksi.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=prasarana_strategis" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <Image src="https://img.icons8.com/dotty/80/1e3a8a/empty-bed.png" width={64} height={64} alt="BPIW Icon" className="h-16 w-16"/>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 10C10 10 12 4 32 4C52 4 54 10 54 10V32C54 44 32 58 32 58C32 58 10 44 10 32V10Z" fill="#0D2A57"/>
+                                    <path d="M22 26H42" stroke="#FFD100" strokeWidth="4" strokeLinecap="round"/>
+                                    <path d="M25 26V38H29V26" stroke="#FFD100" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M35 26V38H39V26" stroke="#FFD100" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Direktorat Jenderal Prasarana Strategis</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait dukungan prasarana strategis.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                              <Link href="/catalog?unor=sekretariat_jenderal" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h6.75M9 11.25h6.75M9 15.75h6.75M9 20.25h6.75" /></svg>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 4H42L52 14V58H16V4Z" fill="#0D2A57"/>
+                                    <path d="M42 4V14H52" fill="#0D2A57" stroke="#FFD100" strokeWidth="2"/>
+                                    <path d="M34 38C34 34.6863 36.6863 32 40 32C43.3137 32 46 34.6863 46 38C46 41.3137 43.3137 44 40 44C36.6863 44 34 41.3137 34 38Z" fill="#FFD100"/>
+                                    <path d="M40 32V28M40 44V48M46 38H50M34 38H30M44.2426 33.7574L46.364 31.636M35.7574 42.2426L33.636 44.364M35.7574 33.7574L33.636 31.636M44.2426 42.2426L46.364 44.364" stroke="#FFD100" strokeWidth="3" strokeLinecap="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Sekretariat Jenderal</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data administrasi dan dukungan internal.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=inspektorat_jenderal" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5h.008v.008h-.008v-.008z" /></svg>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M28 4H52V12H28V4Z" fill="#0D2A57"/>
+                                    <path d="M12 18H52V26H12V18Z" fill="#0D2A57"/>
+                                    <path d="M12 32H52V40H12V32Z" fill="#0D2A57"/>
+                                    <path d="M12 46H32V54H12V46Z" fill="#0D2A57"/>
+                                    <circle cx="38" cy="30" r="14" stroke="#FFD100" strokeWidth="4"/>
+                                    <path d="M49 41L58 50" stroke="#FFD100" strokeWidth="4" strokeLinecap="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Inspektorat Jenderal</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data pengawasan dan audit internal.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=bpsdm" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962A3.375 3.375 0 0110.5 9.75a3.375 3.375 0 013.375 3.375m0 0c0 1.842-1.493 3.336-3.333 3.336h-1.5a3.336 3.336 0 01-3.333-3.336M9 5.25A3.375 3.375 0 0112.375 2a3.375 3.375 0 013.375 3.25" /></svg>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M32 34C24 34 14 38 14 48V58H50V48C50 38 40 34 32 34Z" fill="#0D2A57"/>
+                                    <path d="M32 36C38.6274 36 44 30.6274 44 24C44 17.3726 38.6274 12 32 12C25.3726 12 20 17.3726 20 24C20 30.6274 25.3726 36 32 36Z" fill="#0D2A57"/>
+                                    <path d="M32 6V22" stroke="#FFD100" strokeWidth="4" strokeLinecap="round"/>
+                                    <path d="M26 12L32 6L38 12" stroke="#FFD100" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Badan Pengembangan Sumber Daya Manusia</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data terkait pelatihan dan pengembangan SDM.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                             <Link href="/catalog?unor=bpiw" className={`bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${unorInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-                                <svg className="h-16 w-16 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.5-12v12m0 0l-3-3m3 3l3-3m-3.75 2.25L12 18.75l-2.25-2.25" /></svg>
+                                <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 14L4 40L14 54L30 58L50 48L60 24L52 8L30 6L10 14Z" fill="#0D2A57"/>
+                                    <circle cx="16" cy="24" r="4" fill="#FFD100"/>
+                                    <circle cx="46" cy="18" r="4" fill="#FFD100"/>
+                                    <circle cx="30" cy="48" r="4" fill="#FFD100"/>
+                                    <circle cx="48" cy="38" r="4" fill="#FFD100"/>
+                                    <path d="M18 27L28 45" stroke="#FFD100" strokeWidth="3" strokeLinecap="round"/>
+                                    <path d="M44 21L33 45" stroke="#FFD100" strokeWidth="3" strokeLinecap="round"/>
+                                    <path d="M46 22V35" stroke="#FFD100" strokeWidth="3" strokeLinecap="round"/>
+                                </svg>
                                 <h3 className="text-lg font-bold text-gray-800 mt-4">Badan Pengembangan Infrastruktur Wilayah</h3>
                                 <p className="text-xs text-gray-500 mt-1 flex-grow">Data perencanaan dan pengembangan infrastruktur.</p>
-                                <span className="mt-4 w-full bg-blue-700 text-white font-semibold py-2 rounded-lg">Jelajahi Katalog</span>
+                                <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg">Jelajahi Katalog</span>
                             </Link>
                         </div>
                     </div>

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { NavigationContext } from './contexts/NavigationContext';
 
-// --- Komponen-komponen Modal (Tidak Diubah) ---
+// --- Komponen-komponen Modal ---
 function SurveyModal({ isOpen, onClose }) {
     if (!isOpen) return null;
     const [rating, setRating] = useState('');
@@ -34,7 +34,7 @@ function SurveyModal({ isOpen, onClose }) {
                 <form onSubmit={handleSubmit} className="space-y-6 text-gray-700">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium mb-1">Nama <span className="text-red-500">*</span></label>
-                        <input type="text" id="name" name="name" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                        <input type="text" id="name" name="name" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -46,7 +46,7 @@ function SurveyModal({ isOpen, onClose }) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-2">Rentang Usia <span className="text-red-500">*</span></label>
-                            <select name="age" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <select name="age" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required>
                                 <option value="">Pilih usia...</option>
                                 <option value="<20">{'< 20 Tahun'}</option>
                                 <option value="21-30">21 - 30 Tahun</option>
@@ -79,7 +79,7 @@ function SurveyModal({ isOpen, onClose }) {
                     </div>
                     <div>
                         <label htmlFor="suggestion" className="block text-sm font-medium mb-1">Menurut Anda, fitur apa yang perlu ditingkatkan pada Insight Hub?</label>
-                        <textarea id="suggestion" name="suggestion" rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <textarea id="suggestion" name="suggestion" rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]"></textarea>
                     </div>
                     <div className="text-right">
                         <button type="submit" className="bg-green-600 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition-colors">Kirim</button>
@@ -106,7 +106,7 @@ function AboutModal({ isOpen, onClose }) {
                     <p>Dengan adanya Insight Hub, kami bertujuan untuk meningkatkan transparansi, mendorong inovasi berbasis data, dan memfasilitasi pertukaran informasi yang efisien untuk mendukung pengambilan keputusan yang lebih baik dalam pembangunan infrastruktur nasional.</p>
                 </div>
                 <div className="text-right mt-8">
-                    <button onClick={onClose} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition-colors">Tutup</button>
+                    <button onClick={onClose} className="bg-[#0D2A57] text-white font-bold py-2 px-6 rounded-md hover:bg-[#0D2A57]/90 transition-colors">Tutup</button>
                 </div>
             </div>
         </div>
@@ -135,21 +135,21 @@ function RequestDataModal({ isOpen, onClose }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label htmlFor="req_name" className="block text-sm font-medium mb-1">Nama Lengkap<span className="text-red-500">*</span></label>
-                            <input type="text" id="req_name" name="name" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                            <input type="text" id="req_name" name="name" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required />
                         </div>
                         <div>
                             <label htmlFor="req_phone" className="block text-sm font-medium mb-1">Nomor Telepon<span className="text-red-500">*</span></label>
-                            <input type="tel" id="req_phone" name="phone" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                            <input type="tel" id="req_phone" name="phone" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required />
                         </div>
                     </div>
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label htmlFor="req_email" className="block text-sm font-medium mb-1">Email<span className="text-red-500">*</span></label>
-                            <input type="email" id="req_email" name="email" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                            <input type="email" id="req_email" name="email" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required />
                         </div>
                         <div>
                             <label htmlFor="req_entity" className="block text-sm font-medium mb-1">Instansi / Perorangan<span className="text-red-500">*</span></label>
-                            <select id="req_entity" name="entity" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <select id="req_entity" name="entity" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required>
                                 <option value="">Pilih salah satu...</option>
                                 <option value="instansi">Instansi</option>
                                 <option value="perorangan">Perorangan</option>
@@ -158,10 +158,10 @@ function RequestDataModal({ isOpen, onClose }) {
                     </div>
                     <div>
                         <label htmlFor="req_data_type" className="block text-sm font-medium mb-1">Jenis Data yang Dibutuhkan<span className="text-red-500">*</span></label>
-                        <textarea id="req_data_type" name="dataType" rows="4" placeholder="Jelaskan secara rinci data yang Anda butuhkan..." className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        <textarea id="req_data_type" name="dataType" rows="4" placeholder="Jelaskan secara rinci data yang Anda butuhkan..." className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required></textarea>
                     </div>
                     <div className="text-right pt-4">
-                        <button type="submit" className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition-colors">Kirim Pengajuan</button>
+                        <button type="submit" className="bg-[#0D2A57] text-white font-bold py-2 px-6 rounded-md hover:bg-[#0D2A57]/90 transition-colors">Kirim Pengajuan</button>
                     </div>
                 </form>
             </div>
@@ -173,9 +173,9 @@ function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurv
     const getLinkClassName = (path) => {
         const isActive = pathname.startsWith(path);
         if (isActive) {
-            return "w-full text-left px-4 py-3 rounded-md font-bold bg-blue-100 text-blue-700 transition-colors";
+            return "w-full text-left px-4 py-3 rounded-md font-bold bg-yellow-400/20 text-[#0D2A57] transition-colors";
         }
-        return "w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors";
+        return "w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-[#0D2A57] font-semibold transition-colors";
     };
 
     return (
@@ -196,9 +196,9 @@ function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurv
                 <nav className="p-4 flex flex-col space-y-2">
                     <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog Data</Link> 
                     <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
-                    <button onClick={onRequestDataClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Pengajuan Data</button>
-                    <button onClick={onAboutClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Tentang</button>
-                    <button onClick={onSurveyClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-semibold transition-colors">Beri Penilaian</button>
+                    <button onClick={onRequestDataClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-[#0D2A57] font-semibold transition-colors">Pengajuan Data</button>
+                    <button onClick={onAboutClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-[#0D2A57] font-semibold transition-colors">Tentang</button>
+                    <button onClick={onSurveyClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-[#0D2A57] font-semibold transition-colors">Beri Penilaian</button>
                 </nav>
             </div>
         </>
@@ -213,13 +213,13 @@ function SmartHeader({ onMenuClick }) {
     const getLinkClassName = (sectionId) => {
         const baseClasses = "px-4 py-2 rounded-full transition-colors duration-200 font-semibold text-white hover:bg-white/10";
         if (activeSection === sectionId) {
-            return "px-4 py-2 rounded-full transition-colors duration-200 font-bold bg-yellow-400 text-blue-900";
+            return "px-4 py-2 rounded-full transition-colors duration-200 font-bold bg-yellow-400 text-[#0D2A57]";
         }
         return baseClasses;
     };
 
     return (
-        <header className="text-white shadow-lg sticky top-0 z-40 bg-gradient-to-b from-blue-900 to-blue-800">
+        <header className="text-white shadow-lg sticky top-0 z-40 bg-[#0D2A57]">
             <div className="container mx-auto px-6">
                 <nav className="relative flex justify-between items-center">
                     <div className="flex-1 flex justify-start">
@@ -257,10 +257,10 @@ function SmartHeader({ onMenuClick }) {
     );
 }
 
-// Komponen Footer (Tidak Berubah)
+// Komponen Footer
 function NewFooter() {
     return (
-        <footer className="bg-gradient-to-b from-blue-900 to-blue-800 text-white border-t border-blue-700">
+        <footer className="bg-[#0D2A57] text-white border-t border-white/10">
             <div className="container mx-auto px-6 py-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
                     <div className="flex flex-col items-center md:items-start text-center md:text-left">
@@ -296,8 +296,8 @@ function NewFooter() {
                     </div>
                 </div>
             </div>
-            <div className="bg-yellow-500">
-                <div className="container mx-auto px-6 py-4 text-center text-xs text-blue-900 font-medium">
+            <div className="bg-yellow-400">
+                <div className="container mx-auto px-6 py-4 text-center text-xs text-[#0D2A57] font-bold">
                     <p>Copyright © {new Date().getFullYear()} Pusat Data dan Teknologi Informasi. Kementerian Pekerjaan Umum.</p>
                 </div>
             </div>
@@ -337,7 +337,7 @@ export default function MainAppLayout({ children }) {
                     key={pathname} 
                     onMenuClick={() => setMenuOpen(true)}
                 />
-                <main className="flex-grow bg-slate-200">
+                <main className="flex-grow bg-[#F8F9FA]">
                     {children}
                 </main>
                 <NewFooter />

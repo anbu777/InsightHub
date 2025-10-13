@@ -120,7 +120,7 @@ ${purpose}
     return (
         <>
             <div className="container mx-auto px-6 py-12">
-                <Link href="/catalog" className="text-blue-600 hover:underline mb-6 inline-block">
+                <Link href="/catalog" className="text-[#0D2A57] hover:underline mb-6 inline-block">
                     ← Kembali ke Katalog
                 </Link>
                 <div className="bg-white p-8 rounded-xl shadow-md border">
@@ -142,7 +142,7 @@ ${purpose}
                                 </div>
                                 <button 
                                     onClick={() => setIsRequestModalOpen(true)}
-                                    className="flex-shrink-0 w-full sm:w-auto bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">
+                                    className="flex-shrink-0 w-full sm:w-auto bg-[#FFD100] text-[#0D2A57] font-bold py-2 px-4 rounded-lg hover:bg-yellow-400 transition-colors">
                                     Ajukan Permintaan Data
                                 </button>
                             </div>
@@ -152,13 +152,13 @@ ${purpose}
                                 <nav className="-mb-px flex space-x-6" aria-label="Tabs">
                                     <button
                                         onClick={() => setActiveTab('struktur')}
-                                        className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'struktur' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+                                        className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'struktur' ? 'border-[#0D2A57] text-[#0D2A57]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
                                     >
                                         Struktur Data (Metadata)
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('preview')}
-                                        className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'preview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+                                        className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'preview' ? 'border-[#0D2A57] text-[#0D2A57]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
                                     >
                                         Preview Data
                                     </button>
@@ -180,7 +180,7 @@ ${purpose}
                                                 {columns.map((col) => (
                                                     <tr key={col.column_name} className="hover:bg-gray-50">
                                                         <td className="px-6 py-4 font-semibold text-gray-800 font-mono">{col.column_name}</td>
-                                                        <td className="px-6 py-4 text-blue-800 font-mono">{col.formatted_data_type}</td>
+                                                        <td className="px-6 py-4 text-[#0D2A57] font-mono">{col.formatted_data_type}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -199,7 +199,6 @@ ${purpose}
                 </div>
             </div>
             
-            {/* [REVISI] Mengganti style backdrop agar sama dengan modal lain (menambahkan backdrop-blur-sm) */}
             <div onClick={() => setIsRequestModalOpen(false)} className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity ${isRequestModalOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-6">Formulir Permintaan Data</h2>
@@ -220,7 +219,7 @@ ${purpose}
                                     <option value="json">JSON</option>
                                 </select>
                             </div>
-                            <button type="submit" className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-lg hover:bg-blue-700">
+                            <button type="submit" className="w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2.5 rounded-lg hover:bg-yellow-400 transition-colors">
                                 Salin Teks Permintaan
                             </button>
                         </div>

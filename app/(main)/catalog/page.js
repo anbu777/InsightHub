@@ -10,9 +10,8 @@ function CatalogContent() {
     const router = useRouter(); 
     const searchParams = useSearchParams(); 
 
-    // [REVISI] State baru untuk mengontrol visibilitas popup filter
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const filterRef = useRef(null); // Ref untuk mendeteksi klik di luar popup
+    const filterRef = useRef(null);
 
     const [allApiData, setAllApiData] = useState([]);
     const [paginatedData, setPaginatedData] = useState([]);
@@ -22,9 +21,8 @@ function CatalogContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSigiChecked, setIsSigiChecked] = useState(true);
     const [error, setError] = useState(null); 
-    const rowsPerPage = 12; // [REVISI] Jumlah item per halaman disesuaikan untuk grid 4 kolom (kelipatan 4)
+    const rowsPerPage = 12;
 
-    // [REVISI] useEffect untuk menutup popup filter saat klik di luar
     useEffect(() => {
         function handleClickOutside(event) {
             if (filterRef.current && !filterRef.current.contains(event.target)) {
@@ -111,7 +109,7 @@ function CatalogContent() {
                 <button
                     key={i}
                     onClick={() => setCurrentPage(i)}
-                    className={`pagination-btn mx-1 px-3 py-1 border rounded-md text-sm ${currentPage === i ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}
+                    className={`pagination-btn mx-1 px-3 py-1 border rounded-md text-sm ${currentPage === i ? 'bg-[#0D2A57] text-white' : 'bg-white text-gray-700'}`}
                 >
                     {i}
                 </button>
@@ -121,11 +119,11 @@ function CatalogContent() {
     };
 
     const formatTitle = (tablename) => {
-      return tablename
-        .replace(/^(sigi_)/, '')
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+        return tablename
+            .replace(/^(sigi_)/, '')
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
     };
     
     if (error) {
@@ -135,10 +133,8 @@ function CatalogContent() {
     return (
         <div className="container mx-auto px-6 py-12"> 
             
-            {/* [REVISI] Toolbar Pencarian dan Filter yang Sticky */}
-            <div className="sticky top-24 z-30 bg-slate-200/80 backdrop-blur-sm py-4 mb-8 -mx-2 px-2 rounded-lg">
+            <div className="sticky top-24 z-30 bg-[#F8F9FA]/80 backdrop-blur-sm py-4 mb-8 -mx-2 px-2 rounded-lg">
                 <div className="relative flex items-center gap-4">
-                    {/* [REVISI] Search Bar dengan style baru */}
                     <div className="relative flex-grow">
                          <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 left-4 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                         <input 
@@ -146,11 +142,10 @@ function CatalogContent() {
                             placeholder="Cari dataset atau informasi..."
                             value={searchTerm}
                             onChange={handleSearchInput}
-                            className="w-full pl-12 pr-4 py-3 bg-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                            className="w-full pl-12 pr-4 py-3 bg-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0D2A57] text-gray-900"
                         />
                     </div>
                     
-                    {/* [REVISI] Tombol untuk membuka popup filter */}
                     <div className="relative" ref={filterRef}>
                         <button 
                             onClick={() => setIsFilterOpen(prev => !prev)}
@@ -160,7 +155,6 @@ function CatalogContent() {
                             <span>Filter</span>
                         </button>
                         
-                        {/* [REVISI] Konten Popup Filter */}
                         {isFilterOpen && (
                             <div className="absolute top-full right-0 mt-2 w-64 bg-white p-6 rounded-xl shadow-lg border z-40">
                                 <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Filter</h3>
@@ -173,7 +167,7 @@ function CatalogContent() {
                                                     type="checkbox" 
                                                     checked={isSigiChecked}
                                                     onChange={handleSigiFilterChange}
-                                                    className="filter-checkbox h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                    className="filter-checkbox h-4 w-4 rounded border-gray-300 text-[#0D2A57] focus:ring-[#0D2A57]"
                                                 />
                                                 <span className="ml-2 text-gray-600">Sigi</span>
                                             </div>
@@ -193,7 +187,6 @@ function CatalogContent() {
                 <p className="text-center text-gray-500">Loading data...</p>
             ) : (
                 <>
-                    {/* [REVISI] Grid diubah menjadi 4 kolom di layar XL */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {paginatedData.length > 0 ? (
                             paginatedData.map(item => (
@@ -206,7 +199,7 @@ function CatalogContent() {
                                     </div>
                                     <h3 className="text-md font-bold text-gray-800 text-center">{formatTitle(item.table_name)}</h3>
                                     <p className="text-sm text-gray-600 text-center mt-1 mb-4 flex-grow h-20 overflow-hidden">{item.deskripsi}</p>
-                                    <Link href={`/detail?table=${item.table_name}`} className="text-center w-full mt-auto bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                                    <Link href={`/detail?table=${item.table_name}`} className="text-center w-full mt-auto bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg hover:bg-yellow-400 transition-colors text-sm">
                                         LIHAT DETAIL
                                     </Link>
                                 </div>
