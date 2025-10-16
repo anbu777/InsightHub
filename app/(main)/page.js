@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
-import { descriptions } from '@/lib/table_descriptions';
 import { NavigationContext } from './contexts/NavigationContext';
 
 // --- Komponen-komponen Anak (Tidak Diubah) ---
