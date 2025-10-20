@@ -1,12 +1,14 @@
-"use client"; 
+// app/(main)/layout.js
 
-import { useState, useEffect, useContext } from 'react';
+"use client";
+
+import { useState, useEffect, useContext, useRef } from 'react'; // DIUBAH: Tambahkan 'useRef'
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { NavigationContext } from './contexts/NavigationContext';
 
-// --- Komponen-komponen Modal ---
+// --- Komponen-komponen Modal (Tidak Diubah) ---
 function SurveyModal({ isOpen, onClose }) {
     if (!isOpen) return null;
     const [rating, setRating] = useState('');
@@ -101,11 +103,7 @@ function AboutModal({ isOpen, onClose }) {
                     </button>
                 </div>
                 <div className="space-y-4 text-gray-600">
-
                     <p><strong>PU Insight Hub</strong> adalah sebuah platform terpusat yang dirancang untuk menjadi gerbang utama dalam mengakses dan memanfaatkan data di lingkungan Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR).</p>
-
-                    <p><strong>Insight Hub</strong> adalah sebuah platform terpusat yang dirancang untuk menjadi gerbang utama dalam mengakses dan memanfaatkan data di lingkungan Kementerian Pekerjaan Umum.</p>
-
                     <p>Platform ini berfungsi sebagai katalog data terintegrasi yang memungkinkan pengguna, baik dari internal kementerian maupun publik, untuk dengan mudah menemukan, menjelajahi, dan mengajukan permintaan akses terhadap berbagai set data yang tersedia.</p>
                     <p>Dengan adanya Insight Hub, kami bertujuan untuk meningkatkan transparansi, mendorong inovasi berbasis data, dan memfasilitasi pertukaran informasi yang efisien untuk mendukung pengambilan keputusan yang lebih baik dalam pembangunan infrastruktur nasional.</p>
                 </div>
@@ -118,13 +116,11 @@ function AboutModal({ isOpen, onClose }) {
 }
 function RequestDataModal({ isOpen, onClose }) {
     if (!isOpen) return null;
-
     const handleSubmit = (event) => {
         event.preventDefault();
         alert('Terima kasih! Pengajuan Anda akan kami proses.');
         onClose();
     };
-
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
             <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all" onClick={(e) => e.stopPropagation()}>
@@ -209,17 +205,48 @@ function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurv
     );
 }
 
-// Komponen Header
+// ===========================================
+// 🔹 KOMPONEN HEADER YANG DI REVISI
+// ===========================================
 function SmartHeader({ onMenuClick }) {
     const pathname = usePathname(); 
     const { activeSection } = useContext(NavigationContext);
+    
+    // BARU: State untuk menyimpan style (posisi & lebar) indikator
+    const [indicatorStyle, setIndicatorStyle] = useState({ opacity: 0 });
+    // BARU: Refs untuk menyimpan elemen DOM dari link navigasi dan containernya
+    const navLinksRef = useRef([]);
+    const navContainerRef = useRef(null);
 
-    const getLinkClassName = (sectionId) => {
-        const baseClasses = "px-4 py-2 rounded-full transition-colors duration-200 font-semibold text-white hover:bg-white/10";
-        if (activeSection === sectionId) {
-            return "px-4 py-2 rounded-full transition-colors duration-200 font-bold bg-yellow-400 text-[#0D2A57]";
+    // BARU: Definisikan item navigasi dalam sebuah array agar mudah di-map
+    const navItems = [
+        { id: 'hero', label: 'Beranda', href: '/#hero' },
+        { id: 'how-it-works', label: 'Cara Kerja', href: '/#how-it-works' },
+        { id: 'featured-catalog', label: 'Unggulan', href: '/#featured-catalog' },
+        { id: 'unor-section', label: 'Unit Organisasi', href: '/#unor-section' }
+    ];
+
+    // BARU: useEffect untuk mengkalkulasi posisi indikator saat activeSection berubah
+    useEffect(() => {
+        const activeIndex = navItems.findIndex(item => item.id === activeSection);
+        const activeLinkEl = navLinksRef.current[activeIndex];
+        
+        if (activeLinkEl) {
+            setIndicatorStyle({
+                left: activeLinkEl.offsetLeft,
+                width: activeLinkEl.offsetWidth,
+                opacity: 1,
+            });
         }
-        return baseClasses;
+    }, [activeSection, pathname]); // Jalankan ulang saat activeSection atau pathname berubah
+
+    // DIUBAH: Logika kelas sekarang hanya mengubah warna teks, bukan background
+    const getLinkClassName = (sectionId) => {
+        const baseClasses = "relative z-10 px-4 py-2 rounded-full transition-colors duration-300 font-semibold";
+        if (activeSection === sectionId) {
+            return `${baseClasses} text-[#0D2A57]`;
+        }
+        return `${baseClasses} text-white hover:bg-white/10`;
     };
 
     return (
@@ -239,20 +266,40 @@ function SmartHeader({ onMenuClick }) {
                         </Link>
                     </div>
                     
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-4 text-sm">
-                        {pathname === '/' && (
+                    {/* DIUBAH: Container untuk navigasi dan indikator */}
+                    <div 
+                        ref={navContainerRef}
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-4 text-sm"
+                    >
+                        {pathname === '/' ? (
                             <>
-                                <Link href="/#hero" className={getLinkClassName('hero')}>Beranda</Link>
-                                <Link href="/#how-it-works" className={getLinkClassName('how-it-works')}>Cara Kerja</Link>
-                                <Link href="/#featured-catalog" className={getLinkClassName('featured-catalog')}>Unggulan</Link>
-                                <Link href="/#unor-section" className={getLinkClassName('unor-section')}>Unit Organisasi</Link>
+                                {/* BARU: Elemen indikator yang bergerak */}
+                                <div
+                                    className="absolute bg-yellow-400 rounded-full h-8 transition-all duration-300 ease-in-out"
+                                    style={{
+                                        ...indicatorStyle,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                    }}
+                                />
+                                {navItems.map((item, index) => (
+                                    <Link
+                                        key={item.id}
+                                        href={item.href}
+                                        // BARU: Menyimpan referensi elemen DOM
+                                        ref={el => navLinksRef.current[index] = el}
+                                        className={getLinkClassName(item.id)}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                ))}
                             </>
-                        )}
+                        ) : null}
                     </div>
 
                     <div className="flex-1 flex justify-end">
                         <button onClick={onMenuClick} className="p-2 rounded-full text-white hover:bg-white/10" aria-label="Buka menu">
-                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                         </button>
                     </div>
                 </nav>
@@ -287,22 +334,22 @@ function NewFooter() {
                         </div>
                     </div>
                     <div className="w-full flex flex-col items-center md:items-end">
-                         <h3 className="text-lg font-bold text-white mb-4">Lokasi Kami</h3>
-                         <div className="overflow-hidden rounded-lg shadow-lg h-48 w-full max-w-md">
+                        <h3 className="text-lg font-bold text-white mb-4">Lokasi Kami</h3>
+                        <div className="overflow-hidden rounded-lg shadow-lg h-48 w-full max-w-md">
                             <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.2123253962127!2d106.8002787!3d-6.2357197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1f738678eb5%3A0xf278895d9ede7ef3!2sPusat%20Data%20dan%20Teknologi%20Informasi%20(Pusdatin)%20Kementerian%20PUPR!5e0!3m2!1sid!2sid!4v1759728723410!5m2!1sid!2sid" 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.249216738916!2d106.80287731535905!3d-6.23075199548981!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1665e009497%3A0x6a3f12e847c13280!2sKementerian%20Pekerjaan%20Umum%20dan%20Perumahan%20Rakyat!5e0!3m2!1sen!2sid!4v1664273295058!5m2!1sen!2sid"
                                 className="w-full h-full border-0" 
                                 allowFullScreen="" 
                                 loading="lazy" 
                                 referrerPolicy="no-referrer-when-downgrade">
                             </iframe>
-                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div className="bg-yellow-400">
                 <div className="container mx-auto px-6 py-4 text-center text-xs text-[#0D2A57] font-bold">
-                    <p>Copyright © {new Date().getFullYear()} Pusat Data dan Teknologi Informasi. Kementerian Pekerjaan Umum.</p>
+                    <p>Copyright &copy; {new Date().getFullYear()} Pusat Data dan Teknologi Informasi. Kementerian Pekerjaan Umum.</p>
                 </div>
             </div>
         </footer>

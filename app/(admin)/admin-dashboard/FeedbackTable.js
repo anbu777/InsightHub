@@ -1,32 +1,10 @@
-"use client";
+// app/(admin)/admin-dashboard/FeedbackTable.js
 
-import { useState, useEffect } from 'react';
-
-export default function FeedbackTable() {
-    const [feedback, setFeedback] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchFeedback = async () => {
-            setIsLoading(true);
-            try {
-                const res = await fetch('/api/admin/feedback');
-                if (!res.ok) throw new Error('Gagal mengambil data feedback.');
-                const data = await res.json();
-                setFeedback(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchFeedback();
-    }, []);
-
-    if (error) return <p className="text-red-500">{error}</p>;
-
+// Komponen ini bisa menjadi Server Component atau Client Component
+// karena tidak memiliki state atau interaktivitas.
+// Kita biarkan sederhana tanpa "use client"
+export default function FeedbackTable({ initialFeedback }) {
+    
     return (
         <div className="bg-white rounded-xl shadow-md p-6 mt-8">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">Kritik & Saran Pengguna</h3>
@@ -41,10 +19,8 @@ export default function FeedbackTable() {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {isLoading ? (
-                            <tr><td colSpan="4" className="text-center py-4">Memuat data...</td></tr>
-                        ) : feedback.length > 0 ? (
-                            feedback.map(item => (
+                        {initialFeedback.length > 0 ? (
+                            initialFeedback.map(item => (
                                 <tr key={item.id}>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900">{item.name}</div>

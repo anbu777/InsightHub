@@ -1,3 +1,5 @@
+// app/(admin)/layout.js
+
 "use client";
 
 import Link from 'next/link';
@@ -5,7 +7,7 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Toaster } from 'react-hot-toast'; // Import Toaster
+import { Toaster } from 'react-hot-toast';
 
 // Import semua ikon yang kita butuhkan
 import { 
@@ -15,11 +17,12 @@ import {
 
 
 // =====================================================================
-// Komponen Sidebar (TIDAK ADA PERUBAHAN, SAMA SEPERTI KODE ANDA)
+// Komponen Sidebar
 // =====================================================================
 function Sidebar() {
     const pathname = usePathname();
-    const isActive = (path) => pathname.startsWith(path);
+    // Diperbarui: isActive sekarang lebih spesifik untuk dashboard
+    const isActive = (path) => pathname === path;
 
     return (
         <aside className="hidden md:flex flex-col w-64 bg-gray-800 text-gray-400 min-h-screen">
@@ -35,7 +38,7 @@ function Sidebar() {
                 
                 <div className="mt-8">
                     <span className="px-4 text-xs font-semibold uppercase text-gray-500">Components</span>
-                    <Link href="/notifications" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
+                    <Link href="#" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
                        <FaBell className="mr-3" />
                        Notifications
                     </Link>
@@ -43,11 +46,11 @@ function Sidebar() {
 
                 <div className="mt-8">
                     <span className="px-4 text-xs font-semibold uppercase text-gray-500">Plugins</span>
-                    <Link href="/calendar" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
+                    <Link href="#" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
                        <FaCalendarAlt className="mr-3" />
                        Calendar
                     </Link>
-                     <Link href="/charts" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
+                     <Link href="#" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
                        <FaChartBar className="mr-3" />
                        Charts
                     </Link>
@@ -58,19 +61,17 @@ function Sidebar() {
 }
 
 // =====================================================================
-// Komponen TopBar (REVISI HANYA PADA FUNGSI LOGOUT)
+// Komponen TopBar
 // =====================================================================
 function TopBar() {
     const router = useRouter();
-    const supabase = createClientComponentClient(); // Tambahkan Supabase client
+    const supabase = createClientComponentClient();
     const [openMenu, setOpenMenu] = useState(null);
 
-    // --- REVISI LOGIKA LOGOUT ---
-    // Menggunakan metode logout dari Supabase yang benar
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        // Setelah sign out, onAuthStateChange di layout utama akan otomatis
-        // mengarahkan ke halaman login. Kita bisa juga push ke halaman utama.
+        // onAuthStateChange di layout akan menangani redirect,
+        // tapi kita bisa juga push ke halaman utama untuk UX yang lebih baik
         router.push('/'); 
     };
 
@@ -78,12 +79,10 @@ function TopBar() {
         setOpenMenu(prevMenu => (prevMenu === menuName ? null : menuName));
     };
 
-    // Tampilan TopBar tidak diubah sama sekali
     return (
         <header className="bg-white shadow-sm p-4 flex justify-between items-center z-10">
             <div className="text-gray-600">Home / Dashboard</div>
             <div className="flex items-center space-x-5">
-                {/* Tombol Notifikasi */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('notifications')} className="text-gray-500 hover:text-gray-800">
                         <FaBell size={20} />
@@ -95,7 +94,6 @@ function TopBar() {
                         </div>
                     )}
                 </div>
-                {/* Tombol Messages */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('messages')} className="text-gray-500 hover:text-gray-800">
                         <FaEnvelope size={20} />
@@ -107,7 +105,6 @@ function TopBar() {
                         </div>
                     )}
                 </div>
-                {/* Tombol User Profile */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('profile')} className="flex items-center space-x-2">
                         <FaUserCircle size={24} className="text-gray-600" />
@@ -129,45 +126,56 @@ function TopBar() {
 }
 
 // =====================================================================
-// Layout Utama Admin (REVISI TOTAL PADA LOGIKA PENJAGA SESI)
+// Layout Utama Admin
 // =====================================================================
 export default function AdminLayout({ children }) {
     const router = useRouter();
     const supabase = createClientComponentClient();
     const [isLoading, setIsLoading] = useState(true);
 
-    // --- REVISI LOGIKA PENJAGA SESI ---
     useEffect(() => {
-        // Membuat 'pendengar' status otentikasi yang andal
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (!session) {
-                // Jika tidak ada sesi (misalnya, setelah logout), usir ke halaman login
                 router.replace('/admin-login');
             } else {
-                // Jika ada sesi, berarti aman. Loading selesai.
                 setIsLoading(false);
             }
         });
 
-        // Hentikan 'pendengar' saat komponen tidak lagi digunakan
+        // Cek sesi awal secara manual untuk kasus reload halaman
+        const checkInitialSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                router.replace('/admin-login');
+            } else {
+                setIsLoading(false);
+            }
+        };
+
+        checkInitialSession();
+
         return () => {
             subscription.unsubscribe();
         };
     }, [router, supabase]);
 
     if (isLoading) {
-        // Tampilkan layar loading selagi memeriksa sesi
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <p>Memverifikasi sesi admin...</p>
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <div className="flex items-center space-x-3">
+                    <svg className="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span className="text-gray-600 font-medium">Memverifikasi sesi admin...</span>
+                </div>
             </div>
         );
     }
 
-    // Tampilan layout utama tidak diubah sama sekali
     return (
         <div className="flex min-h-screen bg-gray-100">
-            <Toaster position="top-right" /> {/* Tambahkan ini untuk notifikasi */}
+            <Toaster position="top-right" />
             <Sidebar />
             <div className="flex-1 flex flex-col">
                 <TopBar />

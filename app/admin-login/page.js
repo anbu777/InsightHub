@@ -1,9 +1,12 @@
+// app/(main)/admin-login/page.js
+
 "use client";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import toast from 'react-hot-toast';
 
 export default function AdminLoginPage() {
     const router = useRouter();
@@ -12,47 +15,41 @@ export default function AdminLoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        setError('');
         
-        // Menggunakan metode Supabase langsung, lebih andal daripada fetch manual
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
 
-        if (signInError) {
-            // Menangani berbagai jenis error dari Supabase
-            if (signInError.message.includes('Invalid login credentials')) {
-                setError('Login gagal. Periksa kembali email dan password Anda.');
-            } else {
-                setError('Terjadi kesalahan. Coba beberapa saat lagi.');
-            }
+        if (error) {
+            toast.error(error.message.includes('Invalid login credentials') 
+                ? 'Login gagal. Periksa kembali email dan password Anda.'
+                : 'Terjadi kesalahan. Coba beberapa saat lagi.'
+            );
             setIsLoading(false);
             return;
         }
 
-        // Jika tidak ada error, Supabase sudah menangani sesi.
-        // Cukup arahkan ke dashboard.
-        router.refresh();
+        toast.success('Login berhasil!');
+        
+        // Refresh router untuk memastikan layout mendeteksi sesi baru
+        router.refresh(); 
         router.push('/admin-dashboard');
     };
     
     return (
-        <div className="min-h-screen flex items-center justify-center auth-background">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-gray-800">
                 <div>
                     <h1 className="text-3xl font-bold mb-8 text-center text-gray-900">
                         Admin Login
                     </h1>
                     
-                    {error && (<p className="mb-4 text-sm text-center text-red-600 font-semibold bg-red-100 p-3 rounded-md">{error}</p>)}
-
                     <form onSubmit={handleLogin} className="space-y-5">
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
