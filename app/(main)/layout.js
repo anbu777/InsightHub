@@ -2,21 +2,58 @@
 
 "use client";
 
-import { useState, useEffect, useContext, useRef } from 'react'; // DIUBAH: Tambahkan 'useRef'
+import { useState, useEffect, useContext, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { NavigationContext } from './contexts/NavigationContext';
+// BARU: Impor fungsi Server Actions
+import { submitFeedback, submitRequest } from './actions';
 
-// --- Komponen-komponen Modal (Tidak Diubah) ---
+
+// ===========================================
+// 🔹 KOMPONEN SurveyModal YANG DI REVISI
+// ===========================================
 function SurveyModal({ isOpen, onClose }) {
     if (!isOpen) return null;
-    const [rating, setRating] = useState('');
-    const handleSubmit = (event) => {
+
+    const [rating, setRating] = useState(null);
+    // BARU: State untuk menangani proses pengiriman form
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submissionStatus, setSubmissionStatus] = useState({ message: '', type: '' });
+
+    // DIUBAH: Fungsi handleSubmit sekarang memanggil Server Action
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        alert('Terima kasih atas masukan Anda!');
-        onClose();
+        setIsSubmitting(true);
+        setSubmissionStatus({ message: '', type: '' });
+
+        const formData = new FormData(event.currentTarget);
+        
+        // Cek manual jika rating belum dipilih
+        if (rating === null || rating === '') {
+            setSubmissionStatus({ message: 'Harap pilih rating kepuasan Anda.', type: 'error' });
+            setIsSubmitting(false);
+            return;
+        }
+        formData.set('satisfaction', rating);
+
+        const result = await submitFeedback(formData);
+
+        if (result.success) {
+            setSubmissionStatus({ message: result.message, type: 'success' });
+            setTimeout(() => {
+                onClose();
+                // Reset state setelah modal tertutup
+                setSubmissionStatus({ message: '', type: '' });
+                setRating(null);
+            }, 2000); // Tutup modal setelah 2 detik
+        } else {
+            setSubmissionStatus({ message: result.message, type: 'error' });
+        }
+        setIsSubmitting(false);
     };
+
     return (
         <div 
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -69,10 +106,9 @@ function SurveyModal({ isOpen, onClose }) {
                                         className={`text-4xl p-2 rounded-full transition-transform transform ${rating === index ? 'scale-125 bg-blue-100' : 'hover:scale-110'}`}
                                     >{emoji}</button>
                                 ))}
-                                <input type="hidden" name="satisfaction" value={rating} required />
                             </div>
                         </div>
-                        <div>
+                         <div>
                             <label className="block text-sm font-medium mb-2">Bagaimana teknis penyajian data Insight Hub? <span className="text-red-500">*</span></label>
                             <div className="flex justify-around items-center opacity-50 cursor-not-allowed">
                                 {['😡', '☹️', '😐', '🙂', '😄'].map((emoji, index) => <span key={index} className="text-4xl p-2">{emoji}</span>)}
@@ -83,44 +119,58 @@ function SurveyModal({ isOpen, onClose }) {
                         <label htmlFor="suggestion" className="block text-sm font-medium mb-1">Menurut Anda, fitur apa yang perlu ditingkatkan pada Insight Hub?</label>
                         <textarea id="suggestion" name="suggestion" rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]"></textarea>
                     </div>
+
+                    {/* BARU: Tampilkan pesan status */}
+                    {submissionStatus.message && (
+                        <div className={`text-sm p-3 rounded-md ${submissionStatus.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {submissionStatus.message}
+                        </div>
+                    )}
+
                     <div className="text-right">
-                        <button type="submit" className="bg-green-600 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition-colors">Kirim</button>
+                        <button type="submit" disabled={isSubmitting} className="bg-green-600 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400">
+                            {isSubmitting ? 'Mengirim...' : 'Kirim'}
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     );
 }
-function AboutModal({ isOpen, onClose }) {
-    if (!isOpen) return null;
-    return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-            <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all" onClick={(e) => e.stopPropagation()}>
-                <div className="flex justify-between items-center border-b pb-4 mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">Tentang Insight Hub</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
-                </div>
-                <div className="space-y-4 text-gray-600">
-                    <p><strong>PU Insight Hub</strong> adalah sebuah platform terpusat yang dirancang untuk menjadi gerbang utama dalam mengakses dan memanfaatkan data di lingkungan Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR).</p>
-                    <p>Platform ini berfungsi sebagai katalog data terintegrasi yang memungkinkan pengguna, baik dari internal kementerian maupun publik, untuk dengan mudah menemukan, menjelajahi, dan mengajukan permintaan akses terhadap berbagai set data yang tersedia.</p>
-                    <p>Dengan adanya Insight Hub, kami bertujuan untuk meningkatkan transparansi, mendorong inovasi berbasis data, dan memfasilitasi pertukaran informasi yang efisien untuk mendukung pengambilan keputusan yang lebih baik dalam pembangunan infrastruktur nasional.</p>
-                </div>
-                <div className="text-right mt-8">
-                    <button onClick={onClose} className="bg-[#0D2A57] text-white font-bold py-2 px-6 rounded-md hover:bg-[#0D2A57]/90 transition-colors">Tutup</button>
-                </div>
-            </div>
-        </div>
-    );
-}
+
+
+// ===========================================
+// 🔹 KOMPONEN RequestDataModal YANG DI REVISI
+// ===========================================
 function RequestDataModal({ isOpen, onClose }) {
     if (!isOpen) return null;
-    const handleSubmit = (event) => {
+
+    // BARU: State untuk menangani proses pengiriman form
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submissionStatus, setSubmissionStatus] = useState({ message: '', type: '' });
+    
+    // DIUBAH: Fungsi handleSubmit sekarang memanggil Server Action
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        alert('Terima kasih! Pengajuan Anda akan kami proses.');
-        onClose();
+        setIsSubmitting(true);
+        setSubmissionStatus({ message: '', type: '' });
+
+        const formData = new FormData(event.currentTarget);
+        const result = await submitRequest(formData);
+
+        if (result.success) {
+            setSubmissionStatus({ message: result.message, type: 'success' });
+            setTimeout(() => {
+                onClose();
+                // Reset state setelah modal tertutup
+                setSubmissionStatus({ message: '', type: '' });
+            }, 2000); // Tutup modal setelah 2 detik
+        } else {
+            setSubmissionStatus({ message: result.message, type: 'error' });
+        }
+        setIsSubmitting(false);
     };
+
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
             <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all" onClick={(e) => e.stopPropagation()}>
@@ -160,14 +210,53 @@ function RequestDataModal({ isOpen, onClose }) {
                         <label htmlFor="req_data_type" className="block text-sm font-medium mb-1">Jenis Data yang Dibutuhkan<span className="text-red-500">*</span></label>
                         <textarea id="req_data_type" name="dataType" rows="4" placeholder="Jelaskan secara rinci data yang Anda butuhkan..." className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0D2A57]" required></textarea>
                     </div>
+
+                    {/* BARU: Tampilkan pesan status */}
+                    {submissionStatus.message && (
+                        <div className={`text-sm p-3 rounded-md ${submissionStatus.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {submissionStatus.message}
+                        </div>
+                    )}
+                    
                     <div className="text-right pt-4">
-                        <button type="submit" className="bg-[#0D2A57] text-white font-bold py-2 px-6 rounded-md hover:bg-[#0D2A57]/90 transition-colors">Kirim Pengajuan</button>
+                        <button type="submit" disabled={isSubmitting} className="bg-[#0D2A57] text-white font-bold py-2 px-6 rounded-md hover:bg-[#0D2A57]/90 transition-colors disabled:bg-gray-400">
+                             {isSubmitting ? 'Mengirim...' : 'Kirim Pengajuan'}
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     );
 }
+
+
+// --- Komponen-komponen lain (AboutModal, SidebarMenu, SmartHeader, NewFooter, MainAppLayout) ---
+// --- Tidak ada perubahan pada komponen-komponen di bawah ini, salin-tempel dari kode asli Anda ---
+
+function AboutModal({ isOpen, onClose }) {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+            <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 transform transition-all" onClick={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center border-b pb-4 mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Tentang Insight Hub</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div className="space-y-4 text-gray-600">
+                    <p><strong>PU Insight Hub</strong> adalah sebuah platform terpusat yang dirancang untuk menjadi gerbang utama dalam mengakses dan memanfaatkan data di lingkungan Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR).</p>
+                    <p>Platform ini berfungsi sebagai katalog data terintegrasi yang memungkinkan pengguna, baik dari internal kementerian maupun publik, untuk dengan mudah menemukan, menjelajahi, dan mengajukan permintaan akses terhadap berbagai set data yang tersedia.</p>
+                    <p>Dengan adanya Insight Hub, kami bertujuan untuk meningkatkan transparansi, mendorong inovasi berbasis data, dan memfasilitasi pertukaran informasi yang efisien untuk mendukung pengambilan keputusan yang lebih baik dalam pembangunan infrastruktur nasional.</p>
+                </div>
+                <div className="text-right mt-8">
+                    <button onClick={onClose} className="bg-[#0D2A57] text-white font-bold py-2 px-6 rounded-md hover:bg-[#0D2A57]/90 transition-colors">Tutup</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurveyClick }) {
     const pathname = usePathname();
     const getLinkClassName = (path) => {
@@ -205,20 +294,14 @@ function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurv
     );
 }
 
-// ===========================================
-// 🔹 KOMPONEN HEADER YANG DI REVISI
-// ===========================================
 function SmartHeader({ onMenuClick }) {
     const pathname = usePathname(); 
     const { activeSection } = useContext(NavigationContext);
     
-    // BARU: State untuk menyimpan style (posisi & lebar) indikator
     const [indicatorStyle, setIndicatorStyle] = useState({ opacity: 0 });
-    // BARU: Refs untuk menyimpan elemen DOM dari link navigasi dan containernya
     const navLinksRef = useRef([]);
     const navContainerRef = useRef(null);
 
-    // BARU: Definisikan item navigasi dalam sebuah array agar mudah di-map
     const navItems = [
         { id: 'hero', label: 'Beranda', href: '/#hero' },
         { id: 'how-it-works', label: 'Cara Kerja', href: '/#how-it-works' },
@@ -226,7 +309,6 @@ function SmartHeader({ onMenuClick }) {
         { id: 'unor-section', label: 'Unit Organisasi', href: '/#unor-section' }
     ];
 
-    // BARU: useEffect untuk mengkalkulasi posisi indikator saat activeSection berubah
     useEffect(() => {
         const activeIndex = navItems.findIndex(item => item.id === activeSection);
         const activeLinkEl = navLinksRef.current[activeIndex];
@@ -238,9 +320,8 @@ function SmartHeader({ onMenuClick }) {
                 opacity: 1,
             });
         }
-    }, [activeSection, pathname]); // Jalankan ulang saat activeSection atau pathname berubah
+    }, [activeSection, pathname]);
 
-    // DIUBAH: Logika kelas sekarang hanya mengubah warna teks, bukan background
     const getLinkClassName = (sectionId) => {
         const baseClasses = "relative z-10 px-4 py-2 rounded-full transition-colors duration-300 font-semibold";
         if (activeSection === sectionId) {
@@ -266,14 +347,12 @@ function SmartHeader({ onMenuClick }) {
                         </Link>
                     </div>
                     
-                    {/* DIUBAH: Container untuk navigasi dan indikator */}
                     <div 
                         ref={navContainerRef}
                         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center space-x-4 text-sm"
                     >
                         {pathname === '/' ? (
                             <>
-                                {/* BARU: Elemen indikator yang bergerak */}
                                 <div
                                     className="absolute bg-yellow-400 rounded-full h-8 transition-all duration-300 ease-in-out"
                                     style={{
@@ -286,7 +365,6 @@ function SmartHeader({ onMenuClick }) {
                                     <Link
                                         key={item.id}
                                         href={item.href}
-                                        // BARU: Menyimpan referensi elemen DOM
                                         ref={el => navLinksRef.current[index] = el}
                                         className={getLinkClassName(item.id)}
                                     >
@@ -308,7 +386,6 @@ function SmartHeader({ onMenuClick }) {
     );
 }
 
-// Komponen Footer
 function NewFooter() {
     return (
         <footer className="bg-[#0D2A57] text-white border-t border-white/10">
@@ -356,11 +433,9 @@ function NewFooter() {
     );
 }
 
-// Layout Utama
 export default function MainAppLayout({ children }) {
     const pathname = usePathname();
     
-    // State untuk semua modal
     const [isSurveyModalOpen, setSurveyModalOpen] = useState(false);
     const [isAboutModalOpen, setAboutModalOpen] = useState(false);
     const [isRequestDataModalOpen, setRequestDataModalOpen] = useState(false);
@@ -393,7 +468,6 @@ export default function MainAppLayout({ children }) {
                 </main>
                 <NewFooter />
                 
-                {/* Semua modal dirender di sini */}
                 <SurveyModal isOpen={isSurveyModalOpen} onClose={() => setSurveyModalOpen(false)} />
                 <AboutModal isOpen={isAboutModalOpen} onClose={() => setAboutModalOpen(false)} />
                 <RequestDataModal isOpen={isRequestDataModalOpen} onClose={() => setRequestDataModalOpen(false)} />

@@ -21,6 +21,12 @@ const StatCard = ({ title, value, color }) => (
 export default function DashboardClient({ stats, topRequests, initialRequests, initialFeedback, syncAction, initialRequestStatusFilter }) {
     const [isSyncing, startSyncTransition] = useTransition();
 
+    console.log("--- Data received by Client ---");
+    console.log("Initial Requests:", initialRequests);
+    console.log("Initial Feedback:", initialFeedback);
+    console.log("-----------------------------");
+    // === AKHIR TAMBAHAN ===
+    
     const chartData = {
         labels: topRequests.map(item => item.requested_data),
         datasets: [{

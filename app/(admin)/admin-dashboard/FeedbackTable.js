@@ -1,8 +1,14 @@
 // app/(admin)/admin-dashboard/FeedbackTable.js
 
-// Komponen ini bisa menjadi Server Component atau Client Component
-// karena tidak memiliki state atau interaktivitas.
-// Kita biarkan sederhana tanpa "use client"
+// Fungsi helper untuk menampilkan emoji berdasarkan rating (0-4)
+const getEmojiForRating = (rating) => {
+    const emojis = ['😡', '☹️', '😐', '🙂', '😄'];
+    if (rating >= 0 && rating < emojis.length) {
+        return emojis[rating];
+    }
+    return '❓'; // Default jika rating tidak valid
+};
+
 export default function FeedbackTable({ initialFeedback }) {
     
     return (
@@ -14,7 +20,7 @@ export default function FeedbackTable({ initialFeedback }) {
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengirim</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saran / Feedback</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         </tr>
                     </thead>
@@ -23,13 +29,14 @@ export default function FeedbackTable({ initialFeedback }) {
                             initialFeedback.map(item => (
                                 <tr key={item.id}>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                                        {/* === PERUBAHAN DI SINI === */}
+                                        <div className="text-sm font-medium text-gray-900">{item.user_name}</div>
                                         <div className="text-sm text-gray-500">{item.gender}, {item.age_range}</div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-700 max-w-sm">{item.suggestion}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <div>Pendapat: {item.opinion_rating}/5</div>
-                                        <div>Teknis: {item.technical_rating}/5</div>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-700 max-w-sm">{item.suggestion || '-'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center text-2xl">
+                                         {/* === PERUBAHAN DI SINI === */}
+                                         {getEmojiForRating(item.rating)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.created_at).toLocaleDateString('id-ID')}</td>
                                 </tr>

@@ -4,13 +4,12 @@
 
 import { useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
-import { updateRequestStatus } from './actions'; // Impor Server Action
+import { updateRequestStatus } from './actions'; 
 
 export default function UpdateRequestModal({ request, onClose }) {
     const [status, setStatus] = useState(request.status);
     const [responseLink, setResponseLink] = useState(request.response_link || '');
     
-    // useTransition untuk menangani loading state tanpa memblokir UI
     const [isPending, startTransition] = useTransition();
 
     const handleSubmit = (e) => {
@@ -26,7 +25,7 @@ export default function UpdateRequestModal({ request, onClose }) {
 
             if (result.success) {
                 toast.success(result.message);
-                onClose(); // Tutup modal setelah berhasil
+                onClose(); 
             } else {
                 toast.error(result.message);
             }
@@ -39,10 +38,12 @@ export default function UpdateRequestModal({ request, onClose }) {
                 <h2 className="text-2xl font-bold mb-4 text-gray-800">Tinjau Permohonan Data</h2>
                 
                 <div className="mb-4 border-b pb-4 text-gray-800 space-y-1">
-                    <p><strong>Nama:</strong> {request.name}</p>
-                    <p><strong>Email:</strong> {request.email}</p>
-                    <p><strong>Instansi:</strong> {request.agency}</p>
-                    <p><strong>Data yang Diminta:</strong> {request.requested_data}</p>
+                    {/* === PERUBAHAN DI SINI === */}
+                    <p><strong>Nama:</strong> {request.user_name}</p>
+                    <p><strong>Email:</strong> {request.user_email}</p>
+                    <p><strong>Telepon:</strong> {request.user_phone || '-'}</p>
+                    <p><strong>Instansi:</strong> {request.organization}</p>
+                    <p><strong>Data yang Diminta:</strong> {request.reason}</p> 
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -55,19 +56,20 @@ export default function UpdateRequestModal({ request, onClose }) {
                             onChange={(e) => setStatus(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                         >
+                            {/* Sesuaikan dengan ENUM Anda */}
                             <option value="pending">pending</option>
-                            <option value="in progress">in progress</option>
-                            <option value="done">done</option>
+                            <option value="approved">approved</option>
+                            <option value="rejected">rejected</option>
                         </select>
                     </div>
 
                     <div className="mb-6">
-                        <label htmlFor="responseLink" className="block text-sm font-medium text-gray-800 mb-1">Link Balasan</label>
+                        <label htmlFor="responseLink" className="block text-sm font-medium text-gray-800 mb-1">Link Balasan (Opsional)</label>
                         <input
                             id="responseLink"
                             name="response_link"
                             type="text"
-                            placeholder="https://link-ke-data.json"
+                            placeholder="https://link-ke-data-atau-balasan.com"
                             value={responseLink}
                             onChange={(e) => setResponseLink(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"

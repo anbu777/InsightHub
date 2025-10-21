@@ -6,13 +6,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import UpdateRequestModal from './UpdateRequestModal';
 
-// Komponen kecil untuk tombol filter
+// Komponen kecil untuk tombol filter (Tidak Diubah)
 const FilterButton = ({ label, filterValue, activeFilter }) => {
     const href = filterValue === 'all' ? '/admin-dashboard' : `/admin-dashboard?status=${filterValue}`;
     return (
         <Link
             href={href}
-            scroll={false} // Mencegah scroll ke atas saat filter diklik
+            scroll={false} 
             className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
                 activeFilter === filterValue
                     ? 'bg-blue-600 text-white'
@@ -27,19 +27,24 @@ const FilterButton = ({ label, filterValue, activeFilter }) => {
 // Komponen baris tabel
 function RequestRow({ request, onReviewClick }) {
     const getStatusClass = (status) => {
+        // Sesuaikan dengan ENUM Anda: pending, approved, rejected
         if (status === 'pending') return 'bg-yellow-100 text-yellow-800';
-        if (status === 'in progress') return 'bg-blue-100 text-blue-800';
-        if (status === 'done') return 'bg-green-100 text-green-800';
+        if (status === 'approved') return 'bg-green-100 text-green-800';
+        if (status === 'rejected') return 'bg-red-100 text-red-800';
         return 'bg-gray-100 text-gray-800';
     };
 
     return (
         <tr>
             <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{request.name}</div>
-                <div className="text-sm text-gray-500">{request.email}</div>
+                {/* === PERUBAHAN DI SINI === */}
+                <div className="text-sm font-medium text-gray-900">{request.user_name}</div>
+                <div className="text-sm text-gray-500">{request.user_email}</div>
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{request.agency}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                 {/* === PERUBAHAN DI SINI === */}
+                {request.organization} 
+            </td>
             <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(request.status)}`}>
                     {request.status}
@@ -47,7 +52,7 @@ function RequestRow({ request, onReviewClick }) {
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(request.created_at).toLocaleDateString('id-ID')}</td>
             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button onClick={onReviewClick} className="text-indigo-600 hover:text-indigo-900">Tinjau</button>
+                <button onClick={() => onReviewClick(request)} className="text-indigo-600 hover:text-indigo-900">Tinjau</button>
             </td>
         </tr>
     );
@@ -57,7 +62,7 @@ function RequestRow({ request, onReviewClick }) {
 export default function DataRequestTable({ initialRequests, initialStatusFilter }) {
     const [selectedRequest, setSelectedRequest] = useState(null);
     
-    // Filter data di client-side berdasarkan data yang sudah diterima dari server
+    // Filter data di client-side (Tidak Diubah)
     const filteredRequests = initialStatusFilter === 'all'
         ? initialRequests
         : initialRequests.filter(req => req.status === initialStatusFilter);
@@ -68,10 +73,11 @@ export default function DataRequestTable({ initialRequests, initialStatusFilter 
                 <h3 className="text-xl font-semibold text-gray-700 mb-4">Manajemen Permohonan Data</h3>
                 
                 <div className="flex space-x-2 mb-4 border-b pb-2">
+                    {/* Sesuaikan nilai filter dengan ENUM Anda */}
                     <FilterButton label="Semua" filterValue="all" activeFilter={initialStatusFilter} />
                     <FilterButton label="Pending" filterValue="pending" activeFilter={initialStatusFilter} />
-                    <FilterButton label="In Progress" filterValue="in progress" activeFilter={initialStatusFilter} />
-                    <FilterButton label="Done" filterValue="done" activeFilter={initialStatusFilter} />
+                    <FilterButton label="Approved" filterValue="approved" activeFilter={initialStatusFilter} />
+                    <FilterButton label="Rejected" filterValue="rejected" activeFilter={initialStatusFilter} />
                 </div>
 
                 <div className="overflow-x-auto">
@@ -88,7 +94,7 @@ export default function DataRequestTable({ initialRequests, initialStatusFilter 
                         <tbody className="bg-white divide-y divide-gray-200">
                             {filteredRequests.length > 0 ? (
                                 filteredRequests.map(req => (
-                                    <RequestRow key={req.id} request={req} onReviewClick={() => setSelectedRequest(req)} />
+                                    <RequestRow key={req.id} request={req} onReviewClick={setSelectedRequest} />
                                 ))
                             ) : (
                                 <tr><td colSpan="5" className="text-center py-4 text-gray-500">Tidak ada data untuk filter ini.</td></tr>
