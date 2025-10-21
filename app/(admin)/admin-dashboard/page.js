@@ -3,103 +3,101 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import DashboardClient from './DashboardClient'; // Pastikan path ini benar
+import DashboardClient from './DashboardClient';
 
-// Fungsi untuk mengambil data (versi Sederhana untuk Debugging)
+// Fungsi untuk mengambil semua data di server (versi final)
 async function getDashboardData() {
-  console.log("Memulai getDashboardData...");
+  console.log("Memulai getDashboardData (versi final)...");
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
-  let user = null;
-  let requests = [];
-  let feedback = [];
-  let stats = { total_datasets: 0, total_requests: 0, total_downloads: 0, unique_requesters: 0 };
-  let top_requests = [];
-
   try {
-    // === Langkah 1: Fokus HANYA pada Autentikasi ===
-    console.log("Mencoba mengambil data pengguna (auth.getUser)...");
-    const { data: userData, error: authError } = await supabase.auth.getUser();
-
-    if (authError) {
-      console.error("Error saat auth.getUser():", authError);
-      throw authError; // Hentikan jika autentikasi gagal
+    // Pastikan pengguna terautentikasi sebelum melanjutkan
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.log("Tidak ada sesi pengguna aktif, mengembalikan data kosong.");
+      return { 
+        stats: { total_datasets: 0, total_requests: 0, total_downloads: 0, unique_requesters: 0 }, 
+        top_requests: [], 
+        requests: [], 
+        feedback: [] 
+      };
     }
+    
+    console.log(`Pengguna ${user.email} terautentikasi. Mengambil semua data...`);
 
-    user = userData.user;
-    console.log("Data pengguna didapat:", user ? user.email : "Tidak ada sesi");
+    // KEMBALIKAN Promise.all untuk mengambil semua data secara efisien
+    const [
+      { count: total_datasets, error: errDatasets },
+      { count: total_requests, error: errRequestsCount },
+      { data: total_views_data, error: errClicks },
+      { data: requests, error: errRequestsData },
+      { data: feedback, error: errFeedback },
+    ] = await Promise.all([
+      supabase.from('datasets').select('*', { count: 'exact', head: true }),
+      supabase.from('data_requests').select('*', { count: 'exact', head: true }),
+      supabase.rpc('get_total_clicks'), // Memanggil fungsi RPC untuk total klik
+      supabase.from('data_requests').select('*').order('created_at', { ascending: false }),
+      supabase.from('feedback').select('*').order('created_at', { ascending: false }),
+    ]);
 
-    // === Langkah 2: AMBIL DATA HANYA JIKA Autentikasi Berhasil ===
-    if (user) { 
-      console.log("Autentikasi berhasil, mencoba mengambil data tabel...");
-      // Kita coba ambil data satu per satu, bukan paralel, untuk debugging
-      const { data: reqData, error: reqError } = await supabase
-        .from('data_requests')
-        .select('*')
-        .order('created_at', { ascending: false });
+    // Handle potential errors
+    if (errDatasets) console.error("Error fetching dataset count:", errDatasets);
+    if (errRequestsCount) console.error("Error fetching request count:", errRequestsCount);
+    if (errClicks) console.error("Error fetching total clicks:", errClicks);
+    if (errRequestsData) console.error("Error fetching requests data:", errRequestsData);
+    if (errFeedback) console.error("Error fetching feedback data:", errFeedback);
 
-      if (reqError) console.error("Error fetching requests:", reqError);
-      else requests = reqData || [];
+    // HITUNG SEMUA STATS berdasarkan data yang didapat
+    const stats = {
+      total_datasets: total_datasets ?? 0,
+      total_requests: total_requests ?? 0,
+      total_downloads: total_views_data ?? 0,
+      unique_requesters: new Set((requests || []).map(r => r.user_email)).size,
+    };
 
-      const { data: fbData, error: fbError } = await supabase
-        .from('feedback')
-        .select('*')
-        .order('created_at', { ascending: false });
+    // HITUNG TOP 5 REQUESTS untuk chart
+    const requestCounts = (requests || []).reduce((acc, req) => {
+      const key = req.reason || 'Tidak Ada Alasan';
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
 
-      if (fbError) console.error("Error fetching feedback:", fbError);
-      else feedback = fbData || [];
+    const top_requests = Object.entries(requestCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([reasonText, count]) => ({ requested_data: reasonText, request_count: count }));
 
-      // (Query untuk stats dan top_requests bisa ditambahkan di sini jika 2 query di atas berhasil)
-      // Untuk sementara kita biarkan kosong agar fokus pada masalah utama
-       console.log("Pengambilan data tabel selesai.");
-
-    } else {
-        console.log("Tidak ada sesi pengguna aktif, data tidak diambil.");
-    }
+    console.log("Semua data berhasil diambil dan diproses.");
+    return { stats, top_requests, requests: requests || [], feedback: feedback || [] };
 
   } catch (error) {
-    console.error("Error di dalam getDashboardData:", error);
-    // Pastikan mengembalikan struktur data yang sama meskipun kosong
-    requests = [];
-    feedback = [];
+    console.error("Error kritis di dalam getDashboardData:", error);
+    // Kembalikan data kosong jika ada error
+    return { 
+      stats: { total_datasets: 0, total_requests: 0, total_downloads: 0, unique_requesters: 0 }, 
+      top_requests: [], 
+      requests: [], 
+      feedback: [] 
+    };
   }
-
-  // Debugging log final
-  console.log("--- Data from Server (Final) ---");
-  console.log("Requests:", requests);
-  console.log("Feedback:", feedback);
-  console.log("-------------------------------");
-
-  // Hitung stats & top_requests berdasarkan data yang didapat
-   stats = {
-      // ... (hitung stats berdasarkan requests dan feedback jika ada) ...
-      total_requests: requests.length, // Contoh sederhana
-      unique_requesters: new Set(requests.map(r => r.user_email)).size,
-      // (total_datasets & total_downloads perlu query tambahan jika diperlukan)
-   };
-   // ... (hitung top_requests jika diperlukan) ...
-
-
-  return { stats, top_requests, requests, feedback };
 }
 
-// Komponen Halaman Utama (Tidak banyak berubah)
+// Komponen Halaman Utama Dashboard (Tidak Diubah)
 export default async function AdminDashboardPage({ searchParams }) {
   const { stats, top_requests, requests, feedback } = await getDashboardData();
 
   async function syncSigiData() {
     "use server";
-     try {
-        console.log("Memulai sinkronisasi data SIGI...");
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log("Sinkronisasi berhasil.");
-
-        revalidatePath('/admin-dashboard'); 
-        return { success: true, message: 'Sinkronisasi data SIGI berhasil diselesaikan.' };
+    try {
+      console.log("Memulai sinkronisasi data SIGI...");
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log("Sinkronisasi berhasil.");
+      revalidatePath('/admin-dashboard');
+      return { success: true, message: 'Sinkronisasi data SIGI berhasil diselesaikan.' };
     } catch (error) {
-        console.error("Gagal sinkronisasi:", error);
-        return { success: false, message: `Gagal: ${error.message}` };
+      console.error("Gagal sinkronisasi:", error);
+      return { success: false, message: `Gagal: ${error.message}` };
     }
   }
 
@@ -107,8 +105,8 @@ export default async function AdminDashboardPage({ searchParams }) {
     <DashboardClient
       stats={stats}
       topRequests={top_requests}
-      initialRequests={requests || []} // Pastikan array kosong jika null
-      initialFeedback={feedback || []} // Pastikan array kosong jika null
+      initialRequests={requests}
+      initialFeedback={feedback}
       syncAction={syncSigiData}
       initialRequestStatusFilter={searchParams.status || 'all'}
     />
