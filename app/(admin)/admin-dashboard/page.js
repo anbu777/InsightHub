@@ -90,11 +90,11 @@ export default async function AdminDashboardPage({ searchParams }) {
   async function syncSigiData() {
     "use server";
     try {
-      console.log("Memulai sinkronisasi data SIGI...");
+      console.log("Memulai sinkronisasi data Supabase...");
       await new Promise(resolve => setTimeout(resolve, 2000));
       console.log("Sinkronisasi berhasil.");
       revalidatePath('/admin-dashboard');
-      return { success: true, message: 'Sinkronisasi data SIGI berhasil diselesaikan.' };
+      return { success: true, message: 'Sinkronisasi data Supabase berhasil diselesaikan.' };
     } catch (error) {
       console.error("Gagal sinkronisasi:", error);
       return { success: false, message: `Gagal: ${error.message}` };
