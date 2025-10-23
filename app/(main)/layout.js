@@ -284,7 +284,9 @@ function SidebarMenu({ isOpen, onClose, onAboutClick, onRequestDataClick, onSurv
                 </div>
                 <nav className="p-4 flex flex-col space-y-2">
                     <Link href="/catalog" className={getLinkClassName('/catalog')}>Katalog Data</Link> 
+                    {/* --- DIHAPUS --- Baris berikut telah dihapus:
                     <Link href="/api-explorer" className={getLinkClassName('/api-explorer')}>Api Explorer</Link> 
+                    */}
                     <button onClick={onRequestDataClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-[#0D2A57] font-semibold transition-colors">Pengajuan Data</button>
                     <button onClick={onAboutClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-[#0D2A57] font-semibold transition-colors">Tentang</button>
                     <button onClick={onSurveyClick} className="w-full text-left px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-[#0D2A57] font-semibold transition-colors">Beri Penilaian</button>
@@ -316,7 +318,7 @@ function SmartHeader({ onMenuClick }) {
         if (activeLinkEl) {
             setIndicatorStyle({
                 left: activeLinkEl.offsetLeft,
-                width: activeLinkEl.offsetWidth,
+                width: activeLinkEl.offsetWidth, // Ini adalah baris 321, 'section' sudah dihapus
                 opacity: 1,
             });
         }
@@ -414,7 +416,7 @@ function NewFooter() {
                         <h3 className="text-lg font-bold text-white mb-4">Lokasi Kami</h3>
                         <div className="overflow-hidden rounded-lg shadow-lg h-48 w-full max-w-md">
                             <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.249216738916!2d106.80287731535905!3d-6.23075199548981!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1665e009497%3A0x6a3f12e847c13280!2sKementerian%20Pekerjaan%20Umum%20dan%20Perumahan%20Rakyat!5e0!3m2!1sen!2sid!4v1664273295058!5m2!1sen!2sid"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2804.535996194357!2d106.80125807122963!3d-6.235651402038864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f143c20b6d7d%3A0x4ecd3cac9729012!2sMinistry%20of%20Public%20Works%20and%20Housing%20of%20the%20Republic%20of%20Indonesia!5e0!3m2!1sen!2sid!"
                                 className="w-full h-full border-0" 
                                 allowFullScreen="" 
                                 loading="lazy" 
@@ -426,7 +428,7 @@ function NewFooter() {
             </div>
             <div className="bg-yellow-400">
                 <div className="container mx-auto px-6 py-4 text-center text-xs text-[#0D2A57] font-bold">
-                    <p>Copyright &copy; {new Date().getFullYear()} Pusat Data dan Teknologi Informasi. Kementerian Pekerjaan Umum.</p>
+                    <p>Copyright © {new Date().getFullYear()} Pusat Data dan Teknologi Informasi. Kementerian Pekerjaan Umum.</p>
                 </div>
             </div>
         </footer>
