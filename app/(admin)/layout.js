@@ -51,7 +51,7 @@ function Sidebar() {
         <aside className="hidden md:flex flex-col w-64 bg-gray-800 text-gray-400 min-h-screen">
             <div className="flex items-center justify-center h-20 bg-gray-900">
                 {/* Pastikan path logo benar */}
-                <Image src="/LogoInsight.png" alt="Logo" width={240} height={40} className="w-auto h-10" />
+                <Image src="/LogoInsight.png" alt="Logo" width={240} height={40} className="w-auto h-40" />
             </div>
             <nav className="flex-grow px-4 py-6 space-y-6">
                 {Object.entries(groupedNavItems).map(([section, items]) => (
