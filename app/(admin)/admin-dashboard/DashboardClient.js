@@ -60,7 +60,10 @@ function RecentRequestsPreview({ requests }) {
                                 <div className="text-sm text-gray-500">{req.user_email}</div>
                             </td>
                             <td className="px-4 py-2 whitespace-nowrap">
+                                {/* ================== PERBAIKAN DI SINI ================== */}
+                                {/* Menggunakan backtick (`) untuk template literal */}
                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(req.status)}`}>
+                                {/* ======================================================= */}
                                     {req.status}
                                 </span>
                             </td>
@@ -76,8 +79,8 @@ function RecentFeedbackPreview({ feedback }) {
     if (!feedback || feedback.length === 0) {
         return <p className="text-gray-500 text-center py-4">Belum ada feedback baru.</p>;
     }
-    const previewData = feedback.slice(0, 5);
-    const getEmojiForRating = (rating) => {
+     const previewData = feedback.slice(0, 5);
+     const getEmojiForRating = (rating) => { 
         const emojis = ['😡', '☹️', '😐', '🙂', '😄'];
         if (rating >= 0 && rating < emojis.length) {
             return emojis[rating];
@@ -115,7 +118,10 @@ function RecentFeedbackPreview({ feedback }) {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, ArcElement);
 
 const StatCard = ({ title, value, color }) => ( /* ... (StatCard tetap sama) ... */
+    // ================== PERBAIKAN DI SINI (Kesalahan serupa) ==================
+    // Menggunakan backtick (`) untuk template literal
     <div className={`${color} text-white rounded-xl shadow-lg p-6`}>
+    {/* ======================================================================== */}
         <p className="text-sm opacity-80">{title}</p>
         <p className="text-3xl font-bold mt-2">{value}</p>
     </div>
