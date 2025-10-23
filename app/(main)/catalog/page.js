@@ -8,8 +8,23 @@ import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
+// --- TAMBAHAN: Array untuk Urutan Hierarki UNOR ---
+const unorOrder = [
+    "Sekretariat Jenderal",
+    "Direktorat Jenderal Sumber Daya Air",
+    "Direktorat jenderal Bina Marga",
+    "Direktorat jenderal Cipta Karya",
+    "Direktorat Jenderal Prasarana Strategis",
+    "Direktorat Jenderal Bina Konstruksi",
+    "Direktorat Jenderal Pembiayaan Infrastruktur",
+    "Inspektorat Jenderal",
+    "Badan Pengembangan Infrastruktur Wilayah",
+    "Badan Pengembangan Wilayah Sumber Daya Manusia",
+];
+// --- BATAS TAMBAHAN ---
+
 // ========================
-// 🔹 Komponen Dataset Card (DIUBAH)
+// 🔹 Komponen Dataset Card (TIDAK BERUBAH)
 // ========================
 function DatasetCard({ dataset }) {
     return (
@@ -52,7 +67,7 @@ function DatasetCard({ dataset }) {
 }
 
 // ========================
-// 🔹 Komponen Paginasi (DIUBAH)
+// 🔹 Komponen Paginasi (TIDAK BERUBAH)
 // ========================
 function Pagination({ currentPage, totalPages, search, unor, category }) {
     if (totalPages <= 1) return null;
@@ -89,7 +104,7 @@ function Pagination({ currentPage, totalPages, search, unor, category }) {
 }
 
 // ========================
-// 🔹 Komponen FilterBar (DIUBAH TOTAL)
+// 🔹 Komponen FilterBar (TIDAK BERUBAH)
 // ========================
 function FilterBar({ allUnors, allCategories, initialValues }) {
     const router = useRouter();
@@ -161,7 +176,7 @@ function FilterBar({ allUnors, allCategories, initialValues }) {
 }
 
 // ========================
-// 🔹 Halaman Utama Katalog (DIUBAH MENJADI CLIENT COMPONENT)
+// 🔹 Halaman Utama Katalog (DIUBAH)
 // ========================
 export default function CatalogPage() {
     // State untuk menyimpan data yang di-fetch
@@ -191,12 +206,22 @@ export default function CatalogPage() {
                 // Fetch unors dan categories hanya sekali jika belum ada
                 if (allUnors.length === 0 || allCategories.length === 0) {
                     const [unorsResult, categoriesResult] = await Promise.all([
-                        supabase.from('unors').select('*').order('nama_unor'),
+                        // --- MODIFIKASI: Hapus .order('nama_unor') ---
+                        supabase.from('unors').select('*'),
                         supabase.from('categories').select('*').order('nama_kategori')
                     ]);
+                    
                     if (unorsResult.error) throw unorsResult.error;
                     if (categoriesResult.error) throw categoriesResult.error;
-                    setAllUnors(unorsResult.data || []);
+
+                    // --- MODIFIKASI: Terapkan pengurutan kustom ---
+                    const sortedUnors = (unorsResult.data || []).sort((a, b) => {
+                        return unorOrder.indexOf(a.nama_unor) - unorOrder.indexOf(b.nama_unor);
+                    });
+                    
+                    setAllUnors(sortedUnors); // Simpan data yang sudah terurut
+                    // --- BATAS MODIFIKASI ---
+
                     setAllCategories(categoriesResult.data || []);
                 }
 
@@ -266,7 +291,7 @@ export default function CatalogPage() {
                                 {search || unor || category
                                     ? `Tidak ada data yang cocok untuk kriteria Anda.`
                                     : 'Belum ada data di dalam katalog.'}
-                            </p>
+                            </p> // --- PERBAIKAN: Ini sekarang </p> (sebelumnya </Request>) ---
                         )}
                     </div>
 
