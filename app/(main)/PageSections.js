@@ -9,6 +9,17 @@ import FeaturedCatalog from './FeaturedCatalog'; // Komponen yang sudah kita bua
 import Link from 'next/link';
 import { unorIconMap } from '@/lib/unorIcons'; // Impor map ikon
 
+// --- TAMBAHAN: Peta Link Eksternal untuk UNOR ---
+// Objek ini akan memetakan nama Unor ke URL eksternal mereka.
+// Pastikan nama Unor di sini SAMA PERSIS dengan data 'nama_unor' di database Anda.
+const externalUnorLinks = {
+  "Direktorat Jenderal Pembiayaan Infrastruktur": "https://pembiayaan.pu.go.id/",
+  "Inspektorat Jenderal": "https://itjen.pu.go.id/",
+  "Badan Pengembangan Infrastruktur Wilayah": "https://bpiw.pu.go.id/",
+  "Badan Pengembangan Wilayah Sumber Daya Manusia": "https://bpsdm.pu.go.id/"
+};
+// --- BATAS TAMBAHAN ---
+
 export default function PageSections({ featuredData, latestData, sortedUnors }) {
     const { setActiveSection } = useContext(NavigationContext) || {};
 
@@ -72,20 +83,45 @@ export default function PageSections({ featuredData, latestData, sortedUnors }) 
                         <p className="text-gray-600 mt-2">Temukan data spesifik dari setiap Unit Organisasi di Kementerian PUPR.</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        
+                        {/* --- MODIFIKASI DIMULAI DI SINI --- */}
                         {sortedUnors.map((unor) => {
                             const IconComponent = unorIconMap[unor.nama_unor] || <div className="h-16 w-16 bg-slate-200 rounded-full"></div>;
+                            
+                            // 1. Cek apakah Unor ini ada di peta link eksternal kita
+                            const externalUrl = externalUnorLinks[unor.nama_unor];
+
+                            // 2. Render tag <a> jika ada, atau <Link> jika tidak ada
                             return (
-                                <Link
-                                    key={unor.id}
-                                    href={`/catalog?unor=${unor.id}`}
-                                    className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                                >
-                                    <div className="h-16 w-16 mb-4">{IconComponent}</div>
-                                    <h3 className="text-md font-bold text-gray-800 mt-2 flex-grow">{unor.nama_unor}</h3>
-                                    <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg text-sm">Jelajahi</span>
-                                </Link>
+                                externalUrl ? (
+                                    // JIKA ADA: Render sebagai tag <a> biasa ke link eksternal
+                                    <a
+                                        key={unor.id}
+                                        href={externalUrl}
+                                        target="_blank" // Buka di tab baru
+                                        rel="noopener noreferrer" // Keamanan
+                                        className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                    >
+                                        <div className="h-16 w-16 mb-4">{IconComponent}</div>
+                                        <h3 className="text-md font-bold text-gray-800 mt-2 flex-grow">{unor.nama_unor}</h3>
+                                        <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg text-sm">Jelajahi</span>
+                                    </a>
+                                ) : (
+                                    // JIKA TIDAK: Render sebagai <Link> Next.js (seperti kode asli)
+                                    <Link
+                                        key={unor.id}
+                                        href={`/catalog?unor=${unor.id}`}
+                                        className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                    >
+                                        <div className="h-16 w-16 mb-4">{IconComponent}</div>
+                                        <h3 className="text-md font-bold text-gray-800 mt-2 flex-grow">{unor.nama_unor}</h3>
+                                        <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg text-sm">Jelajahi</span>
+                                    </Link>
+                                )
                             );
                         })}
+                        {/* --- MODIFIKASI BERAKHIR DI SINI --- */}
+
                     </div>
                 </div>
             </section>
