@@ -13,6 +13,7 @@ import { unorIconMap } from '@/lib/unorIcons'; // Impor map ikon
 // Objek ini akan memetakan nama Unor ke URL eksternal mereka.
 // Pastikan nama Unor di sini SAMA PERSIS dengan data 'nama_unor' di database Anda.
 const externalUnorLinks = {
+  "Direktorat Jenderal Bina Konstruksi": "https://binakonstruksi.pu.go.id/",
   "Direktorat Jenderal Pembiayaan Infrastruktur": "https://pembiayaan.pu.go.id/",
   "Inspektorat Jenderal": "https://itjen.pu.go.id/",
   "Badan Pengembangan Infrastruktur Wilayah": "https://bpiw.pu.go.id/",
