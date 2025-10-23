@@ -10,69 +10,109 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Toaster } from 'react-hot-toast';
 
 // Import semua ikon yang kita butuhkan
-import { 
-    FaTachometerAlt, FaRocket, FaSignOutAlt, FaBell, FaCalendarAlt,
-    FaChartBar, FaTable, FaFileAlt, FaListUl, FaEnvelope, FaUserCircle 
+import {
+    FaTachometerAlt, FaSignOutAlt, FaBell,
+    FaChartBar, FaTable, FaFileAlt, FaListUl, FaEnvelope, FaUserCircle,
+    FaFolderOpen, FaTags // Tambahkan ikon baru
 } from 'react-icons/fa';
 
 
 // =====================================================================
-// Komponen Sidebar
+// 🔹 Komponen Sidebar YANG DI REVISI 🔹
 // =====================================================================
 function Sidebar() {
     const pathname = usePathname();
-    // Diperbarui: isActive sekarang lebih spesifik untuk dashboard
-    const isActive = (path) => pathname === path;
+
+    // Fungsi isActive yang lebih baik, menangani path yang lebih dalam
+    const isActive = (path) => {
+        // Highlight persis jika path sama, atau jika halaman saat ini dimulai dengan path tersebut
+        // (misal, /admin/catalogs/new akan tetap menyorot /admin/catalogs)
+        return pathname === path || pathname.startsWith(path + '/');
+    };
+
+    // Definisikan item navigasi dalam array agar lebih rapi
+    const navItems = [
+        { href: '/admin-dashboard', icon: FaTachometerAlt, label: 'Dashboard', section: 'Main' },
+        { href: '/catalogs', icon: FaTable, label: 'Manajemen Katalog', section: 'Data Management' },
+        { href: '/unors', icon: FaFolderOpen, label: 'Manajemen UNOR', section: 'Data Management' },
+        { href: '/categories', icon: FaTags, label: 'Manajemen Kategori', section: 'Data Management' },
+        { href: '/requests', icon: FaEnvelope, label: 'Permintaan Data', section: 'User Interaction' },
+        { href: '/feedback', icon: FaFileAlt, label: 'Feedback Pengguna', section: 'User Interaction' },
+    ];
+
+    // Kelompokkan item berdasarkan section
+    const groupedNavItems = navItems.reduce((acc, item) => {
+        acc[item.section] = acc[item.section] || [];
+        acc[item.section].push(item);
+        return acc;
+    }, {});
 
     return (
         <aside className="hidden md:flex flex-col w-64 bg-gray-800 text-gray-400 min-h-screen">
             <div className="flex items-center justify-center h-20 bg-gray-900">
-                <Image src="/LogoInsight.png" alt="Logo" width={240} height={40} />
+                {/* Pastikan path logo benar */}
+                <Image src="/LogoInsight.png" alt="Logo" width={240} height={40} className="w-auto h-10" />
             </div>
-            <nav className="flex-grow px-4 py-6">
-                <span className="px-4 text-xs font-semibold uppercase text-gray-500">Main</span>
-                <Link href="/admin-dashboard" className={`flex items-center mt-2 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive('/admin-dashboard') ? 'bg-gray-700 text-white border-l-4 border-white' : 'hover:bg-gray-700 hover:text-white'}`}>
-                    <FaTachometerAlt className="mr-3" />
-                    Dashboard
-                </Link>
-                
-                <div className="mt-8">
-                    <span className="px-4 text-xs font-semibold uppercase text-gray-500">Components</span>
-                    <Link href="#" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
-                       <FaBell className="mr-3" />
-                       Notifications
-                    </Link>
-                </div>
-
-                <div className="mt-8">
-                    <span className="px-4 text-xs font-semibold uppercase text-gray-500">Plugins</span>
-                    <Link href="#" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
-                       <FaCalendarAlt className="mr-3" />
-                       Calendar
-                    </Link>
-                     <Link href="#" className={`flex items-center mt-2 px-4 py-3 rounded-lg hover:bg-gray-700 hover:text-white`}>
-                       <FaChartBar className="mr-3" />
-                       Charts
-                    </Link>
-                </div>
+            <nav className="flex-grow px-4 py-6 space-y-6">
+                {Object.entries(groupedNavItems).map(([section, items]) => (
+                    <div key={section}>
+                        <span className="px-4 text-xs font-semibold uppercase text-gray-500">{section}</span>
+                        {items.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={`flex items-center mt-2 px-4 py-3 rounded-lg transition-colors duration-200 ${
+                                    isActive(item.href)
+                                        ? 'bg-gray-700 text-white border-l-4 border-yellow-400' // Highlight dengan warna berbeda
+                                        : 'hover:bg-gray-700 hover:text-white'
+                                }`}
+                            >
+                                <item.icon className="mr-3" />
+                                {item.label}
+                            </Link>
+                        ))}
+                    </div>
+                ))}
             </nav>
         </aside>
     );
 }
 
+
 // =====================================================================
-// Komponen TopBar
+// Komponen TopBar (Tidak Diubah, kecuali penyesuaian kecil)
 // =====================================================================
 function TopBar() {
     const router = useRouter();
     const supabase = createClientComponentClient();
     const [openMenu, setOpenMenu] = useState(null);
+    const [adminName, setAdminName] = useState('Admin'); // Default name
+
+    // Ambil nama admin dari tabel profiles saat komponen dimuat
+    useEffect(() => {
+        const fetchAdminProfile = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('full_name')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile && profile.full_name) {
+                    setAdminName(profile.full_name);
+                } else if (error) {
+                    console.error("Error fetching admin profile:", error);
+                }
+            }
+        };
+        fetchAdminProfile();
+    }, [supabase]);
+
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        // onAuthStateChange di layout akan menangani redirect,
-        // tapi kita bisa juga push ke halaman utama untuk UX yang lebih baik
-        router.push('/'); 
+        router.push('/'); // Redirect ke halaman utama setelah logout
     };
 
     const handleMenuToggle = (menuName) => {
@@ -81,38 +121,36 @@ function TopBar() {
 
     return (
         <header className="bg-white shadow-sm p-4 flex justify-between items-center z-10">
-            <div className="text-gray-600">Home / Dashboard</div>
+            {/* Breadcrumb sederhana, bisa dibuat lebih dinamis nanti */}
+            <div className="text-gray-600">Admin / Dashboard</div>
             <div className="flex items-center space-x-5">
-                <div className="relative">
+                {/* Tombol Notifikasi & Pesan (Fungsionalitas belum ada) */}
+                <div className="relative hidden"> {/* Sembunyikan sementara */}
                     <button onClick={() => handleMenuToggle('notifications')} className="text-gray-500 hover:text-gray-800">
                         <FaBell size={20} />
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">2</span>
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">0</span>
                     </button>
-                    {openMenu === 'notifications' && (
-                        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down">
-                            {/* Konten dropdown notifikasi */}
-                        </div>
-                    )}
+                    {openMenu === 'notifications' && ( <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down"></div> )}
                 </div>
-                <div className="relative">
+                 <div className="relative hidden"> {/* Sembunyikan sementara */}
                     <button onClick={() => handleMenuToggle('messages')} className="text-gray-500 hover:text-gray-800">
                         <FaEnvelope size={20} />
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-xs text-white">2</span>
+                         <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-xs text-white">0</span>
                     </button>
-                    {openMenu === 'messages' && (
-                        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down">
-                            {/* Konten dropdown pesan */}
-                        </div>
-                    )}
+                     {openMenu === 'messages' && ( <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down"></div> )}
                 </div>
+
+                {/* Dropdown Profil Pengguna */}
                 <div className="relative">
                     <button onClick={() => handleMenuToggle('profile')} className="flex items-center space-x-2">
                         <FaUserCircle size={24} className="text-gray-600" />
-                        <span className="text-sm text-gray-700 hidden sm:block">Halo, Admin</span>
+                        {/* Tampilkan nama admin */}
+                        <span className="text-sm text-gray-700 hidden sm:block">Halo, {adminName}</span>
                     </button>
                     {openMenu === 'profile' && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border text-gray-800 animate-fade-in-down">
                             <ul className="divide-y text-sm">
+                                {/* Opsi lain bisa ditambahkan di sini, misal "Pengaturan Akun" */}
                                 <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-red-500 hover:bg-gray-100 font-semibold">
                                     Logout
                                 </button>
@@ -126,7 +164,7 @@ function TopBar() {
 }
 
 // =====================================================================
-// Layout Utama Admin
+// Layout Utama Admin (Tidak Diubah)
 // =====================================================================
 export default function AdminLayout({ children }) {
     const router = useRouter();
@@ -142,7 +180,6 @@ export default function AdminLayout({ children }) {
             }
         });
 
-        // Cek sesi awal secara manual untuk kasus reload halaman
         const checkInitialSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
@@ -179,7 +216,7 @@ export default function AdminLayout({ children }) {
             <Sidebar />
             <div className="flex-1 flex flex-col">
                 <TopBar />
-                <main className="p-6 md:p-8 flex-grow">
+                <main className="p-6 md:p-8 flex-grow bg-gray-100">
                     {children}
                 </main>
             </div>
