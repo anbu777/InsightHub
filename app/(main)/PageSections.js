@@ -9,9 +9,10 @@ import FeaturedCatalog from './FeaturedCatalog'; // Komponen yang sudah kita bua
 import Link from 'next/link';
 import { unorIconMap } from '@/lib/unorIcons'; // Impor map ikon
 
-// --- TAMBAHAN: Peta Link Eksternal untuk UNOR ---
-// Objek ini akan memetakan nama Unor ke URL eksternal mereka.
-// Pastikan nama Unor di sini SAMA PERSIS dengan data 'nama_unor' di database Anda.
+// --- TAMBAHAN: Impor komponen BeritaTerkini ---
+import BeritaTerkini from './BeritaTerkini'; 
+
+// --- Peta Link Eksternal untuk UNOR (Tetap Sama) ---
 const externalUnorLinks = {
   "Direktorat Jenderal Bina Konstruksi": "https://binakonstruksi.pu.go.id/",
   "Direktorat Jenderal Pembiayaan Infrastruktur": "https://pembiayaan.pu.go.id/",
@@ -19,23 +20,28 @@ const externalUnorLinks = {
   "Badan Pengembangan Infrastruktur Wilayah": "https://bpiw.pu.go.id/",
   "Badan Pengembangan Wilayah Sumber Daya Manusia": "https://bpsdm.pu.go.id/"
 };
-// --- BATAS TAMBAHAN ---
 
-export default function PageSections({ featuredData, latestData, sortedUnors }) {
+// --- MODIFIKASI: Tambahkan 'beritaData' ke props ---
+export default function PageSections({ featuredData, latestData, sortedUnors, beritaData }) {
     const { setActiveSection } = useContext(NavigationContext) || {};
 
     // Buat refs dan logic 'inView' di sini
     const { ref: howItWorksRef, inView: howItWorksInView } = useInView({ threshold: 0.4 });
     const { ref: featuredRef, inView: featuredInView } = useInView({ threshold: 0.4 });
+    // --- TAMBAHAN: Ref untuk section berita ---
+    const { ref: newsRef, inView: newsInView } = useInView({ threshold: 0.4 });
     const { ref: unorRef, inView: unorInView } = useInView({ threshold: 0.4 });
+
 
     useEffect(() => { if (howItWorksInView) setActiveSection('how-it-works'); }, [howItWorksInView, setActiveSection]);
     useEffect(() => { if (featuredInView) setActiveSection('featured-catalog'); }, [featuredInView, setActiveSection]);
+    // --- TAMBAHAN: UseEffect untuk section berita ---
+    useEffect(() => { if (newsInView) setActiveSection('news-section'); }, [newsInView, setActiveSection]);
     useEffect(() => { if (unorInView) setActiveSection('unor-section'); }, [unorInView, setActiveSection]);
 
     return (
         <div className="p-6 flex flex-col gap-8">
-            {/* SECTION: BAGAIMANA MEMULAI */}
+            {/* SECTION: BAGAIMANA MEMULAI (Tetap Sama) */}
             <section ref={howItWorksRef} id="how-it-works" className="scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
                 <div className="container mx-auto">
                     <div className="text-center">
@@ -68,12 +74,19 @@ export default function PageSections({ featuredData, latestData, sortedUnors }) 
                 </div>
             </section>
             
-            {/* SECTION: KATALOG UNGGULAN */}
+            {/* SECTION: KATALOG UNGGULAN (Tetap Sama) */}
             <div ref={featuredRef} id="featured-catalog" className="scroll-mt-28">
                 <FeaturedCatalog popularApis={featuredData} latestApis={latestData} />
             </div>
 
-            {/* SECTION: UNIT ORGANISASI */}
+            {/* --- SECTION BARU: BERITA TERKINI --- */}
+            <section ref={newsRef} id="news-section" className="scroll-mt-28 bg-gray-50 rounded-xl shadow-lg p-8 md:p-12">
+                <BeritaTerkini newsItems={beritaData} />
+            </section>
+            {/* --- BATAS SECTION BARU --- */}
+
+
+            {/* SECTION: UNIT ORGANISASI (Tetap Sama) */}
             <section ref={unorRef} id="unor-section" className="relative scroll-mt-28 bg-white rounded-xl shadow-lg p-8 md:p-12">
                 <div className="container mx-auto">
                     <Link href="/catalog" className="absolute top-8 right-8 text-sm font-semibold text-[#0D2A57] hover:underline">
@@ -85,22 +98,17 @@ export default function PageSections({ featuredData, latestData, sortedUnors }) 
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         
-                        {/* --- MODIFIKASI DIMULAI DI SINI --- */}
                         {sortedUnors.map((unor) => {
                             const IconComponent = unorIconMap[unor.nama_unor] || <div className="h-16 w-16 bg-slate-200 rounded-full"></div>;
-                            
-                            // 1. Cek apakah Unor ini ada di peta link eksternal kita
                             const externalUrl = externalUnorLinks[unor.nama_unor];
 
-                            // 2. Render tag <a> jika ada, atau <Link> jika tidak ada
                             return (
                                 externalUrl ? (
-                                    // JIKA ADA: Render sebagai tag <a> biasa ke link eksternal
                                     <a
                                         key={unor.id}
                                         href={externalUrl}
-                                        target="_blank" // Buka di tab baru
-                                        rel="noopener noreferrer" // Keamanan
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
                                         className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center border hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                                     >
                                         <div className="h-16 w-16 mb-4">{IconComponent}</div>
@@ -108,7 +116,6 @@ export default function PageSections({ featuredData, latestData, sortedUnors }) 
                                         <span className="mt-4 w-full bg-[#FFD100] text-[#0D2A57] font-bold py-2 rounded-lg text-sm">Jelajahi</span>
                                     </a>
                                 ) : (
-                                    // JIKA TIDAK: Render sebagai <Link> Next.js (seperti kode asli)
                                     <Link
                                         key={unor.id}
                                         href={`/catalog?unor=${unor.id}`}
@@ -121,8 +128,6 @@ export default function PageSections({ featuredData, latestData, sortedUnors }) 
                                 )
                             );
                         })}
-                        {/* --- MODIFIKASI BERAKHIR DI SINI --- */}
-
                     </div>
                 </div>
             </section>
