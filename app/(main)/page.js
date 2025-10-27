@@ -48,20 +48,26 @@ const unorOrder = [
 // Komponen Halaman Utama (Server Component)
 export default async function HomePage() {
     // Ambil semua data di server
-    const [stats, featuredData, latestData, unorsResult] = await Promise.all([
+    // --- MODIFIKASI DIMULAI: Menambahkan 'beritaResult' ---
+    const [stats, featuredData, latestData, unorsResult, beritaResult] = await Promise.all([
         getStats(),
         supabase.from('datasets').select('id, title, description').order('click_count', { ascending: false }).limit(3),
         supabase.from('datasets').select('id, title, description').order('created_at', { ascending: false }).limit(3),
         supabase.from('unors').select('*'),
+        // --- TAMBAHAN BARIS INI: Mengambil 4 berita terbaru ---
+        supabase.from('berita').select('*').order('created_at', { ascending: false }).limit(4)
     ]);
+    // --- MODIFIKASI BERAKHIR ---
     
     // Urutkan UNOR di server
     const sortedUnors = unorsResult.data?.sort((a, b) => unorOrder.indexOf(a.nama_unor) - unorOrder.indexOf(b.nama_unor)) || [];
 
     // Cek error
-    if (featuredData.error || latestData.error || unorsResult.error) {
-        console.error("Error fetching homepage data:", featuredData.error || latestData.error || unorsResult.error);
+    // --- MODIFIKASI DIMULAI: Menambahkan cek error 'beritaResult' ---
+    if (featuredData.error || latestData.error || unorsResult.error || beritaResult.error) {
+        console.error("Error fetching homepage data:", featuredData.error || latestData.error || unorsResult.error || beritaResult.error);
     }
+    // --- MODIFIKASI BERAKHIR ---
 
     // Render komponen, delegasikan data dan tugas interaktif ke komponen client
     return (
@@ -85,11 +91,14 @@ export default async function HomePage() {
             </section>
             
             {/* Delegasikan rendering semua section lain ke PageSections */}
+            {/* --- MODIFIKASI DIMULAI: Menambahkan prop 'beritaData' --- */}
             <PageSections
                 featuredData={featuredData.data}
                 latestData={latestData.data}
                 sortedUnors={sortedUnors}
+                beritaData={beritaResult.data} 
             />
+            {/* --- MODIFIKASI BERAKHIR --- */}
         </div>
     );
 }
