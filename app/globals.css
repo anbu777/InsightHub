@@ -1,3 +1,4 @@
+/* app/globals.css */
 @import "tailwindcss";
 
 :root {
@@ -79,3 +80,10 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+/* --- TAMBAHAN BARU --- */
+/* Mencegah scroll body saat modal terbuka */
+body.modal-open {
+  overflow: hidden;
+}
+/* --- BATAS TAMBAHAN --- */
