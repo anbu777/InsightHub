@@ -36,6 +36,7 @@ function Sidebar() {
         { href: '/catalogs', icon: FaTable, label: 'Manajemen Katalog', section: 'Data Management' },
         { href: '/unors', icon: FaFolderOpen, label: 'Manajemen UNOR', section: 'Data Management' },
         { href: '/categories', icon: FaTags, label: 'Manajemen Kategori', section: 'Data Management' },
+        { href: '/beritas', icon: FaFileAlt, label: 'Manajemen Berita', section: 'Data Management' },
         { href: '/requests', icon: FaEnvelope, label: 'Permintaan Data', section: 'User Interaction' },
         { href: '/feedback', icon: FaFileAlt, label: 'Feedback Pengguna', section: 'User Interaction' },
     ];
