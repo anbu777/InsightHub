@@ -48,7 +48,7 @@ export default function BeritaTerkini({ newsItems }) {
                 <Link
                     href="/berita"
                     // Posisi absolut relatif terhadap div terluar section header
-                    className="absolute top-0 right-0 text-sm font-semibold text-blue-600 hover:underline flex items-center group whitespace-nowrap"
+                    className="absolute top-8 right-8 text-sm font-semibold text-[#0D2A57] hover:underline"
                 >
                     Lihat Semua
                     <span className="ml-1 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
