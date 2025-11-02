@@ -14,7 +14,7 @@ async function getBerita() {
     // Ambil data berita, urutkan dari yang terbaru
     const { data, error } = await supabase
       .from('berita')
-      .select('id, title, excerpt, created_at') // Hanya ambil kolom yang perlu untuk daftar
+      .select('id, title, excerpt, created_at, image_url') // Ambil image_url untuk preview kecil
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -36,14 +36,13 @@ export default async function BeritaPage() {
     <div className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Manajemen Berita</h1>
-        {/* === PERBAIKAN DI SINI === */}
+        {/* Tombol Tambah Baru */}
         <Link
-          href="/beritas/new" // Arahkan ke halaman tambah Berita di /beritas
+          href="/beritas/new" // Arahkan ke halaman tambah Berita (plural)
           className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200"
         >
           + Tulis Berita Baru
         </Link>
-        {/* === AKHIR PERBAIKAN === */}
       </div>
 
       {/* Tampilkan komponen tabel */}

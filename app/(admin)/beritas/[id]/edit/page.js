@@ -1,17 +1,16 @@
 // app/(admin)/beritas/[id]/edit/page.js
 
-// BARU: Impor helper Server Component
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
-import BeritaForm from '../../BeritaForm'; // Path ini sudah benar (naik 2 level)
+// === PERBAIKAN: Path import diubah dari '../../BeritaForm' menjadi '../BeritaForm' ===
+import BeritaForm from '../BeritaForm'; // Impor komponen form dari folder induk
 
-// BARU: Tambahkan ini untuk memaksa rendering dinamis
+// Paksa halaman ini dinamis untuk menghindari error 'params'
 export const dynamic = 'force-dynamic';
 
 // Fungsi untuk mengambil data Berita yang akan diedit
 async function getBeritaData(beritaId) {
-  // BARU: Buat client baru yang spesifik untuk request ini
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
@@ -42,6 +41,7 @@ export default async function EditBeritaPage({ params: { id } }) {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Edit Berita</h1>
+      {/* Panggil komponen form dalam mode 'edit', kirim data awal */}
       <BeritaForm
         mode="edit"
         initialData={beritaData}

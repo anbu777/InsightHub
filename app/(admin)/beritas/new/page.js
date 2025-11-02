@@ -1,5 +1,7 @@
-// app/(admin)/berita/new/page.js
-import BeritaForm from '../BeritaForm'; // Impor komponen form
+// app/(admin)/beritas/new/page.js
+
+// === PERBAIKAN: Path import diubah dari './BeritaForm' menjadi '../BeritaForm' ===
+import BeritaForm from '../BeritaForm'; // Impor komponen form dari folder induk
 
 // Komponen Halaman Tambah Berita
 export default function NewBeritaPage() {
