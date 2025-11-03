@@ -11,13 +11,15 @@ async function getCatalogs() {
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   try {
-    // Ambil data datasets, join dengan unors dan categories untuk mendapatkan nama
+    // === PERUBAHAN: Tambahkan data_url dan metadata ke select ===
     const { data, error } = await supabase
       .from('datasets')
       .select(`
         id,
         title,
         created_at,
+        data_url, 
+        metadata, 
         unors ( nama_unor ),
         categories ( nama_kategori )
       `)
@@ -31,18 +33,17 @@ async function getCatalogs() {
     // Ubah struktur data agar lebih mudah digunakan di tabel
     const formattedData = data.map(item => ({
         ...item,
-        nama_unor: item.unors?.nama_unor || 'N/A', 
+        nama_unor: item.unors?.nama_unor || 'N/A',
         nama_kategori: item.categories?.nama_kategori || 'N/A',
         unors: undefined, 
         categories: undefined,
     }));
 
-
-    return formattedData || []; 
+    return formattedData || []; // Kembalikan array kosong jika data null
 
   } catch (error) {
     console.error("Critical error in getCatalogs:", error);
-    return []; 
+    return []; // Kembalikan array kosong jika terjadi error
   }
 }
 
@@ -54,16 +55,13 @@ export default async function CatalogsPage() {
     <div className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Manajemen Katalog Data</h1>
-        {/* === PERBAIKAN DI SINI === */}
-        {/* Comment dipindahkan ke luar tag Link */}
-        {/* Path sudah benar tanpa /admin */}
+        {/* Tombol Tambah Baru */}
         <Link 
           href="/catalogs/new" 
           className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200"
         >
           + Tambah Katalog Baru
         </Link>
-        {/* === AKHIR PERBAIKAN === */}
       </div>
 
       {/* Tampilkan komponen tabel, teruskan data */}

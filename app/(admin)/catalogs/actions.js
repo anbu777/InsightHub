@@ -19,13 +19,11 @@ async function checkAdminStatus(supabase) {
   }
 }
 
-// Fungsi Inspeksi API Endpoint
+// Fungsi Inspeksi API Endpoint (Tidak Diubah)
 export async function inspectApiEndpoint(urlToInspect) {
   console.log(`Menerima permintaan inspeksi untuk: ${urlToInspect}`);
-  // === PERBAIKAN COOKIE ===
   const cookieStore = cookies();
   const supabase = createServerActionClient({ cookies: () => cookieStore });
-  // === AKHIR PERBAIKAN ===
   const isAdmin = await checkAdminStatus(supabase);
   if (!isAdmin) return { success: false, message: 'Akses ditolak.' };
   if (!urlToInspect || !urlToInspect.startsWith('http')) {
@@ -36,9 +34,7 @@ export async function inspectApiEndpoint(urlToInspect) {
         method: 'GET',
         headers: { 'Accept': 'application/json', 'User-Agent': 'InsightHub-Inspector/1.0' }
     });
-    if (!response.ok) {
-      throw new Error(`Gagal mengambil data: Server merespons dengan status ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Gagal mengambil data: Server merespons dengan status ${response.status}`);
     const data = await response.json();
     console.log("Inspeksi: Data JSON berhasil diambil.");
     let dataArray = [];
@@ -48,14 +44,12 @@ export async function inspectApiEndpoint(urlToInspect) {
     else if (data.data && Array.isArray(data.data)) dataArray = data.data;
     else if (data.attributes && Array.isArray(data.attributes)) dataArray = data.attributes.map(item => item.attributes || item);
     else throw new Error('Format JSON tidak dikenali.');
-    if (dataArray.length === 0) throw new Error('API berhasil dipanggil, tetapi tidak berisi data (array kosong).');
+    if (dataArray.length === 0) throw new Error('API berhasil dipanggil, data kosong.');
     const sample_data = dataArray.slice(0, 3);
     const sample_data_string = JSON.stringify(sample_data, null, 2);
     const firstItem = sample_data[0] || {};
     const keys = Object.keys(firstItem);
-    const metadata = {
-        deskripsi_kolom: keys.map(key => ({ nama: key, tipe: typeof firstItem[key] }))
-    };
+    const metadata = { deskripsi_kolom: keys.map(key => ({ nama: key, tipe: typeof firstItem[key] })) };
     const metadata_string = JSON.stringify(metadata, null, 2);
     console.log("Inspeksi: Metadata (skema) diekstrak.");
     return { 
@@ -65,20 +59,18 @@ export async function inspectApiEndpoint(urlToInspect) {
     };
   } catch (error) {
     console.error("Error dalam inspectApiEndpoint:", error.message);
-    return { success: false, message: error.message || 'Terjadi kesalahan tidak terduga saat inspeksi.' };
+    return { success: false, message: error.message || 'Terjadi kesalahan.' };
   }
 }
 
-// Fungsi Upload CSV
+// Fungsi Upload CSV (Tidak Diubah)
 export async function createCatalogFromCSV(formData) {
-  // === PERBAIKAN COOKIE ===
   const cookieStore = cookies();
   const supabase = createServerActionClient({ cookies: () => cookieStore });
-  // === AKHIR PERBAIKAN ===
   const isAdmin = await checkAdminStatus(supabase);
   if (!isAdmin) return { success: false, message: 'Akses ditolak.' };
   const title = formData.get('title');
-  const description = formData.get('description') || ''; // Pastikan tidak null
+  const description = formData.get('description') || '';
   const unor_id = formData.get('unor_id');
   const category_id = formData.get('category_id');
   const csvFile = formData.get('csv_file');
@@ -91,7 +83,7 @@ export async function createCatalogFromCSV(formData) {
   if (csvFile.type !== 'text/csv') {
      return { success: false, message: 'Format file tidak valid. Harap unggah file .csv' };
   }
-  const { data: { user } } = await supabase.auth.getUser(); // Ini aman
+  const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || 'admin';
   const safeFileName = `${userId}/${Date.now()}_${csvFile.name}`;
   try {
@@ -134,12 +126,10 @@ export async function createCatalogFromCSV(formData) {
   }
 }
 
-// Fungsi createCatalog (Manual/Inspeksi)
+// Fungsi createCatalog (Manual/Inspeksi - Tidak Diubah)
 export async function createCatalog(payload) {
-  // === PERBAIKAN COOKIE ===
-  const cookieStore = cookies();
+  const cookieStore = cookies();
   const supabase = createServerActionClient({ cookies: () => cookieStore });
-  // === AKHIR PERBAIKAN ===
   const isAdmin = await checkAdminStatus(supabase);
   if (!isAdmin) return { success: false, message: 'Akses ditolak.' };
   if (!payload.title || !payload.unor_id || !payload.category_id || !payload.data_url) {
@@ -162,12 +152,10 @@ export async function createCatalog(payload) {
   }
 }
 
-// Fungsi updateCatalog
+// Fungsi updateCatalog (Tidak Diubah)
 export async function updateCatalog(id, payload) {
-   // === PERBAIKAN COOKIE ===
-    const cookieStore = cookies();
-    const supabase = createServerActionClient({ cookies: () => cookieStore });
-   // === AKHIR PERBAIKAN ===
+   const cookieStore = cookies();
+   const supabase = createServerActionClient({ cookies: () => cookieStore });
    const isAdmin = await checkAdminStatus(supabase);
    if (!isAdmin) return { success: false, message: 'Akses ditolak.' };
    if (!id || !payload.title || !payload.unor_id || !payload.category_id || !payload.data_url) {
@@ -179,7 +167,7 @@ export async function updateCatalog(id, payload) {
      if (error) {
        console.error("Supabase update catalog error:", error);
        return { success: false, message: `Gagal memperbarui katalog: ${error.message}` };
-  }
+     }
      console.log("Update berhasil:", data);
      revalidatePath('/catalogs');
      revalidatePath(`/catalogs/${id}/edit`);
@@ -191,28 +179,81 @@ export async function updateCatalog(id, payload) {
    }
 }
 
-// Fungsi deleteCatalog
-export async function deleteCatalog(id) {
-  // === PERBAIKAN COOKIE ===
+
+// === FUNGSI deleteCatalog (DIREVISI TOTAL) ===
+export async function deleteCatalog(id, tableName) {
   const cookieStore = cookies();
-  const supabase = createServerActionClient({ cookies: () => cookieStore });
-  // === AKHIR PERBAIKAN ===
-   const isAdmin = await checkAdminStatus(supabase);
-   if (!isAdmin) return { success: false, message: 'Akses ditolak.' };
-  if (!id) return { success: false, message: 'ID katalog tidak valid.' };
-  try {
-    console.log(`Mencoba delete datasets (ID: ${id})`);
-    const { error } = await supabase.from('datasets').delete().eq('id', id);
-    if (error) {
-      console.error("Supabase delete catalog error:", error);
-      return { success: false, message: `Gagal menghapus katalog: ${error.message}` };
-    }
-    console.log("Delete berhasil.");
-    revalidatePath('/catalogs');
+  const supabase = createServerActionClient({ cookies: () => cookieStore });
+
+  // 1. Cek Admin
+  const isAdmin = await checkAdminStatus(supabase);
+  if (!isAdmin) {
+    return { success: false, message: 'Akses ditolak: Hanya admin yang bisa menghapus katalog.' };
+  }
+
+  // 2. Validasi Input
+  if (!id) {
+    return { success: false, message: 'ID katalog tidak valid.' };
+  }
+
+  // Kita perlu client dengan SERVICE_ROLE_KEY untuk memanggil RPC 'exec'
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error("SUPABASE_SERVICE_ROLE_KEY tidak diatur. Tidak dapat menghapus tabel fisik.");
+      // Kita tetap lanjutkan untuk menghapus entri datasets
+  }
+  
+  const supabaseService = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+
+  try {
+    // 3. Hapus Entri di 'datasets' (dilakukan terlebih dahulu)
+    console.log(`Mencoba delete datasets (ID: ${id})`);
+    const { error: deleteDatasetError } = await supabase
+      .from('datasets')
+      .delete()
+      .eq('id', id);
+
+    if (deleteDatasetError) {
+      console.error("Supabase delete dataset error:", deleteDatasetError);
+      return { success: false, message: `Gagal menghapus entri katalog: ${deleteDatasetError.message}` };
+    }
+    console.log("Delete dari 'datasets' berhasil.");
+
+    // 4. Hapus Tabel Fisik (jika 'tableName' diberikan)
+    if (tableName && typeof tableName === 'string' && tableName.trim() !== '') {
+      // Validasi sederhana untuk mencegah SQL injection
+      if (!/^[a-z0-9_]+$/.test(tableName)) {
+          console.warn(`Nama tabel tidak valid (${tableName}), penghapusan tabel fisik dilewati.`);
+          revalidatePath('/catalogs');
+          revalidatePath('/admin-dashboard');
+          return { success: true, message: `Katalog dihapus, tapi tabel fisik '${tableName}' tidak valid & dilewati.` };
+      }
+
+      console.log(`Mencoba menghapus tabel fisik: public."${tableName}"`);
+      const { error: dropTableError } = await supabaseService.rpc('exec', {
+        sql_query: `DROP TABLE IF EXISTS public."${tableName}";`
+      });
+
+      if (dropTableError) {
+        console.error("Error saat RPC 'exec' (DROP TABLE):", dropTableError);
+        // Jangan gagalkan seluruh operasi jika drop tabel gagal
+        // Kembalikan sukses karena entri 'datasets' sudah terhapus
+        return { success: true, message: `Katalog berhasil dihapus, tetapi tabel fisik '${tableName}' gagal dihapus.` };
+      }
+      console.log(`Tabel fisik '${tableName}' berhasil dihapus.`);
+    } else {
+      console.log("Tidak ada nama tabel fisik di metadata, penghapusan tabel dilewati.");
+    }
+
+    // 5. Sukses
+    revalidatePath('/catalogs');
     revalidatePath('/admin-dashboard');
-    return { success: true, message: 'Katalog berhasil dihapus!' };
-  } catch (error) {
-     console.error("Unexpected error in deleteCatalog:", error);
-     return { success: false, message: 'Terjadi kesalahan tidak terduga.' };
-  }
+    return { success: true, message: 'Katalog dan data terkait berhasil dihapus!' };
+
+  } catch (error) {
+     console.error("Unexpected error in deleteCatalog:", error.message);
+     return { success: false, message: error.message || 'Terjadi kesalahan tidak terduga.' };
+  }
 }
