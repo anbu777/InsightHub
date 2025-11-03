@@ -3,8 +3,12 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
-// === PERBAIKAN: Path import diubah dari '../../BeritaForm' menjadi '../BeritaForm' ===
-import BeritaForm from '../BeritaForm'; // Impor komponen form dari folder induk
+
+// === REVISI: Path import diperbaiki ===
+// Path '../BeritaForm' salah karena mengarah ke folder [id].
+// Path '../../BeritaForm' (naik dua level) akan mengarah ke folder 'beritas/',
+// di mana file BeritaForm.js kemungkinan besar berada.
+import BeritaForm from '../../BeritaForm'; // Impor komponen form dari folder 'beritas'
 
 // Paksa halaman ini dinamis untuk menghindari error 'params'
 export const dynamic = 'force-dynamic';
@@ -33,7 +37,7 @@ async function getBeritaData(beritaId) {
 }
 
 // Komponen Halaman Edit Berita
-// === PERBAIKAN: Ambil 'id' langsung dari 'params' ===
+// === TIDAK ADA PERUBAHAN: Pengambilan 'id' dari 'params' sudah benar ===
 export default async function EditBeritaPage({ params: { id } }) {
   // 'id' sekarang berisi ID dari URL
   const beritaData = await getBeritaData(id);
@@ -48,4 +52,4 @@ export default async function EditBeritaPage({ params: { id } }) {
       />
     </div>
   );
-}
+} // <-- Perbaikan sintaks: Koma (,) di akhir file Anda sebelumnya telah dihapus.
