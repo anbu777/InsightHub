@@ -1,12 +1,9 @@
 # Insight Hub: API Catalog & Management Dashboard
 
 <p align="center">
-  <strong>Platform terpusat untuk manajemen, penemuan, dan visualisasi data API di Kementerian PUPR.</strong>
+  <strong>Platform terpusat untuk manajemen, penemuan, dan visualisasi data API di Kementerian PU.</strong>
 </p>
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/42d39eba-46a4-40ac-8f2a-89767c8ad67f" alt="Tangkapan layar Dashboard Insight Hub" width="100%"/>
-</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-15 (App Router)-black?style=for-the-badge&logo=nextdotjs" alt="Next.js">
@@ -19,7 +16,7 @@
 
 ## 🎯 Latar Belakang & Tujuan
 
-Dalam organisasi besar seperti Kementerian PUPR, puluhan unit kerja (Unor) mengembangkan dan mengonsumsi API internal. Tanpa platform terpusat, terjadi duplikasi pekerjaan, kesulitan dalam penemuan API, dan kurangnya visibilitas terhadap penggunaan data.
+Dalam organisasi besar seperti Kementerian PU, puluhan unit kerja (Unor) mengembangkan dan mengonsumsi API internal. Tanpa platform terpusat, terjadi duplikasi pekerjaan, kesulitan dalam penemuan API, dan kurangnya visibilitas terhadap penggunaan data.
 
 **Insight Hub** dirancang untuk memecahkan masalah ini dengan menyediakan "Single Source of Truth" (SSOT) untuk semua aset data API, mengubah cara data dikelola dan dibagikan secara internal.
 
@@ -59,36 +56,28 @@ Proyek ini tidak hanya tentang fitur, tetapi juga tentang membangun fondasi yang
 
 ## 📸 Galeri
 
-<<<<<<< HEAD
 <p align="center">
   Tampilan antarmuka aplikasi, mulai dari dashboard admin, manajemen data, hingga halaman detail.
 </p>
 
 <table align="center">
   <tr>
-    <td align="center"><strong>Tampilan Halaman Utama</strong></td>
     <td align="center"><strong>Admin Dashboard</strong></td>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/4c6e3664-3dff-4a75-8ef1-77eb8f6e49f8" alt="Tampilan Halaman Utama" width="100%"/></td>
-    <td><img src="https://github.com/user-attachments/assets/42d39eba-46a4-40ac-8f2a-89767c8ad67f" alt="Admin Dashboard" width="100%"/></td>
-  </tr>
-  <tr>
     <td align="center"><strong>Manajemen Data Katalog</strong></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/42d39eba-46a4-40ac-8f2a-89767c8ad67f" alt="Admin Dashboard" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/07d62c4f-75e3-4a1b-8f99-bbdb1c5a5a15" alt="Manajemen Data Katalog" width="100%"/></td>
+  </tr>
+  <tr>
     <td align="center"><strong>Form Edit Data</strong></td>
+    <td align="center"><strong>Tampilan Halaman Utama</strong></td>
   </tr>
    <tr>
-    <td><img src="https://github.com/user-attachments/assets/07d62c4f-75e3-4a1b-8f99-bbdb1c5a5a15" alt="Manajemen Data Katalog" width="100%"/></td>
     <td><img src="https://github.com/user-attachments/assets/b0cee82d-46c3-4f71-9d46-734ed1cac970" alt="Form Edit Data" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/4c6e3664-3dff-4a75-8ef1-77eb8f6e49f8" alt="Tampilan Halaman Utama" width="100%"/></td>
   </tr>
 </table>
-=======
-<img width="832" height="1782" alt="image" src="https://github.com/user-attachments/assets/4c6e3664-3dff-4a75-8ef1-77eb8f6e49f8" />
-<img width="832" height="802" alt="image" src="https://github.com/user-attachments/assets/42d39eba-46a4-40ac-8f2a-89767c8ad67f" />
-<img width="832" height="802" alt="image" src="https://github.com/user-attachments/assets/07d62c4f-75e3-4a1b-8f99-bbdb1c5a5a15" />
-<img width="832" height="955" alt="image" src="https://github.com/user-attachments/assets/b0cee82d-46c3-4f71-9d46-734ed1cac970" />
-
->>>>>>> c221d8a369e1abacd575bb65e1ddbb786c33ffab
 
 ---
 
@@ -98,8 +87,7 @@ Untuk menjalankan proyek ini secara lokal:
 
 1.  **Clone repository:**
     ```bash
-    git clone [https://github.com/](https://github.com/)[NAMA_USER_ANDA]/[NAMA_REPO_ANDA].git
-    cd [NAMA_REPO_ANDA]
+    git clone https://github.com/zaidanjibran/insight-hub.git
     ```
 
 2.  **Install dependencies:**
