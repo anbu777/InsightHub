@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="[LINK_KE_SCREENSHOT_ANDA]" alt="Tangkapan layar Dashboard Insight Hub" width="100%"/>
+  <img src="https://github.com/user-attachments/assets/42d39eba-46a4-40ac-8f2a-89767c8ad67f" alt="Tangkapan layar Dashboard Insight Hub" width="100%"/>
 </p>
 
 <p align="center">
@@ -59,11 +59,28 @@ Proyek ini tidak hanya tentang fitur, tetapi juga tentang membangun fondasi yang
 
 ## 📸 Galeri
 
-*(Sangat disarankan: Tambahkan 2-3 screenshot lagi di sini untuk menunjukkan berbagai bagian aplikasi, seperti halaman admin, halaman detail katalog, dll.)*
+<p align="center">
+  Tampilan antarmuka aplikasi, mulai dari dashboard admin, manajemen data, hingga halaman detail.
+</p>
 
-| Halaman Admin | Halaman Detail API |
-| :---: | :---: |
-| ![Admin Dashboard]([LINK_KE_SCREENSHOT_LAIN]) | ![Detail API]([LINK_KE_SCREENSHOT_LAIN]) |
+<table align="center">
+  <tr>
+    <td align="center"><strong>Tampilan Halaman Utama</strong></td>
+    <td align="center"><strong>Admin Dashboard</strong></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/4c6e3664-3dff-4a75-8ef1-77eb8f6e49f8" alt="Tampilan Halaman Utama" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/42d39eba-46a4-40ac-8f2a-89767c8ad67f" alt="Admin Dashboard" width="100%"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Manajemen Data Katalog</strong></td>
+    <td align="center"><strong>Form Edit Data</strong></td>
+  </tr>
+   <tr>
+    <td><img src="https://github.com/user-attachments/assets/07d62c4f-75e3-4a1b-8f99-bbdb1c5a5a15" alt="Manajemen Data Katalog" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/b0cee82d-46c3-4f71-9d46-734ed1cac970" alt="Form Edit Data" width="100%"/></td>
+  </tr>
+</table>
 
 ---
 
