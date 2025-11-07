@@ -108,3 +108,10 @@ Untuk menjalankan proyek ini secara lokal:
     ```
 
 Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
+---
+
+## 📄 Lisensi
+
+Proyek ini dilisensikan di bawah Lisensi MIT. Lihat file `LICENSE` untuk detail lebih lanjut.
+
+© 2025 Zaidan Jibran Azhar. Semua Hak Dilindungi.
