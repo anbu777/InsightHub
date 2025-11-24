@@ -3,54 +3,70 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion'; // Pastikan framer-motion terinstall
 
-// --- MODIFIKASI: Tambahkan prop 'layoutType' ---
-export default function NewsCard({ item, layoutType = 'grid' }) { // Default ke 'grid' jika tidak disediakan
+// Varian animasi untuk kartu (fade-in & slide-up)
+const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
 
-    // --- MODIFIKASI: Tentukan class lebar berdasarkan layoutType ---
-    const widthClasses = layoutType === 'slider' 
-        ? 'w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)]' // Lebar spesifik untuk slider (memakai calc untuk padding p-3)
-        : ''; // Kosongkan untuk grid, biarkan grid container yang mengatur
-
+export default function NewsCard({ item }) {
+    
+    // Hapus prop 'layoutType' karena kita fokus ke grid saja sekarang.
+    // Class wrapper disederhanakan untuk grid.
+    
     return (
-        // --- MODIFIKASI: Terapkan widthClasses ---
-        <div className={`flex-shrink-0 p-3 scroll-snap-align-start 
-                        transition-all duration-300 ease-in-out hover:scale-[1.03] 
-                        ${widthClasses}`}> {/* Tambahkan class lebar dinamis */}
-
-            <div className="flex flex-col h-full bg-white rounded-lg shadow-lg hover:shadow-xl overflow-hidden border border-gray-200 transition-shadow duration-300 ease-in-out">
-
+        <motion.div 
+            className="h-full" // Wrapper motion mengisi tinggi penuh
+            variants={cardVariants}
+            whileHover={{ y: -5 }} // Efek hover naik sedikit
+        >
+            <div className="flex flex-col h-full bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
+                
                 {/* Gambar Berita */}
-                <div className="relative w-full h-48 group">
-                    <Link href={`/berita/${item.id}`} className="block w-full h-full"> {/* Hapus bg-gray-100 */}
+                <div className="relative w-full h-48 flex-shrink-0">
+                     <Link href={`/berita/${item.id}`} className="block w-full h-full">
                         <Image
-                            src={item.image_url}
+                            src={item.image_url || 'https://placehold.co/600x400/e2e8f0/94a3b8?text=No+Image'}
                             alt={item.title}
                             layout="fill"
-                            // --- MODIFIKASI: Kembalikan ke objectFit="cover" ---
-                            objectFit="cover" // Isi area gambar, mungkin terpotong
-                            className="transition-transform duration-300 group-hover:scale-105"
+                            objectFit="cover"
+                            className="transition-transform duration-500 hover:scale-110"
                         />
-                    </Link>
+                     </Link>
                 </div>
 
                 {/* Konten Teks */}
                 <div className="p-5 flex flex-col flex-grow">
-                    <h3 className="text-lg font-bold text-gray-800 mb-2 h-14 line-clamp-2">
-                        <Link href={`/berita/${item.id}`} className="hover:text-blue-700 transition-colors">{item.title}</Link>
+                    {/* Tanggal (Opsional, jika ada created_at) */}
+                    {item.created_at && (
+                        <p className="text-xs text-gray-500 mb-2">
+                            {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                    )}
+
+                    <h3 className="text-lg font-bold text-gray-800 mb-3 leading-tight line-clamp-2 hover:text-[#0D2A57] transition-colors">
+                        <Link href={`/berita/${item.id}`}>
+                            {item.title}
+                        </Link>
                     </h3>
-                    {/* Beri sedikit lebih banyak ruang untuk excerpt */}
-                    <p className="text-sm text-gray-600 mb-4 flex-grow h-[4.5rem] line-clamp-3">{item.excerpt}</p> 
+                    
+                    <p className="text-sm text-gray-600 mb-4 flex-grow line-clamp-3">
+                        {item.excerpt}
+                    </p>
 
                     <Link
                         href={`/berita/${item.id}`}
-                        className="mt-auto text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center group"
+                        className="mt-auto inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-800 group"
                     >
                         Baca Selengkapnya
-                        <span className="ml-1 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
                     </Link>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }
