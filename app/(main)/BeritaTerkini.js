@@ -21,26 +21,29 @@ export default function BeritaTerkini({ newsItems, inView }) {
     }
 
     return (
-        <div className="container mx-auto">
-            {/* Header Section yang Lebih Rapi */}
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-                <div className="text-center md:text-left w-full md:w-auto">
-                    <h2 className="text-3xl font-bold text-gray-800">Berita Terkini Pusdatin</h2>
-                    <p className="text-gray-600 mt-2 text-sm">Informasi terbaru seputar data dan teknologi di lingkungan Kementerian PU.</p>
-                </div>
-
+        // Tambahkan 'relative' agar positioning absolute bekerja terhadap container ini
+        <div className="container mx-auto relative">
+            
+            {/* 1. Tautan "Lihat Semua" (Desktop Only - Posisi Absolut di Kanan Atas) */}
+            <div className="hidden md:block absolute top-1 right-0 z-10">
                 <Link 
                     href="/berita" 
-                    className="hidden md:inline-flex items-center text-sm font-semibold text-[#0D2A57] hover:text-blue-700 group"
+                    className="text-sm font-semibold text-[#0D2A57] hover:text-blue-700 group flex items-center"
                 >
-                    Lihat Semua Berita
+                    Lihat Semua
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                 </Link>
             </div>
 
-            {/* Kontainer Grid dengan Animasi Stagger */}
+            {/* 2. Header Judul & Subjudul (Rata Tengah) */}
+            <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold text-gray-800">Berita Terkini Pusdatin</h2>
+                <p className="text-gray-600 mt-2">Temukan berita terbaru seputar data dan teknologi di lingkungan Kementerian PU.</p>
+            </div>
+
+            {/* 3. Kontainer Grid dengan Animasi Stagger */}
             <motion.div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                 variants={containerVariants}
@@ -52,7 +55,7 @@ export default function BeritaTerkini({ newsItems, inView }) {
                 ))}
             </motion.div>
 
-            {/* Tombol Lihat Semua (Mobile Only - Muncul di bawah grid di layar kecil) */}
+            {/* 4. Tombol Lihat Semua (Mobile Only - Muncul di bawah grid di layar kecil) */}
             <div className="mt-8 text-center md:hidden">
                  <Link 
                     href="/berita" 
