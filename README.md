@@ -62,15 +62,15 @@ Proyek ini tidak hanya tentang fitur, tetapi juga tentang membangun fondasi yang
 
 <table align="center">
   <tr>
-    <td align="center"><strong>Admin Dashboard</strong></td>
-    <td align="center"><strong>Manajemen Data Katalog</strong></td>
+    <td align="center"><strong>Page Catalog</strong></td>
+    <td align="center"><strong>Page Detail</strong></td>
   </tr>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/42d39eba-46a4-40ac-8f2a-89767c8ad67f" alt="Admin Dashboard" width="100%"/></td>
     <td><img src="https://github.com/user-attachments/assets/07d62c4f-75e3-4a1b-8f99-bbdb1c5a5a15" alt="Manajemen Data Katalog" width="100%"/></td>
   </tr>
   <tr>
-    <td align="center"><strong>Form Edit Data</strong></td>
+    <td align="center"><strong>Admin Dashboard</strong></td>
     <td align="center"><strong>Tampilan Halaman Utama</strong></td>
   </tr>
    <tr>
