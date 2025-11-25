@@ -14,7 +14,7 @@ VALUES
   ('Inspektorat Jenderal'),
   ('Badan Pengembangan Infrastruktur Wilayah'),
   ('Badan Pengembangan Sumber Daya Manusia')
-ON CONFLICT (nama_unor) DO NOTHING; -- Asumsi nama_unor unik, jika tidak, biarkan tanpa on conflict
+ON CONFLICT (nama_unor) DO NOTHING; 
 
 -- 2. Seed Data Kategori
 INSERT INTO public.categories (nama_kategori)
@@ -29,13 +29,12 @@ VALUES
 ON CONFLICT (nama_kategori) DO NOTHING;
 
 -- 3. Seed Data Katalog (Dummy)
--- Kita masukkan contoh katalog yang mengarah ke tabel 'Bendung' yang (mungkin) ada, atau data dummy
 INSERT INTO public.datasets (title, description, data_url, sample_data, metadata, click_count, unor_id, category_id)
 VALUES
   (
     'Data Bendung Wilayah Sungai Citarum',
     'Dataset ini berisi informasi mengenai bendung-bendung yang berada di wilayah sungai Citarum, mencakup lokasi, dimensi teknis, dan status pemeliharaan.',
-    'https://example.com/api/bendung', -- Ganti dengan URL asli jika ada, misal URL tabel 'Bendung'
+    'https://example.com/api/bendung', 
     '[
       {"nama_infrastruktur": "Bendung Curug", "kota_kabupaten": "Karawang", "kondisi_bangunan": "Baik"},
       {"nama_infrastruktur": "Bendung Walahar", "kota_kabupaten": "Karawang", "kondisi_bangunan": "Sedang"}
